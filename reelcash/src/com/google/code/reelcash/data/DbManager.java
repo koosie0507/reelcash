@@ -6,6 +6,7 @@ package com.google.code.reelcash.data;
 
 import java.sql.*;
 import java.util.Hashtable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -79,8 +80,8 @@ public class DbManager {
         stmt.setInt(1, contactId);
 
         ResultSet rs = stmt.executeQuery();
-        Hashtable<String, Object> ret =null;
-        if(rs.next()) {
+        Hashtable<String, Object> ret = null;
+        if (rs.next()) {
             ret = new Hashtable<String, Object>();
             ret.put("name", rs.getString(1));
             ret.put("siccode", rs.getString(2));
@@ -96,6 +97,96 @@ public class DbManager {
             ret.put("repidentification", rs.getString(12));
             ret.put("repaddress", rs.getString(13));
         }
+        rs.close();
         return ret;
+    }
+
+    public void populateInvoiceModel(DefaultTableModel model) throws SQLException {
+        if (null == model) {
+            return;
+        }
+        model.setRowCount(0);
+        PreparedStatement stmt = connection.prepareStatement("select number, series, invoicedate, duedate, customer from invoices");
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            model.addRow(new Object[]{rs.getInt(1), rs.getString(2), rs.getDate(3), rs.getDate(4), rs.getString(5)});
+        }
+        rs.close();
+    }
+
+    public boolean insertInvoice(int number, String series, java.sql.Date invoiceDate,
+            java.sql.Date duedate, String customer, String billingaddress,
+            String region, String country, String siccode, String commerceregno,
+            String iban, String bank) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement("insert into invoices(number, series, invoicedate, duedate, customer, billingaddress, region, country, siccode, commerceregno, iban, bank) values(?,?,?,?,?,?,?,?,?,?,?,?)");
+
+        stmt.setInt(1, number);
+        stmt.setString(2, series);
+        stmt.setDate(3, invoiceDate);
+        stmt.setDate(4, duedate);
+        stmt.setString(5, customer);
+        stmt.setString(6, billingaddress);
+        stmt.setString(7, region);
+        stmt.setString(8, country);
+        stmt.setString(9, siccode);
+        stmt.setString(10, commerceregno);
+        stmt.setString(11, iban);
+        stmt.setString(12, bank);
+
+        return stmt.executeUpdate() > -1;
+    }
+
+    public boolean insertInvoiceDetail(int invoiceId, int position, String name,
+            String unit, int quantity, double price) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement("insert into invoicedetails(invoiceid,position,name,unit,quantity,price,vatvalue,value) values(?,?,?,?,?,?,?,?)");
+
+        stmt.setInt(1, invoiceId);
+        stmt.setInt(2, position);
+        stmt.setString(3, name);
+        stmt.setString(4, unit);
+        stmt.setInt(5, quantity);
+        stmt.setDouble(6, price);
+        double value = price * quantity;
+        double vatvalue = 0.19 * value;
+        stmt.setDouble(7, vatvalue);
+        stmt.setDouble(8, value);
+
+        return stmt.executeUpdate() > -1;
+    }
+
+    public int getLastInsertedId() throws SQLException {
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid();");
+        try {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        } finally {
+            rs.close();
+        }
+    }
+
+    public boolean updateInvoice(int number, String series, java.sql.Date invoiceDate,
+            java.sql.Date duedate, String customer, String billingaddress,
+            String region, String country, String siccode, String commerceregno,
+            String iban, String bank) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement("insert into invoices(number, series, invoicedate, duedate, customer, billingaddress, region, country, siccode, commerceregno, iban, bank) values(?,?,?,?,?,?,?,?,?,?,?,?)");
+
+        stmt.setInt(1, number);
+        stmt.setString(2, series);
+        stmt.setDate(3, invoiceDate);
+        stmt.setDate(4, duedate);
+        stmt.setString(5, customer);
+        stmt.setString(6, billingaddress);
+        stmt.setString(7, region);
+        stmt.setString(8, country);
+        stmt.setString(9, siccode);
+        stmt.setString(10, commerceregno);
+        stmt.setString(11, iban);
+        stmt.setString(12, bank);
+
+        return stmt.execute();
     }
 }

@@ -8,11 +8,13 @@
  *
  * Created on Jan 16, 2010, 2:11:42 PM
  */
-
 package com.google.code.reelcash.dialogs;
 
 import com.google.code.reelcash.actions.CloseAction;
+import com.google.code.reelcash.data.DbManager;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -62,6 +64,9 @@ public class InvoiceJDialog extends javax.swing.JDialog {
         customerBankLabel = new javax.swing.JLabel();
         customerBankField = new javax.swing.JTextField();
         detailsPanel = new javax.swing.JPanel();
+        toolBar = new javax.swing.JToolBar();
+        addDetailButton = new javax.swing.JButton();
+        deleteDetailButton = new javax.swing.JButton();
         tableScrollPane = new javax.swing.JScrollPane();
         detailsTable = new javax.swing.JTable();
         commandPanel = new javax.swing.JPanel();
@@ -70,8 +75,9 @@ public class InvoiceJDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Invoice");
+        setFocusCycleRoot(false);
+        setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(400, 300));
-        setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         setName("invoicedialog"); // NOI18N
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -279,45 +285,70 @@ public class InvoiceJDialog extends javax.swing.JDialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(25, 10, 0, 10);
         getContentPane().add(headerPanel, gridBagConstraints);
 
         detailsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Details"));
-        detailsPanel.setLayout(new javax.swing.BoxLayout(detailsPanel, javax.swing.BoxLayout.LINE_AXIS));
+        detailsPanel.setMaximumSize(new java.awt.Dimension(1000, 270));
+        detailsPanel.setLayout(new java.awt.BorderLayout());
 
+        toolBar.setOrientation(1);
+        toolBar.setRollover(true);
+
+        addDetailButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/google/code/reelcash/images/toolbar/add_small.png"))); // NOI18N
+        addDetailButton.setFocusable(false);
+        addDetailButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        addDetailButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        addDetailButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onAddInvoiceDetailRequested(evt);
+            }
+        });
+        toolBar.add(addDetailButton);
+
+        deleteDetailButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/google/code/reelcash/images/toolbar/delete_small.png"))); // NOI18N
+        deleteDetailButton.setFocusable(false);
+        deleteDetailButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deleteDetailButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteDetailButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onDeleteInvoiceDetailRequested(evt);
+            }
+        });
+        toolBar.add(deleteDetailButton);
+
+        detailsPanel.add(toolBar, java.awt.BorderLayout.WEST);
+
+        tableScrollPane.setMaximumSize(new java.awt.Dimension(1000, 250));
         tableScrollPane.setMinimumSize(new java.awt.Dimension(250, 100));
 
         detailsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {new Integer(1), null, "buc", new Integer(1), null, null, null}
+                {new Integer(1), null, "buc", new Integer(1), null}
             },
             new String [] {
-                "Nr. crt", "Denumire", "U.M.", "Cantitate", "Pret Unitar", "Valoare", "Valoare TVA"
+                "Nr. crt", "Denumire", "U.M.", "Cantitate", "Pret Unitar"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
-            };
-            boolean[] canEdit = new boolean [] {
-                true, true, true, true, true, false, false
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
         });
         tableScrollPane.setViewportView(detailsTable);
 
-        detailsPanel.add(tableScrollPane);
+        detailsPanel.add(tableScrollPane, java.awt.BorderLayout.CENTER);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 0.33;
         gridBagConstraints.insets = new java.awt.Insets(25, 10, 25, 10);
         getContentPane().add(detailsPanel, gridBagConstraints);
 
@@ -356,16 +387,63 @@ public class InvoiceJDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 0.2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 15, 10);
         getContentPane().add(commandPanel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void onSaveInvoiceRequested(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSaveInvoiceRequested
-        JOptionPane.showMessageDialog(this, "Not implemented");
+        try {
+            DbManager mgr = new DbManager();
+            java.util.Date date = (java.util.Date) dateSpinner.getValue();
+            java.util.Date due = (java.util.Date) dueDateSpinner.getValue();
+            java.sql.Date sdate = new java.sql.Date(date.getTime());
+            java.sql.Date sdue = new java.sql.Date(sdate.getTime());
+            mgr.insertInvoice(((Integer) invoiceNoSpinner.getValue()).intValue(),
+                    invoiceSeriesField.getText(),
+                    sdate, sdue,
+                    customerNameField.getText(),
+                    customerAddressField.getText(),
+                    customerRegionField.getText(),
+                    customerCountryField.getText(),
+                    customerIdCodeField.getText(),
+                    customerRegNoField.getText(),
+                    customerBankAccountField.getText(),
+                    customerBankField.getText());
+            int lastInvoiceId = mgr.getLastInsertedId();
+            DefaultTableModel model = (DefaultTableModel) detailsTable.getModel();
+            int rowCount = model.getRowCount();
+            for (int row = 0; row < rowCount; row++) {
+                mgr.insertInvoiceDetail(
+                        lastInvoiceId,
+                        ((Integer) model.getValueAt(row, 0)).intValue(),
+                        (String) model.getValueAt(row, 1),
+                        (String) model.getValueAt(row, 2),
+                        ((Integer) model.getValueAt(row, 3)).intValue(),
+                        ((Double) model.getValueAt(row, 4)).doubleValue());
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
     }//GEN-LAST:event_onSaveInvoiceRequested
 
+    private void onAddInvoiceDetailRequested(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onAddInvoiceDetailRequested
+        DefaultTableModel model = ((DefaultTableModel) detailsTable.getModel());
+        model.addRow(new Object[]{model.getRowCount() + 1, "", "buc", 1, null});
+    }//GEN-LAST:event_onAddInvoiceDetailRequested
+
+    private void onDeleteInvoiceDetailRequested(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onDeleteInvoiceDetailRequested
+        if (detailsTable.getSelectedRowCount() < 1) {
+            JOptionPane.showMessageDialog(this, "Please select an invoice detail",
+                    "Select data", JOptionPane.INFORMATION_MESSAGE);
+        }
+        DefaultTableModel model = ((DefaultTableModel) detailsTable.getModel());
+        model.removeRow(detailsTable.getSelectedRow());
+    }//GEN-LAST:event_onDeleteInvoiceDetailRequested
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addDetailButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JPanel commandPanel;
     private javax.swing.JTextField customerAddressField;
@@ -386,6 +464,7 @@ public class InvoiceJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel customerRegionLabel;
     private javax.swing.JLabel dateLabel;
     private javax.swing.JSpinner dateSpinner;
+    private javax.swing.JButton deleteDetailButton;
     private javax.swing.JPanel detailsPanel;
     private javax.swing.JTable detailsTable;
     private javax.swing.JLabel dueDateLabel;
@@ -397,6 +476,6 @@ public class InvoiceJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel invoiceSeriesLabel;
     private javax.swing.JButton saveButton;
     private javax.swing.JScrollPane tableScrollPane;
+    private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
-
 }
