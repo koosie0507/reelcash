@@ -12,6 +12,7 @@ package com.google.code.reelcash;
 
 import com.google.code.reelcash.actions.ExitAction;
 import com.google.code.reelcash.actions.ShowModalDialogAction;
+import com.google.code.reelcash.dialogs.UserSettingsJDialog;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private void initToolBar() {
 		addToolBarButton("images/toolbar/exit.png", "Exit", 'x', new ExitAction(0));
 		toolBar.addSeparator();
-		addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new JDialog(this)));
+		addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new UserSettingsJDialog(this, true)));
 	}
 
 	private void postInitComponents() {

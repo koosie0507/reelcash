@@ -8,8 +8,13 @@
  *
  * Created on Jan 15, 2010, 5:05:33 PM
  */
-
 package com.google.code.reelcash.dialogs;
+
+import com.google.code.reelcash.actions.CloseAction;
+import com.google.code.reelcash.data.DbManager;
+import java.sql.SQLException;
+import java.util.Hashtable;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,10 +22,49 @@ package com.google.code.reelcash.dialogs;
  */
 public class UserSettingsJDialog extends javax.swing.JDialog {
 
+    private CloseAction closeAction;
+    private boolean edit;
+
     /** Creates new form UserSettingsJDialog */
     public UserSettingsJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        loadDbData();
+    }
+
+    private void loadDbData() {
+        try {
+            edit = false;
+            DbManager dbm = new DbManager();
+            Hashtable<String, Object> contact = dbm.getContact(1);
+            if (null == contact) {
+                return;
+            }
+
+            edit = true;
+            companyNameField.setText((String) contact.get("name"));
+            cifField.setText((String) contact.get("siccode"));
+            orcField.setText((String) contact.get("commerceregno"));
+            hqAddressField.setText((String) contact.get("address"));
+            admRegionField.setText((String) contact.get("region"));
+            countryField.setText((String) contact.get("country"));
+            bankAccountField.setText((String) contact.get("iban"));
+            bankField.setText((String) contact.get("bank"));
+            capitalField.setText((String) contact.get("socialcapital"));
+            defRepNameField.setText((String) contact.get("repname"));
+            defRepIdTypeField.setText((String) contact.get("repidtype"));
+            defRepIdField.setText((String) contact.get("repidentification"));
+            defRepAddrField.setText((String) contact.get("repaddress"));
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
+
+    public CloseAction getCloseAction() {
+        if (null == closeAction) {
+            closeAction = new CloseAction(this);
+        }
+        return closeAction;
     }
 
     /** This method is called from within the constructor to
@@ -64,6 +108,7 @@ public class UserSettingsJDialog extends javax.swing.JDialog {
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Contact data");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         companyNameLabel.setText("Company name");
@@ -341,10 +386,16 @@ public class UserSettingsJDialog extends javax.swing.JDialog {
         saveButton.setText("Save");
         saveButton.setMinimumSize(new java.awt.Dimension(75, 25));
         saveButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onSaveContactRequested(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(15, 15, 15, 15);
         commandPanel.add(saveButton, gridBagConstraints);
 
+        closeButton.setAction(getCloseAction());
         closeButton.setText("Close");
         closeButton.setDefaultCapable(false);
         closeButton.setMinimumSize(new java.awt.Dimension(75, 25));
@@ -363,23 +414,31 @@ public class UserSettingsJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                UserSettingsJDialog dialog = new UserSettingsJDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+    private void onSaveContactRequested(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSaveContactRequested
+        try {
+            DbManager dbm = new DbManager();
+            if (edit) {
+                dbm.updateContact(1, companyNameField.getText(), cifField.getText(),
+                        orcField.getText(), hqAddressField.getText(),
+                        admRegionField.getText(), countryField.getText(),
+                        bankAccountField.getText(), bankField.getText(),
+                        capitalField.getText(), defRepNameField.getText(),
+                        defRepIdTypeField.getText(), defRepIdField.getText(),
+                        defRepAddrField.getText());
+            } else {
+                dbm.insertContact(companyNameField.getText(), cifField.getText(),
+                        orcField.getText(), hqAddressField.getText(),
+                        admRegionField.getText(), countryField.getText(),
+                        bankAccountField.getText(), bankField.getText(),
+                        capitalField.getText(), defRepNameField.getText(),
+                        defRepIdTypeField.getText(), defRepIdField.getText(),
+                        defRepAddrField.getText());
             }
-        });
-    }
-
+            setVisible(false);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_onSaveContactRequested
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField admRegionField;
     private javax.swing.JLabel admRegionLabel;
@@ -411,5 +470,4 @@ public class UserSettingsJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel orcLabel;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
-
 }
