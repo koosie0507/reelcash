@@ -25,6 +25,7 @@ public class DbManager {
      * Creates a new constructor with a default jdbc url.
      */
     public DbManager() throws SQLException {
+        
         connection = DriverManager.getConnection(defaultJdbcUrl);
     }
 
@@ -51,8 +52,7 @@ public class DbManager {
         streamReader.close();
         stream.close();
 
-        create.addBatch(builder.toString());
-        create.executeBatch();
+        create.executeUpdate(builder.toString());
     }
 
     public boolean insertContact(String name, String sicCode, String orc,

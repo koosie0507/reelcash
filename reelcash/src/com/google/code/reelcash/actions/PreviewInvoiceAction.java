@@ -7,6 +7,7 @@ package com.google.code.reelcash.actions;
 import com.google.code.reelcash.data.DbManager;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.SQLException;
@@ -19,6 +20,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.*;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.view.*;
 
 
@@ -52,13 +55,20 @@ public class PreviewInvoiceAction extends AbstractAction {
 
             DbManager mgr = new DbManager();
             JasperPrint print = JasperFillManager.fillReport(report, params, mgr.getConnection());
-            JRViewer viewer = new JRViewer(print);
-            JDialog dialog = new JDialog((JDialog)null, "Invoice", true);
-            dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-            dialog.add(viewer);
-            dialog.setMinimumSize(new Dimension(700, 500));
-            dialog.pack();
-            dialog.setVisible(true);
+//            JRViewer viewer = new JRViewer(print);
+//            JDialog dialog = new JDialog((JDialog)null, "Invoice", true);
+//            dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
+//            dialog.add(viewer);
+//            dialog.setMinimumSize(new Dimension(700, 500));
+//            dialog.pack();
+//            dialog.setVisible(true);
+            JRPdfExporter exporter = new JRPdfExporter();
+            FileOutputStream os = new FileOutputStream("/home/cusi/factura_extruplast.pdf");
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
+            exporter.exportReport();
+            os.flush();
+            os.close();
             //JasperDesignViewer.viewReportDesign(getClass().getResourceAsStream("../reports/report2.jrxml"), true);
         } catch (SQLException ex) {
             Logger.getLogger(PreviewInvoiceAction.class.getName()).log(Level.SEVERE, null, ex);
