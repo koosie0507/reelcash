@@ -11,6 +11,7 @@
 package com.google.code.reelcash;
 
 import com.google.code.reelcash.actions.ExitAction;
+import com.google.code.reelcash.actions.PreviewInvoiceAction;
 import com.google.code.reelcash.actions.ShowModalDialogAction;
 import com.google.code.reelcash.data.DbManager;
 import com.google.code.reelcash.dialogs.InvoiceJDialog;
@@ -18,73 +19,78 @@ import com.google.code.reelcash.dialogs.UserSettingsJDialog;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.net.URL;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author andrei.olar
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame implements ListSelectionListener {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private PreviewInvoiceAction preview;
 
-	/** Creates new form MainFrame */
-	public MainFrame() {
-		initComponents();
-		initToolBar();
-		postInitComponents();
-	}
+    /** Creates new form MainFrame */
+    public MainFrame() {
+        initComponents();
+        initToolBar();
+        postInitComponents();
+    }
 
-	private void addToolBarButton(String imageKey, String text, char mnemonic, Action performAction) {
-		JButton button = toolBar.add(performAction);
+    private void addToolBarButton(String imageKey, String text, char mnemonic, Action performAction) {
+        JButton button = toolBar.add(performAction);
 
-		if (null == imageKey || 1 > imageKey.length())
-			button.setText(text);
-		else {
-			URL rasa = getClass().getResource(imageKey);
-			button.setIcon(new ImageIcon(rasa));
-		}
-		button.setMnemonic(mnemonic);
-		button.setMinimumSize(new Dimension(32, 32));
-		button.setMaximumSize(new Dimension(48, 48));
-		button.setPreferredSize(button.getMaximumSize());
-	}
+        if (null == imageKey || 1 > imageKey.length()) {
+            button.setText(text);
+        } else {
+            URL rasa = getClass().getResource(imageKey);
+            button.setIcon(new ImageIcon(rasa));
+        }
+        button.setMnemonic(mnemonic);
+        button.setMinimumSize(new Dimension(32, 32));
+        button.setMaximumSize(new Dimension(48, 48));
+        button.setPreferredSize(button.getMaximumSize());
+    }
 
-	private void initToolBar() {
-		addToolBarButton("images/toolbar/exit.png", "Exit", 'x', new ExitAction(0));
-		toolBar.addSeparator();
-		addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new UserSettingsJDialog(this, true)));
-                addToolBarButton("images/toolbar/invoice.png", "New invoice", 'i', new ShowModalDialogAction(new InvoiceJDialog(this, true)));
-	}
+    private void initToolBar() {
+        preview = new PreviewInvoiceAction(-1);
+        addToolBarButton("images/toolbar/exit.png", "Exit", 'x', new ExitAction(0));
+        toolBar.addSeparator();
+        addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new UserSettingsJDialog(this, true)));
+        addToolBarButton("images/toolbar/invoice.png", "New invoice", 'i', new ShowModalDialogAction(new InvoiceJDialog(this, true)));
+        addToolBarButton("images/toolbar/show_report.png", "Show report", 'r', preview);
+    }
 
-	private void postInitComponents() {
-            try {
-                DbManager mgr = new DbManager();
-                mgr.populateInvoiceModel((DefaultTableModel)invoiceTable.getModel());
-            }
-            catch(SQLException e) {
-                JOptionPane.showMessageDialog(this, e);
-            }
-		setMinimumSize(new Dimension(400, 300));
-		setMaximumSize(getToolkit().getScreenSize());
-		setPreferredSize(new Dimension((int) (getMaximumSize().getWidth() + getMinimumSize().getWidth()) / 2,
-				(int) (getMaximumSize().getHeight() + getMinimumSize().getHeight()) / 2));
-		setLocation(new Point((int) (getMaximumSize().getWidth() - getPreferredSize().getWidth()) / 2,
-				(int) (getMaximumSize().getHeight() - getPreferredSize().getHeight()) / 2));
-	}
+    private void postInitComponents() {
+        try {
+            DbManager mgr = new DbManager();
+            mgr.populateInvoiceModel((DefaultTableModel) invoiceTable.getModel());
+            invoiceTable.getSelectionModel().addListSelectionListener(this);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+        setMinimumSize(new Dimension(400, 300));
+        setMaximumSize(getToolkit().getScreenSize());
+        setPreferredSize(new Dimension((int) (getMaximumSize().getWidth() + getMinimumSize().getWidth()) / 2,
+                (int) (getMaximumSize().getHeight() + getMinimumSize().getHeight()) / 2));
+        setLocation(new Point((int) (getMaximumSize().getWidth() - getPreferredSize().getWidth()) / 2,
+                (int) (getMaximumSize().getHeight() - getPreferredSize().getHeight()) / 2));
+    }
 
-	/** This method is called from within the constructor to
-	 * initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is
-	 * always regenerated by the Form Editor.
-	 */
-	@SuppressWarnings("unchecked")
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -135,21 +141,35 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
-			public void run() {
-				new MainFrame().setVisible(true);
-			}
-		});
-	}
+            public void run() {
+                new MainFrame().setVisible(true);
+            }
+        });
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane invoiceScrollPane;
     private javax.swing.JTable invoiceTable;
     private javax.swing.JPanel invoicesPanel;
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
+
+    public void valueChanged(ListSelectionEvent e) {
+        if (invoiceTable.getSelectedRowCount() < 1) {
+            JOptionPane.showMessageDialog(this, "Select invoice to preview!");
+            return;
+        }
+        try {
+            DbManager db = new DbManager();
+            preview.setInvoiceId(db.getInvoiceId(
+                    ((Integer) invoiceTable.getModel().getValueAt(invoiceTable.getSelectedRow(), 0)).intValue()));
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
+    }
 }

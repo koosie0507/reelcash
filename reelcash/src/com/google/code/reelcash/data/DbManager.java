@@ -4,6 +4,10 @@
  */
 package com.google.code.reelcash.data;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.Hashtable;
 import javax.swing.table.DefaultTableModel;
@@ -26,6 +30,29 @@ public class DbManager {
 
     public DbManager(String jdbcUrl) throws SQLException {
         connection = DriverManager.getConnection(jdbcUrl);
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void createDatabase() throws SQLException, IOException {
+        Statement create = connection.createStatement();
+        InputStream stream = getClass().getResourceAsStream("database.sql");
+        InputStreamReader streamReader = new InputStreamReader(stream);
+        BufferedReader reader = new BufferedReader(streamReader);
+        StringBuilder builder = new StringBuilder();
+        String line = null;
+        while (null != (line = reader.readLine())) {
+            builder.append(line);
+        }
+
+        reader.close();
+        streamReader.close();
+        stream.close();
+
+        create.addBatch(builder.toString());
+        create.executeBatch();
     }
 
     public boolean insertContact(String name, String sicCode, String orc,
@@ -147,10 +174,8 @@ public class DbManager {
         stmt.setString(4, unit);
         stmt.setInt(5, quantity);
         stmt.setDouble(6, price);
-        double value = price * quantity;
-        double vatvalue = 0.19 * value;
-        stmt.setDouble(7, vatvalue);
-        stmt.setDouble(8, value);
+        stmt.setDouble(7, 0.19 * price * quantity);
+        stmt.setDouble(8, 1.19 * price * quantity);
 
         return stmt.executeUpdate() > -1;
     }
@@ -188,5 +213,16 @@ public class DbManager {
         stmt.setString(12, bank);
 
         return stmt.execute();
+    }
+
+    public int getInvoiceId(int invoiceNumber) throws SQLException {
+        PreparedStatement s = connection.prepareStatement("select invoiceid from invoices where number=?");
+        s.setInt(1, invoiceNumber);
+        ResultSet rs = s.executeQuery();
+        int ret;
+        if(rs.next()) ret = rs.getInt(1);
+        else ret = -1;
+        rs.close();
+        return ret;
     }
 }
