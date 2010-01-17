@@ -10,9 +10,12 @@
  */
 package com.google.code.reelcash.dialogs;
 
+import com.google.code.reelcash.MainFrame;
 import com.google.code.reelcash.actions.CloseAction;
 import com.google.code.reelcash.data.DbManager;
+import com.google.code.reelcash.util.SysUtils;
 import java.sql.SQLException;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,10 +25,15 @@ import javax.swing.table.DefaultTableModel;
  */
 public class InvoiceJDialog extends javax.swing.JDialog {
 
+    private int invoiceId;
+    private boolean editMode;
+
     /** Creates new form InvoiceJDialog */
-    public InvoiceJDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public InvoiceJDialog(MainFrame parent, int invoiceId) {
+        super(parent, true);
         initComponents();
+        editMode = (invoiceId < 0);
+        this.invoiceId = invoiceId;
     }
 
     /** This method is called from within the constructor to
@@ -394,16 +402,13 @@ public class InvoiceJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void onSaveInvoiceRequested(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSaveInvoiceRequested
+    private void createInvoice() {
         try {
             DbManager mgr = new DbManager();
-            java.util.Date date = (java.util.Date) dateSpinner.getValue();
-            java.util.Date due = (java.util.Date) dueDateSpinner.getValue();
-            java.sql.Date sdate = new java.sql.Date(date.getTime());
-            java.sql.Date sdue = new java.sql.Date(sdate.getTime());
             mgr.insertInvoice(((Integer) invoiceNoSpinner.getValue()).intValue(),
                     invoiceSeriesField.getText(),
-                    sdate, sdue,
+                    SysUtils.getSqlDate((Date)dateSpinner.getValue()),
+                    SysUtils.getSqlDate((Date)dueDateSpinner.getValue()),
                     customerNameField.getText(),
                     customerAddressField.getText(),
                     customerRegionField.getText(),
@@ -412,6 +417,20 @@ public class InvoiceJDialog extends javax.swing.JDialog {
                     customerRegNoField.getText(),
                     customerBankAccountField.getText(),
                     customerBankField.getText());
+        }
+        catch(SQLException exc) {
+            
+        }
+    }
+
+    private void onSaveInvoiceRequested(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onSaveInvoiceRequested
+        try {
+            DbManager mgr = new DbManager();
+            java.util.Date date = (java.util.Date) dateSpinner.getValue();
+            java.util.Date due = (java.util.Date) dueDateSpinner.getValue();
+            java.sql.Date sdate = new java.sql.Date(date.getTime());
+            java.sql.Date sdue = new java.sql.Date(sdate.getTime());
+            
             int lastInvoiceId = mgr.getLastInsertedId();
             DefaultTableModel model = (DefaultTableModel) detailsTable.getModel();
             int rowCount = model.getRowCount();

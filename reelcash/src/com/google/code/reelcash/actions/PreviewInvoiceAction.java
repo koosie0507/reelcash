@@ -4,7 +4,9 @@
  */
 package com.google.code.reelcash.actions;
 
+import com.google.code.reelcash.Log;
 import com.google.code.reelcash.data.DbManager;
+import com.google.code.reelcash.util.ReportingUtils;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.FileOutputStream;
@@ -22,8 +24,8 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.*;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.*;
-
 
 /**
  *
@@ -39,43 +41,14 @@ public class PreviewInvoiceAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-        URL reportUrl = getClass().getResource("../reports/report2.jrxml");
-        JOptionPane.showMessageDialog(null, reportUrl);
-
         try {
-            String path = getClass().getResource("../reports/").getFile();
-            String reportPath = reportUrl.getFile();
-            HashMap params = new HashMap();
-            params.put("INVOICEID", invoiceId); //TODO: put actual ID
-            params.put("SUBREPORT_DIR", path);
-
-            JasperReport report = JasperCompileManager.compileReport(getClass().getResourceAsStream("../reports/report2.jrxml"));
-            JasperCompileManager.compileReportToFile(getClass().getResource("../reports/report2_subreport1.jrxml").getFile());
-            JasperCompileManager.compileReportToFile(getClass().getResource("../reports/report2_subreport2.jrxml").getFile());
-
+            JasperReport report = ReportingUtils.loadReport("report2.jasper");
             DbManager mgr = new DbManager();
-            JasperPrint print = JasperFillManager.fillReport(report, params, mgr.getConnection());
-//            JRViewer viewer = new JRViewer(print);
-//            JDialog dialog = new JDialog((JDialog)null, "Invoice", true);
-//            dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-//            dialog.add(viewer);
-//            dialog.setMinimumSize(new Dimension(700, 500));
-//            dialog.pack();
-//            dialog.setVisible(true);
-            JRPdfExporter exporter = new JRPdfExporter();
-            FileOutputStream os = new FileOutputStream("/home/cusi/factura_extruplast.pdf");
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
-            exporter.exportReport();
-            os.flush();
-            os.close();
-            //JasperDesignViewer.viewReportDesign(getClass().getResourceAsStream("../reports/report2.jrxml"), true);
-        } catch (SQLException ex) {
-            Logger.getLogger(PreviewInvoiceAction.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JRException ex) {
-            Logger.getLogger(PreviewInvoiceAction.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        catch(Throwable t) {
+            JasperPrint print = ReportingUtils.fillInvoice(
+                    report, invoiceId, mgr.getConnection());
+            ReportingUtils.showPreview(print);
+        } catch (Throwable t) {
+            Log.write().log(Level.SEVERE, "Can't show report!", t);
             JOptionPane.showMessageDialog(null, t);
         }
     }

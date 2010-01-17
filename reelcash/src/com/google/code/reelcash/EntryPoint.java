@@ -5,9 +5,12 @@
 package com.google.code.reelcash;
 
 import com.google.code.reelcash.data.DbManager;
+import com.google.code.reelcash.util.ReportingUtils;
+import java.io.FileInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * <p>Class responsible for providing the point of entry in the application.</p>
@@ -22,9 +25,9 @@ public class EntryPoint {
      */
     public static void main(String[] args) {
         try {
+            ReportingUtils.compileReports();
+            
             Class.forName("org.sqlite.JDBC");
-//            DbManager dbm = new DbManager();
-//            dbm.createDatabase();
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             MainFrame frm = new MainFrame();
             frm.pack();

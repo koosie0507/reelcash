@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2010-01-17T19:52:31</date>
+  <millis>1263750751644</millis>
+  <sequence>0</sequence>
+  <level>SEVERE</level>
+  <class>com.google.code.reelcash.util.ReportingUtils</class>
+  <method>compileReport</method>
+  <thread>10</thread>
+  <message>Compile report error</message>
+  <exception>
+    <message>java.io.FileNotFoundException: /home/cusi/.reelcash/reports/report2.jasper (No such file or directory)</message>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>open</method>
+    </frame>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>&lt;init&gt;</method>
+      <line>179</line>
+    </frame>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>&lt;init&gt;</method>
+      <line>70</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReport</method>
+      <line>62</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReports</method>
+      <line>85</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.EntryPoint</class>
+      <method>main</method>
+      <line>27</line>
+    </frame>
+  </exception>
+</record>
+<record>
+  <date>2010-01-17T19:52:32</date>
+  <millis>1263750752447</millis>
+  <sequence>1</sequence>
+  <level>SEVERE</level>
+  <class>com.google.code.reelcash.util.ReportingUtils</class>
+  <method>compileReport</method>
+  <thread>10</thread>
+  <message>Compile report error</message>
+  <exception>
+    <message>java.io.FileNotFoundException: /home/cusi/.reelcash/reports/report2_subreport1.jasper (No such file or directory)</message>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>open</method>
+    </frame>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>&lt;init&gt;</method>
+      <line>179</line>
+    </frame>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>&lt;init&gt;</method>
+      <line>70</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReport</method>
+      <line>62</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReports</method>
+      <line>86</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.EntryPoint</class>
+      <method>main</method>
+      <line>27</line>
+    </frame>
+  </exception>
+</record>
+<record>
+  <date>2010-01-17T19:52:33</date>
+  <millis>1263750753071</millis>
+  <sequence>2</sequence>
+  <level>SEVERE</level>
+  <class>com.google.code.reelcash.util.ReportingUtils</class>
+  <method>compileReport</method>
+  <thread>10</thread>
+  <message>Compile report error</message>
+  <exception>
+    <message>java.io.FileNotFoundException: /home/cusi/.reelcash/reports/report2_subreport2.jasper (No such file or directory)</message>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>open</method>
+    </frame>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>&lt;init&gt;</method>
+      <line>179</line>
+    </frame>
+    <frame>
+      <class>java.io.FileOutputStream</class>
+      <method>&lt;init&gt;</method>
+      <line>70</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReport</method>
+      <line>62</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReports</method>
+      <line>87</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.EntryPoint</class>
+      <method>main</method>
+      <line>27</line>
+    </frame>
+  </exception>
+</record>

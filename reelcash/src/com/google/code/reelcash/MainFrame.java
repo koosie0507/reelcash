@@ -65,7 +65,7 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
         addToolBarButton("images/toolbar/exit.png", "Exit", 'x', new ExitAction(0));
         toolBar.addSeparator();
         addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new UserSettingsJDialog(this, true)));
-        addToolBarButton("images/toolbar/invoice.png", "New invoice", 'i', new ShowModalDialogAction(new InvoiceJDialog(this, true)));
+        addToolBarButton("images/toolbar/invoice.png", "New invoice", 'i', new ShowModalDialogAction(new InvoiceJDialog(this, -1)));
         addToolBarButton("images/toolbar/show_report.png", "Show report", 'r', preview);
     }
 
@@ -73,7 +73,11 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
         try {
             DbManager mgr = new DbManager();
             mgr.populateInvoiceModel((DefaultTableModel) invoiceTable.getModel());
+            if(invoiceTable.getRowCount()>0) {
+                preview.setInvoiceId(((Integer)invoiceTable.getModel().getValueAt(0, 0)).intValue());
+            }
             invoiceTable.getSelectionModel().addListSelectionListener(this);
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e);
         }
@@ -111,14 +115,14 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
 
             },
             new String [] {
-                "Number", "Series", "Date", "Due date", "Customer"
+                "InvoiceId", "Number", "Series", "Date", "Due date", "Customer"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
+                false, false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -129,10 +133,11 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
                 return canEdit [columnIndex];
             }
         });
-        invoiceTable.setColumnSelectionAllowed(true);
         invoiceTable.getTableHeader().setReorderingAllowed(false);
         invoiceScrollPane.setViewportView(invoiceTable);
-        invoiceTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        invoiceTable.getColumnModel().getColumn(0).setMinWidth(0);
+        invoiceTable.getColumnModel().getColumn(0).setPreferredWidth(0);
+        invoiceTable.getColumnModel().getColumn(0).setMaxWidth(0);
 
         invoicesPanel.add(invoiceScrollPane);
 
@@ -166,8 +171,7 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
         }
         try {
             DbManager db = new DbManager();
-            preview.setInvoiceId(db.getInvoiceId(
-                    ((Integer) invoiceTable.getModel().getValueAt(invoiceTable.getSelectedRow(), 0)).intValue()));
+            preview.setInvoiceId(((Integer)invoiceTable.getModel().getValueAt(invoiceTable.getSelectedRow(), 0)).intValue());
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }

@@ -4,6 +4,7 @@
  */
 package com.google.code.reelcash.data;
 
+import com.google.code.reelcash.util.SysUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,13 +20,20 @@ import javax.swing.table.DefaultTableModel;
 public class DbManager {
 
     private Connection connection;
-    private static final String defaultJdbcUrl = "jdbc:sqlite:/home/cusi/reelcash.db";
+    private static final String defaultJdbcUrl;
+
+    static {
+        StringBuilder urlBuilder = new StringBuilder("jdbc:sqlite:");
+        urlBuilder.append(SysUtils.getAppHome());
+        urlBuilder.append("reelcash.db");
+        defaultJdbcUrl = urlBuilder.toString();
+    }
 
     /**
      * Creates a new constructor with a default jdbc url.
      */
     public DbManager() throws SQLException {
-        
+
         connection = DriverManager.getConnection(defaultJdbcUrl);
     }
 
@@ -133,11 +141,11 @@ public class DbManager {
             return;
         }
         model.setRowCount(0);
-        PreparedStatement stmt = connection.prepareStatement("select number, series, invoicedate, duedate, customer from invoices");
+        PreparedStatement stmt = connection.prepareStatement("select invoiceid, number, series, invoicedate, duedate, customer from invoices");
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            model.addRow(new Object[]{rs.getInt(1), rs.getString(2), rs.getDate(3), rs.getDate(4), rs.getString(5)});
+            model.addRow(new Object[]{rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getDate(4), rs.getDate(5), rs.getString(6)});
         }
         rs.close();
     }
@@ -220,8 +228,11 @@ public class DbManager {
         s.setInt(1, invoiceNumber);
         ResultSet rs = s.executeQuery();
         int ret;
-        if(rs.next()) ret = rs.getInt(1);
-        else ret = -1;
+        if (rs.next()) {
+            ret = rs.getInt(1);
+        } else {
+            ret = -1;
+        }
         rs.close();
         return ret;
     }
