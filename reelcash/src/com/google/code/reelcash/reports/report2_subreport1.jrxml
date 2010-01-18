@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report2_subreport1" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
-	<parameter name="INVOICEID" class="java.lang.Integer">
-	</parameter>
+	<parameter name="INVOICEID" class="java.lang.Integer"/>
 	<queryString language="SQL">
 		<![CDATA[select d.invoiceid,d.position,d.name,d.unit,d.quantity,d.price as unitprice,d.quantity*d.price as price,d.vatvalue,d.value from invoicedetails d where d.invoiceid=$P{INVOICEID};]]>
 	</queryString>
@@ -114,14 +113,14 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="26" splitType="Stretch">
+		<band height="42" splitType="Stretch">
 			<textField>
 				<reportElement x="2" y="0" width="40" height="20"/>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{position}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="53" y="0" width="200" height="20"/>
+				<reportElement x="53" y="0" width="200" height="42"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{name}]]></textFieldExpression>
 			</textField>
@@ -135,86 +134,59 @@
 				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{quantity}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="353" y="0" width="50" height="20"/>
+			<line>
+				<reportElement x="352" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="455" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="504" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="554" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="402" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="42" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="302" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="254" y="0" width="1" height="42"/>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="42"/>
+			</line>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="402" y="0" width="53" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{unitprice}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{price}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="403" y="0" width="52" height="20"/>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="353" y="0" width="49" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{price}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{unitprice}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="455" y="0" width="50" height="20"/>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="456" y="0" width="48" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{vatvalue}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{vatvalue}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="505" y="0" width="50" height="20"/>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="504" y="0" width="50" height="20"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{value}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{value}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="352" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="455" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="504" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="554" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="402" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="42" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="302" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="254" y="0" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="0" y="0" width="1" height="26"/>
-			</line>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="26">
+		<band height="1">
 			<line>
-				<reportElement x="1" y="25" width="554" height="1"/>
-			</line>
-			<line>
-				<reportElement x="352" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="455" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="504" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="554" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="402" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="42" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="302" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="254" y="-1" width="1" height="26"/>
-			</line>
-			<line>
-				<reportElement x="0" y="-2" width="1" height="26"/>
+				<reportElement x="1" y="0" width="554" height="1"/>
 			</line>
 		</band>
 	</columnFooter>

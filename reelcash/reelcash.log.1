@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2010-01-18T19:50:40</date>
+  <millis>1263837040793</millis>
+  <sequence>0</sequence>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.util.ReportingUtils</class>
+  <method>compileReport</method>
+  <thread>10</thread>
+  <message>Compile report error</message>
+  <exception>
+    <message>net.sf.jasperreports.engine.JRException: Errors were encountered when compiling report expressions class file:
+/home/cusi/projects/reelcash/reelcash/report2_1263837038940_105048.java:205: inconvertible types
+found   : java.lang.String
+required: java.util.Date
+                value = (java.util.Date)(""+((java.sql.Timestamp)field_invoicedate.getValue())); //$JR_EXPR_ID=10$
+                                        ^
+/home/cusi/projects/reelcash/reelcash/report2_1263837038940_105048.java:363: inconvertible types
+found   : java.lang.String
+required: java.util.Date
+                value = (java.util.Date)(""+((java.sql.Timestamp)field_invoicedate.getOldValue())); //$JR_EXPR_ID=10$
+                                        ^
+/home/cusi/projects/reelcash/reelcash/report2_1263837038940_105048.java:521: inconvertible types
+found   : java.lang.String
+required: java.util.Date
+                value = (java.util.Date)(""+((java.sql.Timestamp)field_invoicedate.getValue())); //$JR_EXPR_ID=10$
+                                        ^
+3 errors
+</message>
+    <frame>
+      <class>net.sf.jasperreports.engine.design.JRAbstractCompiler</class>
+      <method>compileReport</method>
+      <line>191</line>
+    </frame>
+    <frame>
+      <class>net.sf.jasperreports.engine.JasperCompileManager</class>
+      <method>compileReport</method>
+      <line>215</line>
+    </frame>
+    <frame>
+      <class>net.sf.jasperreports.engine.JasperCompileManager</class>
+      <method>compileReportToStream</method>
+      <line>184</line>
+    </frame>
+    <frame>
+      <class>net.sf.jasperreports.engine.JasperCompileManager</class>
+      <method>compileReportToStream</method>
+      <line>167</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReport</method>
+      <line>75</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.util.ReportingUtils</class>
+      <method>compileReports</method>
+      <line>100</line>
+    </frame>
+    <frame>
+      <class>com.google.code.reelcash.EntryPoint</class>
+      <method>main</method>
+      <line>27</line>
+    </frame>
+  </exception>
+</record>

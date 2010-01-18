@@ -28,103 +28,107 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<detail>
-		<band height="156" splitType="Stretch">
+		<band height="175" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="114" width="45" height="14"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="113" width="45" height="14"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Nr. ORC:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="39" width="45" height="14"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="38" width="45" height="14"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Adresa:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="86" width="45" height="14"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="87" width="45" height="14"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Tara:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="142" width="34" height="14"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="139" width="35" height="14"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Banca:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="128" width="34" height="14"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="126" width="34" height="14"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[IBAN:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="100" width="45" height="14"/>
-				<textElement verticalAlignment="Middle">
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[CIF/CNP:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="73" width="45" height="14"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="74" width="45" height="14"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Judet:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="-1" width="85" height="20"/>
+				<reportElement x="0" y="0" width="85" height="20"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Furnizor]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="19" width="199" height="20"/>
-				<textElement>
+				<reportElement x="0" y="24" width="199" height="15"/>
+				<textElement verticalAlignment="Top">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="45" y="39" width="154" height="34"/>
-				<textElement/>
+				<reportElement x="56" y="38" width="143" height="37"/>
+				<textElement verticalAlignment="Top"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{address}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="45" y="73" width="154" height="13"/>
-				<textElement/>
+				<reportElement x="56" y="74" width="143" height="14"/>
+				<textElement verticalAlignment="Top"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{region}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="45" y="86" width="154" height="14"/>
-				<textElement/>
+				<reportElement x="56" y="87" width="143" height="14"/>
+				<textElement verticalAlignment="Top"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{country}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="45" y="100" width="154" height="14"/>
-				<textElement/>
+				<reportElement x="56" y="100" width="143" height="14"/>
+				<textElement verticalAlignment="Top"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{siccode}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="45" y="114" width="154" height="14"/>
-				<textElement/>
+				<reportElement x="56" y="113" width="143" height="14"/>
+				<textElement verticalAlignment="Top"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{commerceregno}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="34" y="128" width="165" height="14"/>
-				<textElement/>
+				<reportElement x="34" y="126" width="165" height="14"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{iban}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="34" y="142" width="165" height="14"/>
-				<textElement/>
+				<reportElement x="34" y="139" width="165" height="36"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[""+$F{bank}]]></textFieldExpression>
 			</textField>
 		</band>
