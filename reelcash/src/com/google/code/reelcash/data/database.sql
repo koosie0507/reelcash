@@ -1,5 +1,3 @@
--- if exists (select "name" from sqlite_master where type="table" and name="contacts") drop table contacts;
-
 create table if not exists contacts (
     contactid INTEGER PRIMARY KEY ASC,
     name text not null,
@@ -17,9 +15,6 @@ create table if not exists contacts (
     repaddress text
 );
 
-
---if exists (select name from sqlite_master where type="table" and name="invoices") drop table invoices;
-
 create table if not exists invoices (
     invoiceid INTEGER PRIMARY KEY ASC,
     number text not null,
@@ -35,8 +30,6 @@ create table if not exists invoices (
     iban text not null,
     bank text not null
 );
-
---if exists (select name from sqlite_master where type="table" and name="invoicedetails") drop table invoicedetails;
 
 create table if not exists invoicedetails (
     invoicedetailid INTEGER PRIMARY KEY ASC,

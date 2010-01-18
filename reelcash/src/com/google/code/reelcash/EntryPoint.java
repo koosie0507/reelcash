@@ -6,11 +6,9 @@ package com.google.code.reelcash;
 
 import com.google.code.reelcash.data.DbManager;
 import com.google.code.reelcash.util.ReportingUtils;
-import java.io.FileInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
-import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  * <p>Class responsible for providing the point of entry in the application.</p>
@@ -19,21 +17,21 @@ import net.sf.jasperreports.engine.JasperPrint;
  */
 public class EntryPoint {
 
-    /**
-     * Entry point in the application.
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        try {
-            ReportingUtils.compileReports();
-            
-            Class.forName("org.sqlite.JDBC");
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            MainFrame frm = new MainFrame();
-            frm.pack();
-            frm.setVisible(true);
-        } catch (Throwable t) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Uncaught exception", t);
-        }
-    }
+	/**
+	 * Entry point in the application.
+	 * @param args the command line arguments
+	 */
+	public static void main(String[] args) {
+		try {
+			DbManager.checkCreateDb();
+			ReportingUtils.compileReports();
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			MainFrame frm = new MainFrame();
+			frm.pack();
+			frm.setVisible(true);
+		}
+		catch (Throwable t) {
+			Logger.getAnonymousLogger().log(Level.SEVERE, "Uncaught exception", t);
+		}
+	}
 }
