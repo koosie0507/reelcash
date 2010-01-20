@@ -84,7 +84,7 @@ public class InvoicesAdapter implements DbAdapter {
 		try {
 			DbManager mgr = new DbManager();
 			PreparedStatement stmt = mgr.getConnection().prepareStatement(
-					"select invoiceid, number, series, invoicedate, duedate, customer, billingaddress, region, country, siccode, commerceregno, iban, bank from invoices where invoiceid=?");
+					"select invoiceid, number, series, date(invoicedate)*1000, date(duedate)*1000, customer, billingaddress, region, country, siccode, commerceregno, iban, bank from invoices where invoiceid=?");
 			stmt.setObject(1, key.get("invoiceid"));
 
 			ResultSet rs = null;
@@ -127,7 +127,7 @@ public class InvoicesAdapter implements DbAdapter {
 	public boolean populateTableModel(DefaultTableModel model) {
 		try {
 			DbManager mgr = new DbManager();
-			mgr.populateTableModel(model, "select invoiceid, number, series, invoicedate, duedate, customer from invoices;");
+			mgr.populateTableModel(model, "select invoiceid, number, series, date(invoicedate)*1000, date(duedate)*1000, customer from invoices;");
 			return true;
 		}
 		catch (SQLException ex) {
@@ -139,7 +139,7 @@ public class InvoicesAdapter implements DbAdapter {
 	public boolean populateTableModel(DefaultTableModel model, FilterMode mode, String[] filterExpressions, Object... params) {
 		try {
 			DbManager mgr = new DbManager();
-			mgr.populateTableModel(model, "select invoiceid, number, series, invoicedate, duedate, customer from invoices", mode, filterExpressions, params);
+			mgr.populateTableModel(model, "select invoiceid, number, series, date(invoicedate)*1000, date(duedate)*1000, customer from invoices", mode, filterExpressions, params);
 			return true;
 		}
 		catch (SQLException ex) {

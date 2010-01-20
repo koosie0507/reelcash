@@ -487,7 +487,7 @@ public class InvoiceJDialog extends javax.swing.JDialog {
 	}
 
 	private void loadDbData() {
-		editMode = (-1 < (Integer) invoiceId.get("invoiceid"));
+		editMode = (null != invoiceId && -1 < (Integer) invoiceId.get("invoiceid"));
 		if (!editMode) // no data to load if we don't have an invoice id
 			return;
 

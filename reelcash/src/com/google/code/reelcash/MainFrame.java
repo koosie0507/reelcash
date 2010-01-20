@@ -10,6 +10,7 @@
  */
 package com.google.code.reelcash;
 
+import com.google.code.reelcash.actions.DeleteInvoiceAction;
 import com.google.code.reelcash.actions.ExitAction;
 import com.google.code.reelcash.actions.PreviewInvoiceAction;
 import com.google.code.reelcash.actions.ShowModalDialogAction;
@@ -18,6 +19,7 @@ import com.google.code.reelcash.data.InvoicesAdapter;
 import com.google.code.reelcash.data.PrimaryKeyRow;
 import com.google.code.reelcash.dialogs.InvoiceJDialog;
 import com.google.code.reelcash.dialogs.UserSettingsJDialog;
+import com.google.code.reelcash.table.FormattedDateRenderer;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.net.URL;
@@ -34,70 +36,76 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainFrame extends javax.swing.JFrame implements ListSelectionListener {
 
-	private static final long serialVersionUID = 1L;
-	private PreviewInvoiceAction preview;
-	private InvoicesAdapter adapter;
-	private PrimaryKeyRow currentInvoice;
+    private static final long serialVersionUID = 1L;
+    private PreviewInvoiceAction preview;
+    private InvoicesAdapter adapter;
+    private PrimaryKeyRow currentInvoice;
 
-	/** Creates new form MainFrame */
-	public MainFrame() {
-		adapter = new InvoicesAdapter();
-		currentInvoice = new PrimaryKeyRow("invoiceid");
-		currentInvoice.set("invoiceid", -1);
-		initComponents();
-		initToolBar();
-		postInitComponents();
-	}
+    /** Creates new form MainFrame */
+    public MainFrame() {
+        adapter = new InvoicesAdapter();
+        currentInvoice = new PrimaryKeyRow("invoiceid");
+        currentInvoice.set("invoiceid", -1);
+        initComponents();
+        initToolBar();
+        postInitComponents();
+    }
 
-	private void addToolBarButton(String imageKey, String text, char mnemonic, Action performAction) {
-		JButton button = toolBar.add(performAction);
+    private void addToolBarButton(String imageKey, String text, char mnemonic, Action performAction) {
+        JButton button = toolBar.add(performAction);
 
-		if (null == imageKey || 1 > imageKey.length())
-			button.setText(text);
-		else {
-			URL rasa = getClass().getResource(imageKey);
-			button.setIcon(new ImageIcon(rasa));
-		}
-		button.setMnemonic(mnemonic);
-		button.setMinimumSize(new Dimension(32, 32));
-		button.setMaximumSize(new Dimension(48, 48));
-		button.setPreferredSize(button.getMaximumSize());
-	}
+        if (null == imageKey || 1 > imageKey.length()) {
+            button.setText(text);
+        } else {
+            URL rasa = getClass().getResource(imageKey);
+            button.setIcon(new ImageIcon(rasa));
+        }
+        button.setMnemonic(mnemonic);
+        button.setMinimumSize(new Dimension(32, 32));
+        button.setMaximumSize(new Dimension(48, 48));
+        button.setPreferredSize(button.getMaximumSize());
+    }
 
-	private void initToolBar() {
-		preview = new PreviewInvoiceAction(-1);
-		addToolBarButton("images/toolbar/exit.png", "Exit", 'x', new ExitAction(0));
-		toolBar.addSeparator();
-		addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new UserSettingsJDialog(this, true)));
-		addToolBarButton("images/toolbar/invoice.png", "New invoice", 'i', new ShowModalDialogAction(new InvoiceJDialog(this, currentInvoice)));
-		addToolBarButton("images/toolbar/show_report.png", "Show report", 'r', preview);
-	}
+    private void initToolBar() {
+        preview = new PreviewInvoiceAction(-1);
+        addToolBarButton("images/toolbar/exit.png", "Exit", 'x', new ExitAction(0));
+        toolBar.addSeparator();
+        addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new UserSettingsJDialog(this, true)));
+        toolBar.addSeparator();
+        addToolBarButton("images/toolbar/invoice.png", "New invoice", 'i', new ShowModalDialogAction(new InvoiceJDialog(this, null)));
+        addToolBarButton("images/toolbar/invoice_edit.png", "Edit invoice", 'e', new ShowModalDialogAction(new InvoiceJDialog(this, currentInvoice)));
+        addToolBarButton("images/toolbar/invoice_delete.png", "Delete invoice", 'd', new DeleteInvoiceAction(adapter, invoiceTable));
+        toolBar.addSeparator();
+        addToolBarButton("images/toolbar/show_report.png", "Show report", 'r', preview);
 
-	private void postInitComponents() {
-		adapter.populateTableModel((DefaultTableModel) invoiceTable.getModel());
-		Integer firstId = -1;
-		if (invoiceTable.getRowCount() > 0)
-			firstId = ((Integer) invoiceTable.getModel().getValueAt(0, 0));
+    }
 
-		currentInvoice.set("invoiceid", firstId);
-		preview.setInvoiceId(firstId);
+    private void postInitComponents() {
+        adapter.populateTableModel((DefaultTableModel) invoiceTable.getModel());
+        Integer firstId = -1;
+        if (invoiceTable.getRowCount() > 0) {
+            firstId = ((Integer) invoiceTable.getModel().getValueAt(0, 0));
+        }
 
-		invoiceTable.getSelectionModel().addListSelectionListener(this);
+        currentInvoice.set("invoiceid", firstId);
+        preview.setInvoiceId(firstId);
 
-		setMinimumSize(new Dimension(400, 300));
-		setMaximumSize(getToolkit().getScreenSize());
-		setPreferredSize(new Dimension((int) (getMaximumSize().getWidth() + getMinimumSize().getWidth()) / 2,
-				(int) (getMaximumSize().getHeight() + getMinimumSize().getHeight()) / 2));
-		setLocation(new Point((int) (getMaximumSize().getWidth() - getPreferredSize().getWidth()) / 2,
-				(int) (getMaximumSize().getHeight() - getPreferredSize().getHeight()) / 2));
-	}
+        invoiceTable.getSelectionModel().addListSelectionListener(this);
 
-	/** This method is called from within the constructor to
-	 * initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is
-	 * always regenerated by the Form Editor.
-	 */
-	@SuppressWarnings("unchecked")
+        setMinimumSize(new Dimension(400, 300));
+        setMaximumSize(getToolkit().getScreenSize());
+        setPreferredSize(new Dimension((int) (getMaximumSize().getWidth() + getMinimumSize().getWidth()) / 2,
+                (int) (getMaximumSize().getHeight() + getMinimumSize().getHeight()) / 2));
+        setLocation(new Point((int) (getMaximumSize().getWidth() - getPreferredSize().getWidth()) / 2,
+                (int) (getMaximumSize().getHeight() - getPreferredSize().getHeight()) / 2));
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -125,7 +133,7 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
                 java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -141,6 +149,8 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
         invoiceTable.getColumnModel().getColumn(0).setMinWidth(0);
         invoiceTable.getColumnModel().getColumn(0).setPreferredWidth(0);
         invoiceTable.getColumnModel().getColumn(0).setMaxWidth(0);
+        invoiceTable.getColumnModel().getColumn(3).setCellRenderer(new FormattedDateRenderer());
+        invoiceTable.getColumnModel().getColumn(4).setCellRenderer(new FormattedDateRenderer());
 
         invoicesPanel.add(invoiceScrollPane);
 
@@ -149,17 +159,17 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
 
-			public void run() {
-				new MainFrame().setVisible(true);
-			}
-		});
-	}
+            public void run() {
+                new MainFrame().setVisible(true);
+            }
+        });
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane invoiceScrollPane;
     private javax.swing.JTable invoiceTable;
@@ -167,12 +177,13 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
     private javax.swing.JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 
-	public void valueChanged(ListSelectionEvent e) {
-		if (invoiceTable.getSelectedRowCount() < 1)
-			return;
+    public void valueChanged(ListSelectionEvent e) {
+        if (invoiceTable.getSelectedRowCount() < 1) {
+            return;
+        }
 
-		Integer selectedId = ((Integer) invoiceTable.getModel().getValueAt(invoiceTable.getSelectedRow(), 0));
-		currentInvoice.set("invoiceid", selectedId);
-		preview.setInvoiceId(selectedId);
-	}
+        Integer selectedId = ((Integer) invoiceTable.getModel().getValueAt(invoiceTable.getSelectedRow(), 0));
+        currentInvoice.set("invoiceid", selectedId);
+        preview.setInvoiceId(selectedId);
+    }
 }
