@@ -117,9 +117,10 @@ public final class ReportingUtils {
 		}
 	}
 
-	public static JasperPrint fillInvoice(JasperReport report, int invoiceId, Connection connection) {
+	public static JasperPrint fillInvoice(JasperReport report, int accountId, int invoiceId, Connection connection) {
 		try {
 			HashMap map = new HashMap();
+                        map.put("ACCOUNTID", accountId);
 			map.put("INVOICEID", invoiceId);
 			map.put("SUBREPORT_DIR", reportsDir);
 			File f = new File(getReportPath("report2.jasper"));

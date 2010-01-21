@@ -18,10 +18,12 @@ import com.google.code.reelcash.data.DbManager;
 import com.google.code.reelcash.data.InvoicesAdapter;
 import com.google.code.reelcash.data.PrimaryKeyRow;
 import com.google.code.reelcash.dialogs.InvoiceJDialog;
-import com.google.code.reelcash.dialogs.UserSettingsJDialog;
+import com.google.code.reelcash.dialogs.ContactsJDialog;
 import com.google.code.reelcash.table.FormattedDateRenderer;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.net.URL;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -40,12 +42,16 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
     private PreviewInvoiceAction preview;
     private InvoicesAdapter adapter;
     private PrimaryKeyRow currentInvoice;
+    private PrimaryKeyRow currentAccount;
+    private ContactsJDialog contactsDialog;
 
     /** Creates new form MainFrame */
     public MainFrame() {
         adapter = new InvoicesAdapter();
         currentInvoice = new PrimaryKeyRow("invoiceid");
         currentInvoice.set("invoiceid", -1);
+        currentAccount = new PrimaryKeyRow("contactid");
+        currentAccount.set("contactid", -1);
         initComponents();
         initToolBar();
         postInitComponents();
@@ -67,10 +73,10 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
     }
 
     private void initToolBar() {
-        preview = new PreviewInvoiceAction(-1);
+        preview = new PreviewInvoiceAction(-1, -1);
         addToolBarButton("images/toolbar/exit.png", "Exit", 'x', new ExitAction(0));
         toolBar.addSeparator();
-        addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(new UserSettingsJDialog(this, true)));
+        addToolBarButton("images/toolbar/settings.png", "User settings", 'u', new ShowModalDialogAction(getContactsDialog()));
         toolBar.addSeparator();
         addToolBarButton("images/toolbar/invoice.png", "New invoice", 'i', new ShowModalDialogAction(new InvoiceJDialog(this, null)));
         addToolBarButton("images/toolbar/invoice_edit.png", "Edit invoice", 'e', new ShowModalDialogAction(new InvoiceJDialog(this, currentInvoice)));
@@ -185,5 +191,37 @@ public class MainFrame extends javax.swing.JFrame implements ListSelectionListen
         Integer selectedId = ((Integer) invoiceTable.getModel().getValueAt(invoiceTable.getSelectedRow(), 0));
         currentInvoice.set("invoiceid", selectedId);
         preview.setInvoiceId(selectedId);
+    }
+
+    private ContactsJDialog getContactsDialog() {
+        if (null == contactsDialog) {
+            contactsDialog = new ContactsJDialog(this, true);
+            contactsDialog.addWindowListener(new WindowListener() {
+
+                public void windowOpened(WindowEvent e) {
+                }
+
+                public void windowClosing(WindowEvent e) {
+                }
+
+                public void windowClosed(WindowEvent e) {
+                    currentAccount = contactsDialog.getCurrentAccount();
+                    preview.setAccountId((Integer)currentAccount.get("contactid"));
+                }
+
+                public void windowIconified(WindowEvent e) {
+                }
+
+                public void windowDeiconified(WindowEvent e) {
+                }
+
+                public void windowActivated(WindowEvent e) {
+                }
+
+                public void windowDeactivated(WindowEvent e) {
+                }
+            });
+        }
+        return contactsDialog;
     }
 }

@@ -6,7 +6,8 @@
 	<parameter name="INVOICEID" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
 	</parameter>
-	<queryString>
+        <parameter name="ACCOUNTID" class="java.lang.Integer"/>
+        <queryString>
 		<![CDATA[select i.invoiceid as invoiceid, i.number as number, i.series as series, i.invoicedate as invoicedate, i.duedate as duedate, i.customer as customer, i.billingaddress as billingaddress, i.region as region, i.country as country, i.siccode as siccode, i.commerceregno as commerceregno, i.iban as iban, i.bank as bank, sum(d.quantity * d.price) as price, sum(d.vatvalue) as vat, sum(d.value) as value from invoices i inner join invoicedetails d on d.invoiceid = i.invoiceid where i.invoiceid=$P{INVOICEID} group by i.invoiceid, i.number, i.series, i.invoicedate, i.duedate, i.customer, i.billingaddress, i.region, i.country, i.siccode, i.commerceregno, i.iban, i.bank;]]>
 	</queryString>
 	<field name="invoiceid" class="java.lang.Object">
@@ -193,6 +194,9 @@
 			</staticText>
 			<subreport>
 				<reportElement x="1" y="34" width="185" height="175"/>
+				<subreportParameter name="ACCOUNTID">
+					<subreportParameterExpression><![CDATA[$P{ACCOUNTID}]]></subreportParameterExpression>
+				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "report2_subreport2.jasper"]]></subreportExpression>
 			</subreport>
