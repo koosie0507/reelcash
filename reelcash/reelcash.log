@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2010-02-08T14:34:37</date>
+  <millis>1265632477979</millis>
+  <sequence>0</sequence>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.data.ContactsAdapter</class>
+  <method>populateComboBoxModel</method>
+  <thread>10</thread>
+  <message>java.sql.SQLException: [SQLITE_ERROR] SQL error or missing database (no such column: contactid)</message>
+</record>

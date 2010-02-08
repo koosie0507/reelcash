@@ -12,19 +12,12 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.sql.Connection;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -96,6 +89,35 @@ public final class ReportingUtils {
 		return true;
 	}
 
+	private static JDialog getPreviewDialog(JasperPrint print) {
+		Dimension maxSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension minSize = new Dimension((int) (maxSize.getWidth() / 1.5),
+				(int) (maxSize.getHeight() / 1.5));
+		Dimension prefSize = new Dimension(
+				(int) (maxSize.getWidth() + minSize.getWidth()) / 2,
+				(int) (maxSize.getHeight() + minSize.getHeight()) / 2);
+
+		if (null == dlg) {
+			dlg = new JDialog((Window) null, "Preview invoice", ModalityType.APPLICATION_MODAL);
+			dlg.setMinimumSize(minSize);
+			dlg.setMaximumSize(maxSize);
+			dlg.setPreferredSize(prefSize);
+			dlg.setLocation(new Point(
+					(int) (maxSize.getWidth() - prefSize.getWidth()) / 2,
+					(int) (maxSize.getHeight() - prefSize.getHeight()) / 2));
+			dlg.setLayout(new BorderLayout());
+		}
+		dlg.getContentPane().removeAll();
+
+		JRViewer view = new JRViewer(print);
+		view.setMaximumSize(maxSize);
+		view.setMinimumSize(minSize);
+		view.setPreferredSize(prefSize);
+		dlg.add(view, BorderLayout.CENTER);
+		dlg.pack();
+		return dlg;
+	}
+
 	public static boolean compileReports() {
 		if (!compileReport(invoiceReportUrl, "report2.jasper"))
 			return false;
@@ -130,35 +152,6 @@ public final class ReportingUtils {
 			Log.write().log(Level.SEVERE, "Fill ended up pretty badly", ex);
 		}
 		return null;
-	}
-
-	private static JDialog getPreviewDialog(JasperPrint print) {
-		Dimension maxSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension minSize = new Dimension((int) (maxSize.getWidth() / 1.5),
-				(int) (maxSize.getHeight() / 1.5));
-		Dimension prefSize = new Dimension(
-				(int) (maxSize.getWidth() + minSize.getWidth()) / 2,
-				(int) (maxSize.getHeight() + minSize.getHeight()) / 2);
-
-		if (null == dlg) {
-			dlg = new JDialog((Window) null, "Preview invoice", ModalityType.APPLICATION_MODAL);
-			dlg.setMinimumSize(minSize);
-			dlg.setMaximumSize(maxSize);
-			dlg.setPreferredSize(prefSize);
-			dlg.setLocation(new Point(
-					(int) (maxSize.getWidth() - prefSize.getWidth()) / 2,
-					(int) (maxSize.getHeight() - prefSize.getHeight()) / 2));
-			dlg.setLayout(new BorderLayout());
-		}
-		dlg.getContentPane().removeAll();
-
-		JRViewer view = new JRViewer(print);
-		view.setMaximumSize(maxSize);
-		view.setMinimumSize(minSize);
-		view.setPreferredSize(prefSize);
-		dlg.add(view, BorderLayout.CENTER);
-		dlg.pack();
-		return dlg;
 	}
 
 	public static void showPreview(JasperPrint print) {
