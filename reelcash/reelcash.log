@@ -2,8 +2,8 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
-  <date>2010-02-08T14:34:37</date>
-  <millis>1265632477979</millis>
+  <date>2010-04-03T09:05:48</date>
+  <millis>1270274748414</millis>
   <sequence>0</sequence>
   <level>WARNING</level>
   <class>com.google.code.reelcash.data.ContactsAdapter</class>
