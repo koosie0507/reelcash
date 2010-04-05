@@ -42,20 +42,32 @@ public class FieldSet implements Set<Field> {
      * @return true if all the fields have been successfully added. 
      */
     public boolean addAll(Collection<? extends Field> c) {
-        for (Field x : c)
+        for (Field x : c) {
             x.setFieldSet(this);
+        }
         return fieldSet.addAll(c);
     }
 
     public void clear() {
-        for (Field x : fieldSet)
+        for (Field x : fieldSet) {
             x.setFieldSet(null);
+        }
         fieldSet.clear();
     }
 
+    public boolean contains(String fieldName) {
+        for (Field f : fieldSet) {
+            if (f.getName().equals(fieldName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean contains(Object o) {
-        if (o instanceof Field)
+        if (o instanceof Field) {
             return fieldSet.contains((Field) o);
+        }
         return false;
     }
 
@@ -63,30 +75,53 @@ public class FieldSet implements Set<Field> {
         return fieldSet.containsAll(c);
     }
 
-    public Set<Field> getKeys() {
-        if (null == keys)
-            for (Field f : fieldSet) {
-                if (KeyRole.KEY == f.getKeyRole())
-                    keys.add(f);
+    /**
+     * Gets the field with the given name.
+     * 
+     * @param name the name of the seeked field.
+     *
+     * @return the field with the given name.
+     */
+    public Field get(String name) {
+        for (Field f : fieldSet) {
+            if (f.getName().equals(name)) {
+                return f;
             }
+        }
+
+        throw new FieldNotFoundException(name);
+    }
+
+    public Set<Field> getKeys() {
+        if (null == keys) {
+            for (Field f : fieldSet) {
+                if (KeyRole.KEY == f.getKeyRole()) {
+                    keys.add(f);
+                }
+            }
+        }
         return keys;
     }
 
     public Set<Field> getPrimary() {
-        if (null == primary)
+        if (null == primary) {
             for (Field f : fieldSet) {
-                if (f.getKeyRole() == KeyRole.PRIMARY)
+                if (f.getKeyRole() == KeyRole.PRIMARY) {
                     primary.add(f);
+                }
             }
+        }
         return primary;
     }
 
     public Set<Field> getUnique() {
-        if (null == unique)
+        if (null == unique) {
             for (Field f : fieldSet) {
-                if (f.getKeyRole() == KeyRole.UNIQUE)
+                if (f.getKeyRole() == KeyRole.UNIQUE) {
                     unique.add(f);
+                }
             }
+        }
         return unique;
     }
 
@@ -107,15 +142,17 @@ public class FieldSet implements Set<Field> {
     }
 
     public boolean removeAll(Collection<?> c) {
-        for (Object x : c)
+        for (Object x : c) {
             ((Field) x).setFieldSet(null);
+        }
         return fieldSet.removeAll(c);
     }
 
     public boolean retainAll(Collection<?> c) {
         for (Object x : fieldSet) {
-            if (!c.contains(x))
+            if (!c.contains(x)) {
                 ((Field) x).setFieldSet(null);
+            }
         }
         return fieldSet.retainAll(c);
     }
