@@ -132,6 +132,15 @@ public abstract class Field implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Gets the type of value supported in the current field.
+     *
+     * @return the type of value supported in the current field.
+     */
+    public Class<?> getType() {
+        return type;
+    }
+
+    /**
      * Returns a value based on the value passed as parameter.
      * @param actualValue the actual value.
      * @return a value which should be considered valid.

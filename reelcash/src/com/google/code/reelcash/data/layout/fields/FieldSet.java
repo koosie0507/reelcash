@@ -1,6 +1,7 @@
 package com.google.code.reelcash.data.layout.fields;
 
 import com.google.code.reelcash.data.KeyRole;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -13,13 +14,13 @@ import java.util.Set;
  */
 public class FieldSet implements Set<Field> {
 
-    private Set<Field> fieldSet;
-    private Set<Field> primary;
-    private Set<Field> unique;
-    private Set<Field> keys;
+    private ArrayList<Field> fieldSet;
+    private ArrayList<Field> primary;
+    private ArrayList<Field> unique;
+    private ArrayList<Field> keys;
 
     {
-        fieldSet = Collections.emptySet();
+        fieldSet = new ArrayList();
     }
 
     /**
@@ -89,19 +90,20 @@ public class FieldSet implements Set<Field> {
         throw new FieldNotFoundException(name);
     }
 
-    public Set<Field> getKeys() {
-        if (null == keys)
-            keys = Collections.emptySet();
-        for (Field f : fieldSet) {
-            if (KeyRole.KEY == f.getKeyRole())
-                keys.add(f);
+    public ArrayList<Field> getKeys() {
+        if (null == keys) {
+            keys = new ArrayList();
+            for (Field f : fieldSet) {
+                if (KeyRole.KEY == f.getKeyRole())
+                    keys.add(f);
+            }
         }
         return keys;
     }
 
-    public Set<Field> getPrimary() {
+    public ArrayList<Field> getPrimary() {
         if (null == primary) {
-            primary = Collections.emptySet();
+            primary = new ArrayList();
             for (Field f : fieldSet) {
                 if (f.getKeyRole() == KeyRole.PRIMARY)
                     primary.add(f);
@@ -113,9 +115,9 @@ public class FieldSet implements Set<Field> {
         return primary;
     }
 
-    public Set<Field> getUnique() {
+    public ArrayList<Field> getUnique() {
         if (null == unique) {
-            unique = Collections.emptySet();
+            unique = new ArrayList();
             for (Field f : fieldSet) {
                 if (f.getKeyRole() == KeyRole.UNIQUE)
                     unique.add(f);

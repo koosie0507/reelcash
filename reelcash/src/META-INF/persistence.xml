@@ -9,4 +9,13 @@
       <property name="toplink.jdbc.driver" value="org.sqlite.JDBC"/>
     </properties>
   </persistence-unit>
+  <persistence-unit name="jdbc:sqlite:D:\Leisure\sql\reelcash.dbPU" transaction-type="RESOURCE_LOCAL">
+    <provider>oracle.toplink.essentials.PersistenceProvider</provider>
+    <properties>
+      <property name="toplink.jdbc.user" value=""/>
+      <property name="toplink.jdbc.password" value=""/>
+      <property name="toplink.jdbc.url" value="jdbc:sqlite:D:\Leisure\sql\reelcash.db"/>
+      <property name="toplink.jdbc.driver" value="org.sqlite.JDBC"/>
+    </properties>
+  </persistence-unit>
 </persistence>

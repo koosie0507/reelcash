@@ -19,7 +19,7 @@ import java.sql.SQLException;
  */
 public class ReelcashDataSource implements javax.sql.DataSource {
 
-    private static final String SQLITE_JDBC_DRIVER = "org.sqlite.jdbc";
+    private static final String SQLITE_JDBC_DRIVER = "org.sqlite.JDBC";
     private static final String defaultDbName = "reelcash.db";
     private static final String defaultJdbcUrl;
     private static final String defaultDbFilePath;

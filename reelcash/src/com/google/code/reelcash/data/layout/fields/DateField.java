@@ -2,7 +2,6 @@ package com.google.code.reelcash.data.layout.fields;
 
 import com.google.code.reelcash.data.KeyRole;
 import java.sql.Date;
-import java.util.AbstractCollection;
 import java.util.Calendar;
 
 /**

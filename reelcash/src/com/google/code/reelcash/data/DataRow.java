@@ -7,6 +7,7 @@ package com.google.code.reelcash.data;
 import com.google.code.reelcash.data.layout.fields.Field;
 import com.google.code.reelcash.data.layout.fields.FieldSet;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ import java.util.Map;
 public class DataRow implements Iterable<String> {
 
     private final FieldSet fields;
-    private Map<String, Object> data;
+    private HashMap<String, Object> data;
 
     /**
      * Creates a new data row which uses the information contained in the specified
@@ -28,7 +29,7 @@ public class DataRow implements Iterable<String> {
      */
     public DataRow(final FieldSet fields) {
         this.fields = fields;
-        data = Collections.emptyMap();
+        data = new HashMap<String, Object>(fields.size());
         for (Field field : fields) {
             data.put(field.getName(), field.getDefaultValue());
         }
