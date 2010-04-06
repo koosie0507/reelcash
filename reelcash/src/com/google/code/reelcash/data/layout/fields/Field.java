@@ -90,6 +90,15 @@ public abstract class Field implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Gets the default value which would be valid for this field.
+     *
+     * @return a default.
+     */
+    public Object getDefaultValue() {
+        return (mandatory) ? new Object() : null;
+    }
+
+    /**
      * Gets the field set to which the current field belongs.
      * @return the field set to which the current field belongs.
      */

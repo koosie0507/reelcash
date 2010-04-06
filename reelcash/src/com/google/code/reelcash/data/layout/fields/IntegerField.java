@@ -41,4 +41,11 @@ public class IntegerField extends Field {
     public IntegerField(String name) {
         super(name, KeyRole.NONE, Integer.class, true);
     }
+
+    @Override
+    public Object getDefaultValue() {
+        if (isMandatory())
+            return 0;
+        return null;
+    }
 }

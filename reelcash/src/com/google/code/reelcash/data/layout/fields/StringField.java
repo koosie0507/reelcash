@@ -53,6 +53,13 @@ public class StringField extends Field {
         this(name, KeyRole.NONE, true, DEFAULT_MAX_SIZE);
     }
 
+    @Override
+    public Object getDefaultValue() {
+        if (isMandatory())
+            return "";
+        return null;
+    }
+
     /**
      * Gets the maximum length (in characters) permitted for a string within this field.
      * @return the maximum permitted length (in characters).

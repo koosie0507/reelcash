@@ -5,6 +5,7 @@
 package com.google.code.reelcash.data.layout.fields;
 
 import com.google.code.reelcash.data.KeyRole;
+import com.sun.org.apache.bcel.internal.generic.FALOAD;
 
 /**
  * This field is used for representing boolean values.
@@ -41,4 +42,14 @@ public class BooleanField extends Field {
     public BooleanField(String name) {
         super(name, KeyRole.NONE, Boolean.class, true);
     }
+
+    @Override
+    public Object getDefaultValue() {
+       if(isMandatory())
+           return false;
+       else
+           return null;
+    }
+
+
 }

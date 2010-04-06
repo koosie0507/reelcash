@@ -37,4 +37,12 @@ public class DoubleField extends Field {
     public DoubleField(String name) {
         super(name, KeyRole.NONE, Double.class, true);
     }
+
+    @Override
+    public Object getDefaultValue() {
+       if(isMandatory()) return 0.0;
+       return null;
+    }
+
+
 }

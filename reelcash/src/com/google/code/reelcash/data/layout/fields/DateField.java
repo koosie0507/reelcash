@@ -2,6 +2,8 @@ package com.google.code.reelcash.data.layout.fields;
 
 import com.google.code.reelcash.data.KeyRole;
 import java.sql.Date;
+import java.util.AbstractCollection;
+import java.util.Calendar;
 
 /**
  * Implements the @see com.google.code.reelcash.models.fields.Field abstract class. Values
@@ -38,6 +40,13 @@ public class DateField extends Field {
      */
     public DateField(String name) {
         super(name, KeyRole.NONE, Date.class, true);
+    }
+
+    @Override
+    public Object getDefaultValue() {
+        if (isMandatory())
+            return new java.sql.Date(Calendar.getInstance().getTimeInMillis());
+        return null;
     }
 
     @Override

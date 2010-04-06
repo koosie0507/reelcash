@@ -2,6 +2,7 @@ package com.google.code.reelcash.data.layout.fields;
 
 import java.util.Currency;
 import com.google.code.reelcash.data.KeyRole;
+import java.util.Locale;
 
 /**
  * Implements the @see com.google.code.reelcash.models.fields.Field abstract class. Values
@@ -38,5 +39,12 @@ public class CurrencyField extends Field {
      */
     public CurrencyField(String name) {
         super(name, KeyRole.NONE, Currency.class, true);
+    }
+
+    @Override
+    public Object getDefaultValue() {
+        if (isMandatory())
+            return Currency.getInstance(Locale.getDefault());
+        return null;
     }
 }

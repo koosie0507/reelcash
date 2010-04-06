@@ -59,6 +59,14 @@ public class BigDecimalField extends Field {
         this(name, KeyRole.NONE, true, 10, 2);
     }
 
+    @Override
+    public Object getDefaultValue() {
+        if (isMandatory())
+            return new BigDecimal(0);
+        else
+            return null;
+    }
+
     /**
      * Gets the precision of the decimals.
      * @return the precision.

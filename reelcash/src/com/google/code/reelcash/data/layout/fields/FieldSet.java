@@ -57,17 +57,15 @@ public class FieldSet implements Set<Field> {
 
     public boolean contains(String fieldName) {
         for (Field f : fieldSet) {
-            if (f.getName().equals(fieldName)) {
+            if (f.getName().equals(fieldName))
                 return true;
-            }
         }
         return false;
     }
 
     public boolean contains(Object o) {
-        if (o instanceof Field) {
+        if (o instanceof Field)
             return fieldSet.contains((Field) o);
-        }
         return false;
     }
 
@@ -84,42 +82,43 @@ public class FieldSet implements Set<Field> {
      */
     public Field get(String name) {
         for (Field f : fieldSet) {
-            if (f.getName().equals(name)) {
+            if (f.getName().equals(name))
                 return f;
-            }
         }
 
         throw new FieldNotFoundException(name);
     }
 
     public Set<Field> getKeys() {
-        if (null == keys) {
-            for (Field f : fieldSet) {
-                if (KeyRole.KEY == f.getKeyRole()) {
-                    keys.add(f);
-                }
-            }
+        if (null == keys)
+            keys = Collections.emptySet();
+        for (Field f : fieldSet) {
+            if (KeyRole.KEY == f.getKeyRole())
+                keys.add(f);
         }
         return keys;
     }
 
     public Set<Field> getPrimary() {
         if (null == primary) {
+            primary = Collections.emptySet();
             for (Field f : fieldSet) {
-                if (f.getKeyRole() == KeyRole.PRIMARY) {
+                if (f.getKeyRole() == KeyRole.PRIMARY)
                     primary.add(f);
-                }
             }
+
+            if (primary.isEmpty())
+                primary = fieldSet;
         }
         return primary;
     }
 
     public Set<Field> getUnique() {
         if (null == unique) {
+            unique = Collections.emptySet();
             for (Field f : fieldSet) {
-                if (f.getKeyRole() == KeyRole.UNIQUE) {
+                if (f.getKeyRole() == KeyRole.UNIQUE)
                     unique.add(f);
-                }
             }
         }
         return unique;
@@ -150,9 +149,8 @@ public class FieldSet implements Set<Field> {
 
     public boolean retainAll(Collection<?> c) {
         for (Object x : fieldSet) {
-            if (!c.contains(x)) {
+            if (!c.contains(x))
                 ((Field) x).setFieldSet(null);
-            }
         }
         return fieldSet.retainAll(c);
     }
