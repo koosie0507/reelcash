@@ -24,7 +24,7 @@ public abstract class Field implements Serializable, Cloneable, Comparable {
     private boolean mandatory;
     private KeyRole keyRole;
     private Field referencedField;
-    private FieldSet fieldSet;
+    private FieldList fieldSet;
 
     {
         referencedField = null;
@@ -102,7 +102,7 @@ public abstract class Field implements Serializable, Cloneable, Comparable {
      * Gets the field set to which the current field belongs.
      * @return the field set to which the current field belongs.
      */
-    public FieldSet getFieldSet() {
+    public FieldList getFieldSet() {
         return fieldSet;
     }
 
@@ -193,7 +193,7 @@ public abstract class Field implements Serializable, Cloneable, Comparable {
      * Sets the field set which contains the field.
      * @param value the referenced container.
      */
-    public void setFieldSet(FieldSet value) {
+    public void setFieldSet(FieldList value) {
         this.fieldSet = value;
     }
 

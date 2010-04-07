@@ -1,0 +1,133 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.google.code.reelcash.data;
+
+import com.google.code.reelcash.data.layout.DataLayoutNode;
+import java.util.ArrayList;
+import java.util.Collection;
+import javax.swing.table.AbstractTableModel;
+
+/**
+ * <p>Implements the abstract table model</p>
+ * @author andrei.olar
+ */
+public class DataRowTableModel extends AbstractTableModel {
+
+    private static final long serialVersionUID = -6916050574654809891L;
+    private final DataLayoutNode node;
+    private final ArrayList<DataRow> dataRows;
+
+    /**
+     * Creates a new table model from the given data source and the given layout node.
+     *
+     * @param node the layout node which provides the layout.
+     */
+    public DataRowTableModel(DataLayoutNode node) {
+        this.node = node;
+        dataRows = new ArrayList<DataRow>();
+    }
+
+    public DataRow add() {
+        int rowCount = dataRows.size();
+        DataRow row = new DataRow(node.getFieldList());
+        dataRows.add(row);
+        fireTableRowsInserted(rowCount, rowCount);
+        return row;
+    }
+
+    public void delete(int rowIndex) {
+        dataRows.remove(rowIndex);
+        fireTableRowsDeleted(rowIndex, rowIndex);
+    }
+
+    /**
+     * Returns the number of rows in the current model.
+     *
+     * @return the number of rows in the current model.
+     */
+    public int getRowCount() {
+
+        return dataRows.size();
+    }
+
+    /**
+     * Returns the number of columns in the current model.
+     *
+     * @return number of columns in the current model.
+     */
+    public int getColumnCount() {
+        return node.getFieldList().size();
+    }
+
+    /**
+     * Returns the layout node which provides the layout information for the table model. 
+     * 
+     * @return the layout node.
+     */
+    public DataLayoutNode getLayoutNode() {
+        return node;
+    }
+
+    /**
+     * Returns the value located at the given row and column.
+     *
+     * @param rowIndex the index of the row.
+     * @param columnIndex the index of the column
+     *
+     * @return the value which should go into the cell specified by the row and column.
+     */
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return dataRows.get(rowIndex).getValue(columnIndex);
+    }
+
+    /**
+     * Fills the model with data from the collection. Also, fires the
+     * table data changed event.
+     *
+     * @param rows the new data of the table.
+     */
+    void fill(Collection<? extends DataRow> rows) {
+        dataRows.clear();
+        dataRows.addAll(rows);
+        fireTableDataChanged();
+    }
+
+    @Override
+    public int findColumn(String columnName) {
+        return node.getFieldList().indexOf(columnName);
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return node.getFieldList().get(columnIndex).getType();
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return node.getFieldList().get(column).getName();
+    }
+
+    /**
+     * Returns the row located at the specified 0-based index. 
+     * 
+     * @param row position of the row to get.
+     * 
+     * @return a data row.
+     */
+    public DataRow getRow(int row) {
+        return dataRows.get(row);
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return super.isCellEditable(rowIndex, columnIndex);
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        dataRows.get(rowIndex).setValue(columnIndex, aValue);
+        fireTableCellUpdated(rowIndex, columnIndex);
+    }
+}

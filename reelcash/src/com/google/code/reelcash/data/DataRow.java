@@ -5,11 +5,9 @@
 package com.google.code.reelcash.data;
 
 import com.google.code.reelcash.data.layout.fields.Field;
-import com.google.code.reelcash.data.layout.fields.FieldSet;
-import java.util.Collections;
-import java.util.HashMap;
+import com.google.code.reelcash.data.layout.fields.FieldList;
+import com.google.code.reelcash.data.layout.fields.FieldNotFoundException;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Represents a row of data.
@@ -18,8 +16,8 @@ import java.util.Map;
  */
 public class DataRow implements Iterable<String> {
 
-    private final FieldSet fields;
-    private HashMap<String, Object> data;
+    private final FieldList fields;
+    private final Object[] data;
 
     /**
      * Creates a new data row which uses the information contained in the specified
@@ -27,11 +25,10 @@ public class DataRow implements Iterable<String> {
      *
      * @param fields field set containing field validation rules.
      */
-    public DataRow(final FieldSet fields) {
+    public DataRow(final FieldList fields) {
         this.fields = fields;
-        data = new HashMap<String, Object>(fields.size());
-        for (Field field : fields) {
-            data.put(field.getName(), field.getDefaultValue());
+        data = new Object[fields.size()];
+        for (int i = 0; i < data.length; i++) {
         }
     }
 
@@ -50,8 +47,8 @@ public class DataRow implements Iterable<String> {
         if (!this.fields.equals(row.fields))
             return false;
 
-        for (Field f : fields.getPrimary()) {
-            if (!data.get(f.getName()).equals(row.data.get(f.getName())))
+        for (int i = fields.size() - 1; i > -1; i--) {
+            if (!data[i].equals(row.data[i]))
                 return false;
         }
         return true;
@@ -76,8 +73,12 @@ public class DataRow implements Iterable<String> {
      *
      * @return a field set.
      */
-    public FieldSet getFields() {
+    public FieldList getFields() {
         return fields;
+    }
+
+    public Object getValue(int index) {
+        return data[index];
     }
 
     /**
@@ -88,7 +89,10 @@ public class DataRow implements Iterable<String> {
      * @return the value stored in the field.
      */
     public Object getValue(String field) {
-        return data.get(field);
+        int idx = fields.indexOf(field);
+        if (idx < 0)
+            throw new FieldNotFoundException(field);
+        return data[idx];
     }
 
     @Override
@@ -96,8 +100,8 @@ public class DataRow implements Iterable<String> {
         int hash = 3;
         hash = 41 * hash + (this.fields != null ? this.fields.hashCode() : 0);
         for (Field f : fields.getPrimary()) {
-            Object hval = this.data.get(f.getName());
-            hash = 41 * hash + (hval != null ? hval.hashCode() : 0);
+            int idx = fields.indexOf(f);
+            hash = 41 * hash + (data[idx] != null ? data[idx].hashCode() : 0);
         }
         return hash;
     }
@@ -108,7 +112,7 @@ public class DataRow implements Iterable<String> {
      * @return an iterator over the names of the fields in the data row.
      */
     public Iterator<String> iterator() {
-        return data.keySet().iterator();
+        return new NameIterator();
     }
 
     /**
@@ -118,8 +122,15 @@ public class DataRow implements Iterable<String> {
      * @param value the new value
      */
     public void setValue(String field, Object value) {
-        Field f = fields.get(field);
-        data.put(field, f.getValidValue(value));
+        int idx = fields.indexOf(field);
+        if (0 > idx)
+            throw new FieldNotFoundException(field);
+
+        data[idx] = fields.get(idx).getValidValue(value);
+    }
+
+    public void setValue(int idx, Object value) {
+        data[idx] = fields.get(idx).getValidValue(value);
     }
 
     /**
@@ -130,5 +141,26 @@ public class DataRow implements Iterable<String> {
     protected void validate(String columnName, Object value) {
         Field f = fields.get(columnName); // throws FieldNotFoundException
         f.validateValue(value);
+    }
+
+    private class NameIterator implements Iterator<String> {
+
+        private Field current;
+        private int idx = 0;
+
+        public boolean hasNext() {
+            return idx < DataRow.this.data.length;
+        }
+
+        public String next() {
+            current = DataRow.this.fields.get(idx);
+            idx++;
+            return current.getName();
+        }
+
+        public void remove() {
+            if (null != current)
+                DataRow.this.fields.remove(current);
+        }
     }
 }

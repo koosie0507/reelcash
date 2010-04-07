@@ -26,19 +26,27 @@ public class ReelcashDataSource implements javax.sql.DataSource {
     private Connection connection;
     private PrintWriter writer;
     private int loginTimeout;
+    private static ReelcashDataSource instance;
 
     static {
         defaultDbFilePath = SysUtils.getAppHome().concat(defaultDbName);
         defaultJdbcUrl = "jdbc:sqlite:".concat(defaultDbFilePath);
         try {
             Class.forName(SQLITE_JDBC_DRIVER);
-        } catch (ClassNotFoundException ex) {
+        }
+        catch (ClassNotFoundException ex) {
             throw new ReelcashException(ex);
         }
     }
 
-    {
+    private ReelcashDataSource() {
         loginTimeout = 0;
+    }
+
+    public static ReelcashDataSource getInstance() {
+        if (null == instance)
+            instance = new ReelcashDataSource();
+        return instance;
     }
 
     /**
@@ -74,9 +82,8 @@ public class ReelcashDataSource implements javax.sql.DataSource {
      * @throws SQLException is never thrown.
      */
     public PrintWriter getLogWriter() throws SQLException {
-        if (null == writer) {
+        if (null == writer)
             writer = new PrintWriter(System.err);
-        }
         return writer;
     }
 

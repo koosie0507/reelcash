@@ -4,6 +4,7 @@
  */
 package com.google.code.reelcash.data.layout;
 
+import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.LayoutHierarchyPermission;
 import com.google.code.reelcash.data.LayoutHierarchyPermissionComparator;
 import com.google.code.reelcash.data.layout.fields.*;
@@ -20,7 +21,7 @@ public abstract class DataLayoutNode implements Comparable<DataLayoutNode>, Iter
     private static final Object syncRoot = new Object();
     private final String name;
     private final LayoutHierarchyPermission layoutPermission;
-    private FieldSet fieldSet;
+    private FieldList fieldList;
 
     /**
      * Initializes a new layout node.
@@ -79,6 +80,15 @@ public abstract class DataLayoutNode implements Comparable<DataLayoutNode>, Iter
     }
 
     /**
+     * Returns a new data row which uses the fields specified by the current instance' field list.
+     *
+     * @return new data row.
+     */
+    public DataRow createRow() {
+        return new DataRow(getFieldList());
+    }
+
+    /**
      * Returns true if the other object is a data layout node with the same name as the current node.
      * 
      * @param obj another data layout node.
@@ -115,12 +125,12 @@ public abstract class DataLayoutNode implements Comparable<DataLayoutNode>, Iter
      * Gets the field set which is used for holding information on the fields of the current layout node.
      * @return field set.
      */
-    public FieldSet getFieldSet() {
+    public FieldList getFieldList() {
         synchronized (syncRoot) {
-            if (null == fieldSet)
-                fieldSet = new FieldSet();
+            if (null == fieldList)
+                fieldList = new FieldList();
         }
-        return fieldSet;
+        return fieldList;
     }
 
     /**
@@ -193,7 +203,7 @@ public abstract class DataLayoutNode implements Comparable<DataLayoutNode>, Iter
      * @return an iterator over the fields of the current layout node.
      */
     public Iterator<Field> iterator() {
-        return fieldSet.iterator();
+        return fieldList.iterator();
     }
 
     /**

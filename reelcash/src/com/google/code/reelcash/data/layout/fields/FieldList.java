@@ -3,24 +3,24 @@ package com.google.code.reelcash.data.layout.fields;
 import com.google.code.reelcash.data.KeyRole;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Represents a set of fields.
  *
  * @author andrei.olar 
  */
-public class FieldSet implements Set<Field> {
+public class FieldList implements List<Field> {
 
-    private ArrayList<Field> fieldSet;
+    private ArrayList<Field> data;
     private ArrayList<Field> primary;
     private ArrayList<Field> unique;
     private ArrayList<Field> keys;
 
     {
-        fieldSet = new ArrayList();
+        data = new ArrayList();
     }
 
     /**
@@ -32,7 +32,7 @@ public class FieldSet implements Set<Field> {
      */
     public boolean add(Field e) {
         e.setFieldSet(this);
-        return fieldSet.add(e);
+        return data.add(e);
     }
 
     /**
@@ -46,18 +46,18 @@ public class FieldSet implements Set<Field> {
         for (Field x : c) {
             x.setFieldSet(this);
         }
-        return fieldSet.addAll(c);
+        return data.addAll(c);
     }
 
     public void clear() {
-        for (Field x : fieldSet) {
+        for (Field x : data) {
             x.setFieldSet(null);
         }
-        fieldSet.clear();
+        data.clear();
     }
 
     public boolean contains(String fieldName) {
-        for (Field f : fieldSet) {
+        for (Field f : data) {
             if (f.getName().equals(fieldName))
                 return true;
         }
@@ -66,12 +66,12 @@ public class FieldSet implements Set<Field> {
 
     public boolean contains(Object o) {
         if (o instanceof Field)
-            return fieldSet.contains((Field) o);
+            return data.contains((Field) o);
         return false;
     }
 
     public boolean containsAll(Collection<?> c) {
-        return fieldSet.containsAll(c);
+        return data.containsAll(c);
     }
 
     /**
@@ -82,7 +82,7 @@ public class FieldSet implements Set<Field> {
      * @return the field with the given name.
      */
     public Field get(String name) {
-        for (Field f : fieldSet) {
+        for (Field f : data) {
             if (f.getName().equals(name))
                 return f;
         }
@@ -93,7 +93,7 @@ public class FieldSet implements Set<Field> {
     public ArrayList<Field> getKeys() {
         if (null == keys) {
             keys = new ArrayList();
-            for (Field f : fieldSet) {
+            for (Field f : data) {
                 if (KeyRole.KEY == f.getKeyRole())
                     keys.add(f);
             }
@@ -104,13 +104,13 @@ public class FieldSet implements Set<Field> {
     public ArrayList<Field> getPrimary() {
         if (null == primary) {
             primary = new ArrayList();
-            for (Field f : fieldSet) {
+            for (Field f : data) {
                 if (f.getKeyRole() == KeyRole.PRIMARY)
                     primary.add(f);
             }
 
             if (primary.isEmpty())
-                primary = fieldSet;
+                primary = data;
         }
         return primary;
     }
@@ -118,7 +118,7 @@ public class FieldSet implements Set<Field> {
     public ArrayList<Field> getUnique() {
         if (null == unique) {
             unique = new ArrayList();
-            for (Field f : fieldSet) {
+            for (Field f : data) {
                 if (f.getKeyRole() == KeyRole.UNIQUE)
                     unique.add(f);
             }
@@ -127,17 +127,17 @@ public class FieldSet implements Set<Field> {
     }
 
     public boolean isEmpty() {
-        return fieldSet.isEmpty();
+        return data.isEmpty();
     }
 
     public Iterator<Field> iterator() {
-        return fieldSet.iterator();
+        return data.iterator();
     }
 
     public boolean remove(Object o) {
         if (o instanceof Field) {
             ((Field) o).setFieldSet(null);
-            return fieldSet.remove((Field) o);
+            return data.remove((Field) o);
         }
         return false;
     }
@@ -146,26 +146,86 @@ public class FieldSet implements Set<Field> {
         for (Object x : c) {
             ((Field) x).setFieldSet(null);
         }
-        return fieldSet.removeAll(c);
+        return data.removeAll(c);
     }
 
     public boolean retainAll(Collection<?> c) {
-        for (Object x : fieldSet) {
+        for (Object x : data) {
             if (!c.contains(x))
                 ((Field) x).setFieldSet(null);
         }
-        return fieldSet.retainAll(c);
+        return data.retainAll(c);
     }
 
     public int size() {
-        return fieldSet.size();
+        return data.size();
     }
 
     public Object[] toArray() {
-        return fieldSet.toArray();
+        return data.toArray();
     }
 
     public <T> T[] toArray(T[] a) {
-        return fieldSet.toArray(a);
+        return data.toArray(a);
+    }
+
+    public boolean addAll(int index, Collection<? extends Field> c) {
+        return data.addAll(index, c);
+    }
+
+    public Field get(int index) {
+        return data.get(index);
+    }
+
+    public Field set(int index, Field element) {
+        return data.set(index, element);
+    }
+
+    public void add(int index, Field element) {
+        data.add(index, element);
+    }
+
+    public Field remove(int index) {
+        return data.remove(index);
+    }
+
+    public int indexOf(Object o) {
+        return data.indexOf(o);
+    }
+
+    public int indexOf(String fieldName) {
+        int idx = 0;
+        while (idx < data.size()) {
+            if (data.get(idx).getName().equals(fieldName))
+                return idx;
+            idx++;
+        }
+        return -1;
+    }
+
+    public int lastIndexOf(String fieldName) {
+        int idx = data.size() - 1;
+        while (idx > -1) {
+            if (data.get(idx).getName().equals(fieldName))
+                return idx;
+            idx--;
+        }
+        return idx;
+    }
+
+    public int lastIndexOf(Object o) {
+        return data.lastIndexOf(o);
+    }
+
+    public ListIterator<Field> listIterator() {
+        return data.listIterator();
+    }
+
+    public ListIterator<Field> listIterator(int index) {
+        return data.listIterator(index);
+    }
+
+    public List<Field> subList(int fromIndex, int toIndex) {
+        return data.subList(fromIndex, toIndex);
     }
 }
