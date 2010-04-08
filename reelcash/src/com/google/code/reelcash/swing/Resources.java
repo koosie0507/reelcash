@@ -1,5 +1,6 @@
-package com.google.code.reelcash.data.layout.fields;
+package com.google.code.reelcash.swing;
 
+import com.google.code.reelcash.data.layout.fields.*;
 import java.util.ResourceBundle;
 
 /**

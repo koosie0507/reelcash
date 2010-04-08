@@ -50,9 +50,12 @@ public abstract class JRegistryDialog extends javax.swing.JDialog implements Tab
 
     dataBar = new javax.swing.JToolBar();
     addItemButton = new javax.swing.JButton();
+    editItemButton = new javax.swing.JButton();
     deleteItemButton = new javax.swing.JButton();
+    contentPane = new javax.swing.JPanel();
     dataScroller = new javax.swing.JScrollPane();
     dataTable = new javax.swing.JTable();
+    editPanel = new javax.swing.JPanel();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -60,13 +63,23 @@ public abstract class JRegistryDialog extends javax.swing.JDialog implements Tab
 
     addItemButton.setMnemonic('n');
     addItemButton.setText("New");
+    addItemButton.setToolTipText("Add a new item");
     addItemButton.setFocusable(false);
     addItemButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     addItemButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     dataBar.add(addItemButton);
 
+    editItemButton.setMnemonic('e');
+    editItemButton.setToolTipText("Edit the selected item");
+    editItemButton.setFocusable(false);
+    editItemButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    editItemButton.setLabel("Edit");
+    editItemButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    dataBar.add(editItemButton);
+
     deleteItemButton.setMnemonic('d');
     deleteItemButton.setText("Delete");
+    deleteItemButton.setToolTipText("Delete the selected item");
     deleteItemButton.setFocusable(false);
     deleteItemButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     deleteItemButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -74,19 +87,29 @@ public abstract class JRegistryDialog extends javax.swing.JDialog implements Tab
 
     getContentPane().add(dataBar, java.awt.BorderLayout.PAGE_START);
 
+    contentPane.setLayout(new java.awt.CardLayout());
+
     dataTable.setModel(getTableModel());
     dataScroller.setViewportView(dataTable);
 
-    getContentPane().add(dataScroller, java.awt.BorderLayout.CENTER);
+    contentPane.add(dataScroller, "table");
+
+    editPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING, 10, 15));
+    contentPane.add(editPanel, "edit");
+
+    getContentPane().add(contentPane, java.awt.BorderLayout.PAGE_END);
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton addItemButton;
+  private javax.swing.JPanel contentPane;
   private javax.swing.JToolBar dataBar;
   private javax.swing.JScrollPane dataScroller;
   private javax.swing.JTable dataTable;
   private javax.swing.JButton deleteItemButton;
+  private javax.swing.JButton editItemButton;
+  private javax.swing.JPanel editPanel;
   // End of variables declaration//GEN-END:variables
 }
