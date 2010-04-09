@@ -44,8 +44,8 @@ public class DataRowTableModel extends AbstractTableModel {
     }
 
     public void delete(int rowIndex) {
-        dataRows.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
+        dataRows.remove(rowIndex);
     }
 
     /**

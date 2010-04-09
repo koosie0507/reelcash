@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.sql.DataSource;
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -55,8 +56,11 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     private JDataLayoutNodeComponent itemComponent;
     private DataRowTableModel tableModel;
     private TitledBorder titleBorder;
+    private JToggleButton toggleInsert;
+    private JToggleButton toggleUpdate;
     private JToolBar toolbar;
     private int selectedIndex;
+    private ItemComponentDataActionAdapter adapter;
 
     public JRegistryPanel() {
         this(null);
@@ -66,18 +70,21 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         this.dataSource = dataSource;
         mode = RegistryPanelMode.DEFAULT;
         selectedIndex = -1;
+        adapter = new ItemComponentDataActionAdapter();
         initializeComponent();
     }
 
     public String getCaption() {
-        if (null == caption)
+        if (null == caption) {
             caption = "";
+        }
         return caption;
     }
 
     private CardLayout getContentLayout() {
-        if (null == contentLayout)
+        if (null == contentLayout) {
             contentLayout = new CardLayout();
+        }
         return contentLayout;
     }
 
@@ -104,8 +111,9 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
      * @return a data source.
      */
     public DataSource getDataSource() {
-        if (null == dataSource)
+        if (null == dataSource) {
             dataSource = ReelcashDataSource.getInstance();
+        }
         return dataSource;
     }
 
@@ -122,8 +130,9 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     public abstract DataLayoutNode getDataLayoutNode();
 
     public DataRowTableModelDatabaseAdapter getDatabaseAdapter() {
-        if (null == databaseAdapter)
+        if (null == databaseAdapter) {
             databaseAdapter = new DataRowTableModelDatabaseAdapter(getDataSource(), getTableModel());
+        }
         return databaseAdapter;
 
     }
@@ -133,7 +142,7 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     public JDataLayoutNodeComponent getItemComponent() {
         if (null == itemComponent) {
             itemComponent = new JDataLayoutNodeComponent();
-            itemComponent.addDataActionListener(new ItemComponentDataActionAdapter());
+            itemComponent.addDataActionListener(adapter);
             itemComponent.setMaximumSize(getMaximumSize());
             itemComponent.setMinimumSize(getMinimumSize());
             itemComponent.setPreferredSize(getPreferredSize());
@@ -147,8 +156,9 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     }
 
     public DataRowTableModel getTableModel() {
-        if (null == tableModel)
+        if (null == tableModel) {
             tableModel = new DataRowTableModel(getDataLayoutNode());
+        }
         return tableModel;
     }
 
@@ -160,17 +170,33 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         return titleBorder;
     }
 
+    private JToggleButton getToggleInsert() {
+        if (null == toggleInsert) {
+            toggleInsert = new JToggleButton(new ActivateInsertModeAction());
+            toggleInsert.setText(Resources.getString("new_text"));
+            toggleInsert.setMnemonic(Resources.getString("new_mnemonic").charAt(0));
+        }
+        return toggleInsert;
+    }
+
+    private JToggleButton getToggleUpdate() {
+        if (null == toggleUpdate) {
+            toggleUpdate = new JToggleButton(new ActivateUpdateModeAction());
+            toggleUpdate.setText(Resources.getString("edit_text"));
+            toggleUpdate.setMnemonic(Resources.getString("edit_mnemonic").charAt(0));
+        }
+        return toggleUpdate;
+    }
+
     public JToolBar getToolbar() {
         if (null == toolbar) {
             toolbar = new JToolBar("item actions", JToolBar.HORIZONTAL);
-            JToggleButton toggleInsert = new JToggleButton(new ActivateInsertModeAction());
-            toggleInsert.setText(Resources.getString("new_text"));
-            toggleInsert.setMnemonic(Resources.getString("new_mnemonic").charAt(0));
-            JToggleButton toggleUpdate = new JToggleButton(new ActivateUpdateModeAction());
-            toggleUpdate.setText(Resources.getString("edit_text"));
-            toggleUpdate.setMnemonic(Resources.getString("edit_mnemonic").charAt(0));
-            toolbar.add(toggleInsert);
-            toolbar.add(toggleUpdate);
+            toolbar.add(getToggleInsert());
+            toolbar.add(getToggleUpdate());
+            JButton deleteItem = new JButton(new DeleteItemAction());
+            deleteItem.setText(Resources.getString("delete_text"));
+            deleteItem.setMnemonic(Resources.getString("delete_mnemonic").charAt(0));
+            toolbar.add(deleteItem);
         }
         return toolbar;
     }
@@ -197,8 +223,7 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 column.setMaxWidth((int) dispInfo.getMaximumSize().getWidth());
                 column.setPreferredWidth((int) dispInfo.getPreferredSize().getWidth());
                 column.setHeaderValue(dispInfo.getCaption());
-            }
-            else {
+            } else {
                 column.setMinWidth(0);
                 column.setMaxWidth(1);
                 column.setPreferredWidth(0);
@@ -235,39 +260,6 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         getTitleBorder().setTitle(caption);
     }
 
-    /**
-     * Class of actions which create a new item in the database.
-     */
-    private class CreateItemAction extends AbstractAction {
-
-        private static final long serialVersionUID = 7149578703187416042L;
-        private DataRow row;
-
-        CreateItemAction() {
-            setRow(null);
-        }
-
-        /**
-         * Creates a new item and causes the refresh of the data table.
-         *
-         * @param e
-         */
-        public void actionPerformed(ActionEvent e) {
-            if (null == row)
-                row = JRegistryPanel.this.getTableModel().add();
-            else
-                JRegistryPanel.this.getTableModel().add(row);
-        }
-
-        /**
-         * Sets the data row to be created in the database.
-         * @param row the data row to be created in the database.
-         */
-        void setRow(DataRow row) {
-            this.row = row;
-        }
-    }
-
     private class ActivateInsertModeAction extends AbstractAction {
 
         private static final long serialVersionUID = 8690350987358764996L;
@@ -276,15 +268,15 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
             JToggleButton button;
             try {
                 button = (JToggleButton) e.getSource();
-            }
-            catch (ClassCastException exc) {
+            } catch (ClassCastException exc) {
                 Log.write().fine(exc.getMessage());
                 button = null;
             }
 
-            if (null == button)
+            if (null == button) {
                 return;
-
+            }
+            JRegistryPanel.this.adapter.setSender(button);
             if (button.isSelected()) {
                 String warning;
                 switch (JRegistryPanel.this.mode) {
@@ -307,8 +299,7 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.ITEM_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.INSERT;
-            }
-            else {
+            } else {
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.TABLE_CARD_NAME);
                 // this is just another way to cancel creation of rows
@@ -331,15 +322,16 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
             JToggleButton button;
             try {
                 button = (JToggleButton) e.getSource();
-            }
-            catch (ClassCastException exc) {
+            } catch (ClassCastException exc) {
                 Log.write().fine(exc.getMessage());
                 button = null;
             }
 
-            if (null == button)
+            if (null == button) {
                 return;
+            }
 
+            JRegistryPanel.this.adapter.setSender(button);
             if (button.isSelected()) {
                 String warning;
                 switch (JRegistryPanel.this.mode) {
@@ -363,8 +355,7 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.ITEM_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.UPDATE;
-            }
-            else {
+            } else {
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.TABLE_CARD_NAME);
                 // this is just another way to cancel creation of rows
@@ -373,7 +364,22 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         }
     }
 
+    private class DeleteItemAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent e) {
+            if (0 > selectedIndex) {
+                JOptionPane.showMessageDialog(JRegistryPanel.this, Resources.getString("select_row"),
+                        GlobalResources.getString("basic_info_title"), JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            JRegistryPanel.this.getTableModel().delete(selectedIndex);
+        }
+    }
+
     private class ItemComponentDataActionAdapter implements ActionListener {
+
+        private JToggleButton sender;
 
         private void savePerformed() {
             try {
@@ -394,26 +400,30 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                         JRegistryPanel.this.getTableModel().update(selectedIndex, modified);
                         break;
                 }
-            }
-            catch (ReelcashException exc) {
-                JOptionPane.showMessageDialog(JRegistryPanel.this, exc,
+            } catch (ReelcashException exc) {
+                JOptionPane.showMessageDialog(JRegistryPanel.this, exc.getStackTrace(),
                         GlobalResources.getString("application_error"),
                         JOptionPane.ERROR_MESSAGE);
-            }
-            catch (Throwable t) {
-                JOptionPane.showMessageDialog(JRegistryPanel.this, t,
-                        GlobalResources.getString("fatal_error"),
+            } catch (Throwable t) {
+                JOptionPane.showMessageDialog(JRegistryPanel.this, t.getStackTrace(),
+                        GlobalResources.getString("fatal_error_title"),
                         JOptionPane.ERROR_MESSAGE);
-            }
-            finally {
+            } finally {
+                JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
+                        JRegistryPanel.TABLE_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.DEFAULT;
+
+                if (null != sender) {
+                    sender.setSelected(false);
+                }
             }
         }
 
         public void actionPerformed(ActionEvent e) {
             String actionCommand = e.getActionCommand();
-            if (null == actionCommand)
+            if (null == actionCommand) {
                 return;
+            }
             if (JDataLayoutNodeComponent.SAVE_ACTION.equals(actionCommand)) {
                 savePerformed();
                 return;
@@ -423,7 +433,14 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.TABLE_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.DEFAULT;
+                if (null != sender) {
+                    sender.setSelected(false);
+                }
             }
+        }
+
+        void setSender(JToggleButton sender) {
+            this.sender = sender;
         }
     }
 }
