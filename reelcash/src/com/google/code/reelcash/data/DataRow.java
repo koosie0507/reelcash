@@ -134,6 +134,14 @@ public class DataRow implements Iterable<String> {
     }
 
     /**
+     * Returns the size of the data row. 
+     * @return the size of the data row.
+     */
+    public int size() {
+        return data.length;
+    }
+
+    /**
      * Validates a field's value. Override this to provide custom validation.
      * @param columnName field name.
      * @param value value of field

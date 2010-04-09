@@ -37,6 +37,12 @@ public class DataRowTableModel extends AbstractTableModel {
         return row;
     }
 
+    public void add(DataRow row) {
+        int rowCount = dataRows.size();
+        dataRows.add(row);
+        fireTableRowsInserted(rowCount, rowCount);
+    }
+
     public void delete(int rowIndex) {
         dataRows.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
@@ -129,5 +135,31 @@ public class DataRowTableModel extends AbstractTableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         dataRows.get(rowIndex).setValue(columnIndex, aValue);
         fireTableCellUpdated(rowIndex, columnIndex);
+    }
+
+    /**
+     * Updates the values in the row at the given index with the values specified
+     * in the row passed as parameter.
+     *
+     * @param rowIndex the index of the existing row. If -1 is passed, the update call
+     * is ignored .
+     *
+     * @param row the row containing the desired values.
+     */
+    public void update(int rowIndex, DataRow row) {
+        if (0 > rowIndex)
+            return;
+        if (rowIndex >= dataRows.size())
+            throw new IndexOutOfBoundsException();
+        DataRow existing = dataRows.get(rowIndex);
+        if (row.size() != existing.size())
+            
+            return; // mismatch
+        for (int i = existing.size() - 1; i > -1; i--) {
+            if (KeyRole.PRIMARY == existing.getFields().get(i).getKeyRole())
+                continue;
+
+            existing.setValue(i, row.getValue(i));
+        }
     }
 }

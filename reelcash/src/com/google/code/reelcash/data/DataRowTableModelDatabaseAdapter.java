@@ -27,7 +27,14 @@ public class DataRowTableModelDatabaseAdapter implements TableModelListener {
     public DataRowTableModelDatabaseAdapter(final DataSource dataSource, final DataRowTableModel monitored) {
         mediator = new QueryMediator(dataSource);
         this.monitored = monitored;
+        this.monitored.addTableModelListener(this);
         this.node = this.monitored.getLayoutNode();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        monitored.removeTableModelListener(this);
+        super.finalize();
     }
 
     private void onRowInserted(DataRow row) {
@@ -41,7 +48,7 @@ public class DataRowTableModelDatabaseAdapter implements TableModelListener {
 
     private void onRowUpdated(DataRow row) {
         try {
-            mediator.createRow(node.getName(), row);
+            mediator.updateRow(node, row);
         }
         catch (SQLException exc) {
             throw new ReelcashException(Resources.getString("insert_failed"), exc);
@@ -50,7 +57,7 @@ public class DataRowTableModelDatabaseAdapter implements TableModelListener {
 
     private void onRowDeleted(DataRow row) {
         try {
-            mediator.createRow(node.getName(), row);
+            mediator.delete(node, row);
         }
         catch (SQLException exc) {
             throw new ReelcashException(Resources.getString("insert_failed"), exc);
@@ -62,7 +69,9 @@ public class DataRowTableModelDatabaseAdapter implements TableModelListener {
      */
     public void readAll() {
         try {
+            monitored.removeTableModelListener(this);
             monitored.fill(mediator.fetchAll(node));
+            monitored.addTableModelListener(this);
         }
         catch (SQLException exc) {
             throw new ReelcashException(Resources.getString("select_failed"), exc);

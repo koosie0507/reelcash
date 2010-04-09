@@ -1,5 +1,6 @@
-package com.google.code.reelcash.swing;
+package com.google.code.reelcash;
 
+import com.google.code.reelcash.swing.*;
 import com.google.code.reelcash.data.layout.fields.*;
 import java.util.ResourceBundle;
 
@@ -8,12 +9,12 @@ import java.util.ResourceBundle;
  * 
  * @author andrei.olar
  */
-public class Resources {
+public class GlobalResources {
 
     private static final ResourceBundle bundle;
 
     static {
-        bundle = ResourceBundle.getBundle(Resources.class.getPackage().getName().concat(".resources"));
+        bundle = ResourceBundle.getBundle(GlobalResources.class.getPackage().getName().concat(".global"));
         if (null == bundle)
             throw new RuntimeException("FATAL: can't initialize field resources!");
     }
