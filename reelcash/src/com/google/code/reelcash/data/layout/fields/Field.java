@@ -202,7 +202,7 @@ public abstract class Field implements Serializable, Cloneable, Comparable {
      * @param value the referenced field.
      */
     public void setReferencedField(Field value) {
-        if (null != value.fieldSet && !value.fieldSet.equals(fieldSet))
+        if (null == value.fieldSet || KeyRole.PRIMARY != value.getKeyRole())
             throw new InvalidFieldReferenceException(name, value.name);
 
         this.referencedField = value;

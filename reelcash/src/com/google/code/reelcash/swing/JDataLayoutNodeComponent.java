@@ -5,6 +5,7 @@
 package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.data.DataRow;
+import com.google.code.reelcash.data.DataRowComboModel;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
 import java.awt.Dimension;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,7 +29,7 @@ import javax.swing.SwingConstants;
 
 /**
  * This component creates a panel which is created dynamically as specified by a data
- * layout node.
+ * layout displayInfo.
  *
  * @author andrei.olar
  */
@@ -51,8 +53,9 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
 
     @Override
     public GridBagLayout getLayout() {
-        if (null == layout)
+        if (null == layout) {
             layout = new GridBagLayout();
+        }
         return layout;
     }
 
@@ -68,8 +71,9 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
 
     private FieldDisplay findDisplay(Field f) {
         for (FieldDisplay disp : dispInfo) {
-            if (disp.getKey().equals(f.getName()))
+            if (disp.getKey().equals(f.getName())) {
                 return disp;
+            }
         }
         return null;
     }
@@ -106,7 +110,7 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
         return commandPanel;
     }
 
-    private void initializeComponent(DataLayoutNode node) {
+    private void initializeComponent(FieldDisplayFactory displayInfo) {
         removeAll();
 
         dispInfo.clear();
@@ -116,15 +120,15 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
 
         int gridy = 1;
         for (Field field : node) {
-            FieldDisplay d = FieldDisplay.newInstance(field);
-            JLabel label = d.createDescriptionLabel();
-            JComponent component = d.getDisplayComponent();
-            add(label, getLabelConstraints(gridy));
-            add(component, getComponentConstraints(gridy));
-
-            dispInfo.add(d);
-            gridy++;
-
+            FieldDisplay d = displayInfo.getUIDisplayInfo(field);
+            if (d.isVisible()) {
+                JLabel label = d.createDescriptionLabel();
+                JComponent component = d.getDisplayComponent();
+                add(label, getLabelConstraints(gridy));
+                add(component, getComponentConstraints(gridy));
+                dispInfo.add(d);
+                gridy++;
+            }
         }
 
         getLayout().invalidateLayout(this);
@@ -150,34 +154,36 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
         int idx = 0;
         for (Iterator<Field> f = node.iterator(); f.hasNext();) {
             FieldDisplay disp = findDisplay(f.next());
-            if (null != disp)
+            if (null != disp) {
                 result.setValue(idx, disp.getValue());
+            }
             idx++;
         }
         return result;
     }
 
     /**
-     * Returns the layout node responsable for metadata information.
+     * Returns the layout displayInfo responsable for metadata information.
      *
-     * @return layout node.
+     * @return layout displayInfo.
      */
     public DataLayoutNode getNode() {
         return node;
     }
 
     /**
-     * Sets the layout node responsable for metadata information provided to this component.
-     * @param node the node 
+     * Sets the layout displayInfo responsable for metadata information provided to this component.
+     * @param displayInfo the displayInfo
      */
-    public void setNode(DataLayoutNode node) {
+    public void setNode(DataLayoutNode node, FieldDisplayFactory dispInfo) {
         this.node = node;
-        initializeComponent(node);
+        initializeComponent(dispInfo);
     }
 
     public void clearData() {
-        for (FieldDisplay info : dispInfo)
+        for (FieldDisplay info : dispInfo) {
             info.clearData();
+        }
     }
 
     public Dimension getPreferredScrollableViewportSize() {
@@ -189,10 +195,11 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
     }
 
     public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-        if (orientation == SwingConstants.HORIZONTAL)
+        if (orientation == SwingConstants.HORIZONTAL) {
             return visibleRect.width - 10;
-        else
+        } else {
             return visibleRect.height - 10;
+        }
     }
 
     public boolean getScrollableTracksViewportWidth() {

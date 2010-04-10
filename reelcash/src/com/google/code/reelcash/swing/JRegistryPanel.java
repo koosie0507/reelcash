@@ -27,12 +27,10 @@ import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicTreeUI.SelectionModelPropertyChangeHandler;
 import javax.swing.table.TableColumn;
 
 /**
@@ -134,7 +132,6 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
             databaseAdapter = new DataRowTableModelDatabaseAdapter(getDataSource(), getTableModel());
         }
         return databaseAdapter;
-
     }
 
     public abstract FieldDisplayFactory getDisplayInfoFactory();
@@ -146,7 +143,7 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
             itemComponent.setMaximumSize(getMaximumSize());
             itemComponent.setMinimumSize(getMinimumSize());
             itemComponent.setPreferredSize(getPreferredSize());
-            itemComponent.setNode(getDataLayoutNode());
+            itemComponent.setNode(getDataLayoutNode(), getDisplayInfoFactory());
         }
         return itemComponent;
     }
@@ -313,12 +310,6 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         private static final long serialVersionUID = 8690350987358764996L;
 
         public void actionPerformed(ActionEvent e) {
-            if (0 > selectedIndex) {
-                JOptionPane.showMessageDialog(JRegistryPanel.this, Resources.getString("select_row"),
-                        GlobalResources.getString("basic_info_title"), JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-
             JToggleButton button;
             try {
                 button = (JToggleButton) e.getSource();
@@ -328,6 +319,12 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
             }
 
             if (null == button) {
+                return;
+            }
+            if (0 > selectedIndex) {
+                JOptionPane.showMessageDialog(JRegistryPanel.this, Resources.getString("select_row"),
+                        GlobalResources.getString("basic_info_title"), JOptionPane.INFORMATION_MESSAGE);
+                button.setSelected(false);
                 return;
             }
 

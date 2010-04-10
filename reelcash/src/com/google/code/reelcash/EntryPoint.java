@@ -17,6 +17,8 @@ import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.swing.JRegistryPanel;
 import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
+import com.google.code.reelcash.swing.registry.CountriesPanel;
+import com.google.code.reelcash.swing.registry.RegionsPanel;
 import com.google.code.reelcash.util.ReportingUtils;
 import com.google.code.reelcash.util.ScreenUtils;
 import java.awt.BorderLayout;
@@ -44,6 +46,8 @@ public class EntryPoint {
             node = new RootLayoutNode("countries");
             node.getFieldList().add(new IntegerField("id", KeyRole.PRIMARY, true));
             node.getFieldList().add(new StringField("name", KeyRole.NONE, true));
+
+
             node.getFieldList().add(new StringField("iso_name", KeyRole.NONE, true));
             node.getFieldList().add(new StringField("iso_code2", KeyRole.NONE, true));
             node.getFieldList().add(new StringField("iso_code3", KeyRole.NONE, true));
@@ -81,18 +85,8 @@ public class EntryPoint {
             ScreenUtils.computeMinimumSize(mainFrame);
             ScreenUtils.centerWindowOnScreen(mainFrame);
 
-            JRegistryPanel panel = new JRegistryPanel() {
 
-                @Override
-                public DataLayoutNode getDataLayoutNode() {
-                    return getLayoutNode();
-                }
-
-                @Override
-                public FieldDisplayFactory getDisplayInfoFactory() {
-                    return getFactory();
-                }
-            };
+            JRegistryPanel panel = new CountriesPanel();
             panel.setCaption("Countries");
             panel.getDatabaseAdapter().readAll();
             mainFrame.add(panel, BorderLayout.CENTER);

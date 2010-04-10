@@ -1,6 +1,8 @@
 package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.ReelcashException;
+import com.google.code.reelcash.data.DataRow;
+import com.google.code.reelcash.data.DataRowComboModel;
 import com.google.code.reelcash.data.layout.fields.*;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
@@ -9,6 +11,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -71,23 +74,33 @@ public abstract class FieldDisplay {
      * @return a display info instance. 
      */
     public static FieldDisplay newInstance(Field f) {
-        if (f instanceof BigDecimalField)
+        if (f instanceof BigDecimalField) {
             return new BigDecimalFieldInfo((BigDecimalField) f);
+        }
 
-        if (f instanceof StringField)
+        if (f instanceof StringField) {
             return new StringFieldDisplay((StringField) f);
+        }
 
-        if (f instanceof BooleanField)
+        if (f instanceof BooleanField) {
             return new BooleanFieldDisplay((BooleanField) f);
+        }
 
-        if (f instanceof DoubleField)
+        if (f instanceof DoubleField) {
             return new DoubleFieldDisplay((DoubleField) f);
+        }
 
-        if (f instanceof DateField)
+        if (f instanceof DateField) {
             return new DateFieldDisplay((DateField) f);
+        }
 
-        if (f instanceof IntegerField)
+        if (f instanceof IntegerField) {
             return new IntegerFieldDisplay((IntegerField) f);
+        }
+
+        if (f instanceof ReferenceField) {
+            return new ReferenceFieldDisplay((ReferenceField) f);
+        }
 
 
         throw new ReelcashException();
@@ -240,8 +253,9 @@ class BigDecimalFieldInfo extends FieldDisplay {
 
     @Override
     public void setValue(Object value) {
-        if (!(value instanceof BigDecimal))
+        if (!(value instanceof BigDecimal)) {
             return;
+        }
 
         BigDecimal decimal = (BigDecimal) value;
         ((JFormattedTextField) getDisplayComponent()).setValue(decimal);
@@ -288,8 +302,9 @@ class StringFieldDisplay extends FieldDisplay {
 
     @Override
     public void setValue(Object value) {
-        if (!(value instanceof String))
+        if (!(value instanceof String)) {
             return;
+        }
 
         String str = (String) value;
         ((JTextField) getDisplayComponent()).setText(str);
@@ -335,8 +350,9 @@ class IntegerFieldDisplay extends FieldDisplay {
 
     @Override
     public void setValue(Object value) {
-        if (!(value instanceof Integer))
+        if (!(value instanceof Integer)) {
             return;
+        }
 
         Integer i = (Integer) value;
         ((JSpinner) getDisplayComponent()).setValue(i);
@@ -385,8 +401,9 @@ class DoubleFieldDisplay extends FieldDisplay {
 
     @Override
     public void setValue(Object value) {
-        if (!(value instanceof Double))
+        if (!(value instanceof Double)) {
             return;
+        }
 
         Double i = (Double) value;
         ((JFormattedTextField) getDisplayComponent()).setValue(i);
@@ -430,8 +447,9 @@ class DateFieldDisplay extends FieldDisplay {
 
     @Override
     public void setValue(Object value) {
-        if (!(value instanceof java.sql.Date))
+        if (!(value instanceof java.sql.Date)) {
             return;
+        }
 
         java.sql.Date i = (java.sql.Date) value;
         ((JSpinner) getDisplayComponent()).setValue(new java.util.Date(i.getTime()));
@@ -482,9 +500,56 @@ class BooleanFieldDisplay extends FieldDisplay implements ItemListener {
 
     @Override
     public void setValue(Object value) {
-        if (!(value instanceof Boolean))
+        if (!(value instanceof Boolean)) {
             return;
+        }
 
         ((JCheckBox) getDisplayComponent()).setSelected(((Boolean) value).booleanValue());
+    }
+}
+
+class ReferenceFieldDisplay extends FieldDisplay {
+
+    private ReferenceField field;
+    private JComboBox displayComponent;
+
+    ReferenceFieldDisplay(ReferenceField field) {
+        super(field);
+        this.field = field;
+    }
+
+    @Override
+    public void clearData() {
+        ((JComboBox) getDisplayComponent()).setSelectedIndex(-1);
+    }
+
+    @Override
+    public JComponent getDisplayComponent() {
+        if (null == displayComponent) {
+            displayComponent = new JComboBox();
+            displayComponent.setName(field.getName());
+            displayComponent.setMinimumSize(getMinimumSize());
+            displayComponent.setMaximumSize(getMaximumSize());
+            displayComponent.setPreferredSize(getPreferredSize());
+            displayComponent.setVisible(isVisible());
+            displayComponent.setEnabled(!isReadOnly());
+        }
+        return displayComponent;
+    }
+
+    @Override
+    public Object getValue() {
+        Object value = ((JComboBox) getDisplayComponent()).getSelectedItem();
+        if (value instanceof DataRow
+                && ((JComboBox) getDisplayComponent()).getModel() instanceof DataRowComboModel) {
+            value = ((DataRow) value).getValue(
+                    ((DataRowComboModel) ((JComboBox) getDisplayComponent()).getModel()).getValueMemberIndex());
+        }
+        return value;
+    }
+
+    @Override
+    public void setValue(Object value) {
+        ((JComboBox) getDisplayComponent()).setSelectedItem(value);
     }
 }
