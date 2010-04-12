@@ -20,6 +20,7 @@ import com.google.code.reelcash.swing.FieldDisplayFactory;
 import com.google.code.reelcash.swing.registry.CitiesPanel;
 import com.google.code.reelcash.swing.registry.CountiesPanel;
 import com.google.code.reelcash.swing.registry.CountriesPanel;
+import com.google.code.reelcash.swing.registry.LocationsPanel;
 import com.google.code.reelcash.swing.registry.RegionsPanel;
 import com.google.code.reelcash.util.ReportingUtils;
 import com.google.code.reelcash.util.ScreenUtils;
@@ -66,7 +67,7 @@ public class EntryPoint {
             ScreenUtils.computeMinimumSize(mainFrame);
             ScreenUtils.centerWindowOnScreen(mainFrame);
 
-            JRegistryPanel panel = new CitiesPanel();
+            JRegistryPanel panel = new LocationsPanel();
             panel.setCaption("Countries");
             panel.getDatabaseAdapter().readAll();
             mainFrame.add(panel, BorderLayout.CENTER);
