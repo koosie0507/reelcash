@@ -5,6 +5,7 @@
 package com.google.code.reelcash.swing.registry;
 
 import com.google.code.reelcash.GlobalResources;
+import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.DataRowComboModel;
 import com.google.code.reelcash.data.geo.RegionsLayout;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
@@ -14,7 +15,9 @@ import com.google.code.reelcash.swing.ComboListCellRenderer;
 import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
 import com.google.code.reelcash.swing.JRegistryPanel;
+import com.google.code.reelcash.swing.ReferenceFieldCellRenderer;
 import java.sql.SQLException;
+import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
@@ -60,12 +63,16 @@ public class RegionsPanel extends JRegistryPanel {
             QueryMediator mediator = new QueryMediator(getDataSource());
             DataLayoutNode countries = RegionsPanel.this.getRegionsLayout().getCountries();
             try {
+                List<DataRow> rows = mediator.fetchAll(countries);
                 DataRowComboModel model = new DataRowComboModel(countries);
                 ((JComboBox) disp.getDisplayComponent()).setModel(model);
                 model.setDisplayMemberIndex(1);
                 ((JComboBox) disp.getDisplayComponent()).setRenderer(
                         new ComboListCellRenderer(model.getDisplayMemberIndex()));
-                model.fill(mediator.fetchAll(countries));
+                model.fill(rows);
+                
+                getDataTable().getColumn(field.getName()).setCellRenderer(
+                        new ReferenceFieldCellRenderer(0, 1, rows));
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(RegionsPanel.this, e.getMessage(),
                         GlobalResources.getString("application_error_title"),

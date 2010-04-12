@@ -29,6 +29,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * <p>Class responsible for providing the point of entry in the application.</p>
@@ -55,28 +56,6 @@ public class EntryPoint {
         return node;
     }
 
-    private static FieldDisplayFactory getFactory() {
-        if (null == factory)
-            factory = new FieldDisplayFactory() {
-
-                {
-                    for (Field f : getLayoutNode()) {
-                        FieldDisplay dispInfo = FieldDisplay.newInstance(f);
-                        super.getData().put(f, dispInfo);
-                        dispInfo.setCaption(dispInfo.getCaption().toUpperCase());
-                        if ("id".equals(f.getName()))
-                            dispInfo.setVisible(false);
-                    }
-                }
-
-                @Override
-                public FieldDisplay getUIDisplayInfo(Field field) {
-                    return getData().get(field);
-                }
-            };
-        return factory;
-    }
-
     private static javax.swing.JFrame getMainFrame() {
         if (null == mainFrame) {
             mainFrame = new javax.swing.JFrame("Sunt o forma de cacat");
@@ -85,8 +64,7 @@ public class EntryPoint {
             ScreenUtils.computeMinimumSize(mainFrame);
             ScreenUtils.centerWindowOnScreen(mainFrame);
 
-
-            JRegistryPanel panel = new CountriesPanel();
+            JRegistryPanel panel = new RegionsPanel();
             panel.setCaption("Countries");
             panel.getDatabaseAdapter().readAll();
             mainFrame.add(panel, BorderLayout.CENTER);

@@ -7,11 +7,9 @@ package com.google.code.reelcash.swing.registry;
 import com.google.code.reelcash.data.geo.CountriesNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
-import com.google.code.reelcash.data.layout.fields.FieldList;
 import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
 import com.google.code.reelcash.swing.JRegistryPanel;
-import java.util.Iterator;
 
 /**
  *
@@ -56,5 +54,6 @@ public class CountriesPanel extends JRegistryPanel {
         public FieldDisplay getUIDisplayInfo(Field field) {
             return getData().get(field);
         }
+
     }
 }

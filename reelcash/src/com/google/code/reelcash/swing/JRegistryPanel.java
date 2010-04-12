@@ -219,6 +219,7 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 column.setMinWidth((int) dispInfo.getMinimumSize().getWidth());
                 column.setMaxWidth((int) dispInfo.getMaximumSize().getWidth());
                 column.setPreferredWidth((int) dispInfo.getPreferredSize().getWidth());
+
                 column.setHeaderValue(dispInfo.getCaption());
             } else {
                 column.setMinWidth(0);
