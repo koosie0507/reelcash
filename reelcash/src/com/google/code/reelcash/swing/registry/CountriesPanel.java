@@ -4,7 +4,7 @@
  */
 package com.google.code.reelcash.swing.registry;
 
-import com.google.code.reelcash.data.geo.CountriesNode;
+import com.google.code.reelcash.data.geo.CountryNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
 import com.google.code.reelcash.swing.FieldDisplay;
@@ -16,16 +16,13 @@ import com.google.code.reelcash.swing.JRegistryPanel;
  * @author cusi
  */
 public class CountriesPanel extends JRegistryPanel {
+    private static final long serialVersionUID = -2976002956602368882L;
 
-    private CountriesNode countries;
     private CountriesDisplayFactory countriesDisplay;
 
     @Override
     public DataLayoutNode getDataLayoutNode() {
-        if (null == countries) {
-            countries = new CountriesNode();
-        }
-        return countries;
+        return CountryNode.getInstance();
     }
 
     @Override
@@ -40,7 +37,7 @@ public class CountriesPanel extends JRegistryPanel {
         CountriesDisplayFactory() {
             super();
 
-            CountriesNode node = (CountriesNode) CountriesPanel.this.getDataLayoutNode();
+            CountryNode node = (CountryNode) CountriesPanel.this.getDataLayoutNode();
             FieldDisplay disp = FieldDisplay.newInstance(node.getIdField());
             disp.setVisible(false);
             getData().put(node.getIdField(), disp);

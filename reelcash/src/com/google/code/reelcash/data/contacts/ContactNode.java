@@ -1,33 +1,34 @@
-package com.google.code.reelcash.data.geo;
+package com.google.code.reelcash.data.contacts;
 
 import com.google.code.reelcash.data.KeyRole;
-import com.google.code.reelcash.data.layout.FlatLayoutNode;
+import com.google.code.reelcash.data.geo.LocationNode;
+import com.google.code.reelcash.data.layout.RootLayoutNode;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.ReferenceField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 
 /**
- * Represents a location.
- * @author cusi
+ *
+ * @author andrei.olar
  */
-public class LocationNode extends FlatLayoutNode {
+public class ContactNode extends RootLayoutNode {
 
     private static final Object SYNC_ROOT = new Object();
     private static final String TABLE_NAME = "locations";
-    private static LocationNode instance;
+    private static ContactNode instance;
 
-    private LocationNode() {
+    private ContactNode() {
         super(TABLE_NAME);
         getFieldList().add(new IntegerField("id", KeyRole.PRIMARY, true));
-        getFieldList().add(new StringField("address", KeyRole.NONE, true));
-        getFieldList().add(new StringField("postal_code", KeyRole.NONE, true));
-        getFieldList().add(new ReferenceField(CityNode.getInstance().getIdField(), "city_id"));
+        getFieldList().add(new StringField("name", KeyRole.NONE, true));
+        getFieldList().add(new StringField("surname", KeyRole.NONE, true));
+        getFieldList().add(new ReferenceField(LocationNode.getInstance().getIdField(), "location_id"));
     }
 
-    public static LocationNode getInstance() {
+    public static ContactNode getInstance() {
         synchronized (SYNC_ROOT) {
             if (null == instance)
-                instance = new LocationNode();
+                instance = new ContactNode();
         }
         return instance;
     }
@@ -44,7 +45,7 @@ public class LocationNode extends FlatLayoutNode {
         return (StringField) getFieldList().get(2);
     }
 
-    public ReferenceField getCityIdField() {
+    public ReferenceField getLocationIdField() {
         return (ReferenceField) getFieldList().get(3);
     }
 }

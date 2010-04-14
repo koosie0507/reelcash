@@ -57,10 +57,8 @@ create table if not exists `contacts` (
 	`id` INTEGER PRIMARY KEY,
 	`name` text not null,
 	`surname` text not null,
-	`address` text not null default(''),
-	`postal_code` text,
-	`city_id` integer not null,
-	constraint fk_contacts_city foreign key(`city_id`) references `cities`(`id`) on delete cascade on update cascade
+        `location_id` integer not null, -- default contact location
+	constraint fk_contacts_city foreign key(`location_id`) references `locations`(`id`)
 );
 
 create table if not exists `contact_locations` (
@@ -69,7 +67,7 @@ create table if not exists `contact_locations` (
 	`contact_id` integer not null,
 	`location_id` integer not null,
 	`subdivision` text, -- contacts may reside at the same or at different subdivisions per location
-	`priority` integer not null default(1), -- this is the default location for contacting this contact
+	`priority` integer not null default(1), 
 	constraint fk_locations_contact foreign key (`contact_id`) references `contacts`(`id`),
 	constraint fk_contacts_location foreign key (`location_id`) references `locations`(`id`)
 );

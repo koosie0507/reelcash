@@ -9,17 +9,17 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
-import sun.swing.DefaultLookup;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
  * @author cusi
  */
 public class ComboListCellRenderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = 7015320515115727627L;
 
     private int displayMemberIndex;
 
@@ -30,6 +30,7 @@ public class ComboListCellRenderer extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList list, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
+
         setComponentOrientation(list.getComponentOrientation());
 
         Color bg = null;
@@ -38,52 +39,45 @@ public class ComboListCellRenderer extends DefaultListCellRenderer {
         JList.DropLocation dropLocation = list.getDropLocation();
         if (dropLocation != null
                 && !dropLocation.isInsert()
-                && dropLocation.getIndex() == index) {
-
-            bg = DefaultLookup.getColor(this, ui, "List.dropCellBackground");
-            fg = DefaultLookup.getColor(this, ui, "List.dropCellForeground");
-
+                && dropLocation.getIndex() == index)
             isSelected = true;
+
+        if (isSelected) {
+            setBackground(list.getSelectionBackground());
+            setForeground(list.getSelectionForeground());
+        }
+        else {
+            setBackground(list.getBackground());
+            setForeground(list.getForeground());
         }
 
-	if (isSelected) {
-            setBackground(bg == null ? list.getSelectionBackground() : bg);
-	    setForeground(fg == null ? list.getSelectionForeground() : fg);
-	}
-	else {
-	    setBackground(list.getBackground());
-	    setForeground(list.getForeground());
-	}
-
-	if (value instanceof DataRow) {
+        if (value instanceof DataRow) {
             DataRow row = (DataRow) value;
             setText(row.getValue(displayMemberIndex).toString());
         }
         else if (value instanceof Icon) {
-	    setIcon((Icon)value);
-	    setText("");
-	}
-	else {
-	    setIcon(null);
-	    setText((value == null) ? "" : value.toString());
-	}
+            setIcon((Icon) value);
+            setText("");
+        }
+        else {
+            setIcon(null);
+            setText((value == null) ? "" : value.toString());
+        }
 
-	setEnabled(list.isEnabled());
-	setFont(list.getFont());
+        setEnabled(list.isEnabled());
+        setFont(list.getFont());
 
         Border border = null;
         if (cellHasFocus) {
             if (isSelected) {
-                border = DefaultLookup.getBorder(this, ui, "List.focusSelectedCellHighlightBorder");
+                border = UIManager.getBorder("List.focusSelectedCellHighlightBorder");
+                if (null == border)
+                    border = UIManager.getBorder("List.focusCellHighlightBorder");
             }
-            if (border == null) {
-                border = DefaultLookup.getBorder(this, ui, "List.focusCellHighlightBorder");
-            }
-        } else {
-            //border = getNoFocusBorder();
         }
-	setBorder(border);
-
-	return this;
+        else
+            border = new EmptyBorder(1, 1, 1, 1);
+        
+        return this;
     }
 }

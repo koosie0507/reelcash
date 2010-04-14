@@ -15,18 +15,30 @@ import com.google.code.reelcash.data.layout.fields.StringField;
  *
  * @author cusi
  */
-public class CountriesNode extends FlatLayoutNode {
+public class CountryNode extends FlatLayoutNode {
+
+    private static final Object SYNC_ROOT = new Object();
+    private static final String TABLE_NAME = "regions";
+    private static CountryNode instance;
 
     /**
      * Creates a new flat layout node for the "countries" data table.
      */
-    public CountriesNode() {
+    private CountryNode() {
         super("countries");
         super.getFieldList().add(new IntegerField("id", KeyRole.PRIMARY, true));
         super.getFieldList().add(new StringField("name", KeyRole.NONE, true));
         super.getFieldList().add(new StringField("iso_name", KeyRole.NONE, true));
         super.getFieldList().add(new StringField("iso_code2", KeyRole.NONE, true));
         super.getFieldList().add(new StringField("iso_code3", KeyRole.NONE, true));
+    }
+
+    public static CountryNode getInstance() {
+        synchronized (SYNC_ROOT) {
+            if (null == instance)
+                instance = new CountryNode();
+        }
+        return instance;
     }
 
     public Field getIdField() {
