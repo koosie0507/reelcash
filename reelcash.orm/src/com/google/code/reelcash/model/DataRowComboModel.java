@@ -1,7 +1,6 @@
 package com.google.code.reelcash.model;
 
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.layout.DataLayoutNode;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.ComboBoxModel;
@@ -15,15 +14,13 @@ import javax.swing.event.ListDataListener;
  */
 public class DataRowComboModel implements ComboBoxModel {
 
-    private final DataLayoutNode layout;
     private final ArrayList<DataRow> data;
     private final ArrayList<ListDataListener> listeners;
     private int valueMemberIndex;
     private int displayMemberIndex;
     private DataRow selectedRow;
 
-    public DataRowComboModel(DataLayoutNode layout) {
-        this.layout = layout;
+    public DataRowComboModel() {
         data = new ArrayList();
         listeners = new ArrayList();
         valueMemberIndex = 0;
