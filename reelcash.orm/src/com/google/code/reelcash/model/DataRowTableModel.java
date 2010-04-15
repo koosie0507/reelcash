@@ -52,6 +52,21 @@ public class DataRowTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * Clears the data from the model without notifying any listeners.
+     */
+    public void clearQuietly() {
+        dataRows.clear();
+    }
+
+    /**
+     * Clears the data from the table and notifies the model's listeners.
+     */
+    public void clear() {
+        dataRows.clear();
+        fireTableDataChanged();
+    }
+
     public void delete(int rowIndex) {
         fireTableRowsDeleted(rowIndex, rowIndex);
         dataRows.remove(rowIndex);
@@ -104,9 +119,17 @@ public class DataRowTableModel extends AbstractTableModel {
      * @param rows the new data of the table.
      */
     void fill(Collection<? extends DataRow> rows) {
-        dataRows.clear();
-        dataRows.addAll(rows);
-        fireTableDataChanged();
+
+        int size = dataRows.size();
+        if (size > 0) {
+            dataRows.clear();
+            fireTableRowsDeleted(0, size - 1);
+        }
+        size = rows.size();
+        if (size > 0) {
+            dataRows.addAll(rows);
+            fireTableRowsInserted(0, size - 1);
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
 import com.google.code.reelcash.swing.JRegistryPanel;
 import com.google.code.reelcash.swing.ReferenceFieldCellRenderer;
+import com.google.code.reelcash.swing.RefreshComponentDataListener;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JComboBox;
@@ -56,17 +57,9 @@ public class CountiesPanel extends JRegistryPanel {
             // combo boxes are a bit more complicated
             QueryMediator mediator = new QueryMediator(getDataSource());
             try {
-                List<DataRow> rows = mediator.fetchAll(RegionNode.getInstance());
-                DataRowComboModel model = new DataRowComboModel();
-                ((JComboBox) disp.getDisplayComponent()).setModel(model);
-                model.setDisplayMemberIndex(1);
-                ((JComboBox) disp.getDisplayComponent()).setRenderer(
-                        new ComboListCellRenderer(model.getDisplayMemberIndex()));
-                model.fill(rows);
-
-                getDataTable().getColumn(field.getName()).setCellRenderer(
-                        new ReferenceFieldCellRenderer(0, 1, rows));
-            }
+                RegionNode countryNode = RegionNode.getInstance();
+                CountiesPanel.this.initializeReferencedData(countryNode, countryNode.getNameField(), mediator, disp, field);
+             }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(CountiesPanel.this, e.getMessage(),
                         GlobalResources.getString("application_error_title"),

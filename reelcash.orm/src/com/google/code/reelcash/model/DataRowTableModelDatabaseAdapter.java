@@ -33,9 +33,31 @@ public class DataRowTableModelDatabaseAdapter implements TableModelListener {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final DataRowTableModelDatabaseAdapter other = (DataRowTableModelDatabaseAdapter) obj;
+        if (this.monitored != other.monitored && (this.monitored == null || !this.monitored.equals(other.monitored)))
+            return false;
+        if (this.node != other.node && (this.node == null || !this.node.equals(other.node)))
+            return false;
+        return true;
+    }
+
+    @Override
     protected void finalize() throws Throwable {
         monitored.removeTableModelListener(this);
         super.finalize();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (this.monitored != null ? this.monitored.hashCode() : 0);
+        hash = 97 * hash + (this.node != null ? this.node.hashCode() : 0);
+        return hash;
     }
 
     private void onRowInserted(DataRow row) {

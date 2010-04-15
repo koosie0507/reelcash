@@ -13,6 +13,7 @@ import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
 import com.google.code.reelcash.swing.JRegistryPanel;
 import com.google.code.reelcash.swing.ReferenceFieldCellRenderer;
+import com.google.code.reelcash.swing.RefreshComponentDataListener;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JComboBox;
@@ -41,6 +42,16 @@ public class CitiesPanel extends JRegistryPanel {
 
     private class CitiesDisplayFactory extends FieldDisplayFactory {
 
+        private DataRowComboModel comboModel;
+        private ReferenceFieldCellRenderer tableCellRenderer;
+        private QueryMediator queryMediator;
+
+        private QueryMediator getQueryMediator() {
+            if (null == queryMediator)
+                queryMediator = new QueryMediator(getDataSource());
+            return queryMediator;
+        }
+
         CitiesDisplayFactory() {
             super();
             CityNode cityNode = CityNode.getInstance();
@@ -49,22 +60,12 @@ public class CitiesPanel extends JRegistryPanel {
             disp.setVisible(false);
             getData().put(field, disp);
 
-            field = cityNode.getIdField();
+            field = cityNode.getCountyIdField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
-            // combo boxes are a bit more complicated
-            QueryMediator mediator = new QueryMediator(getDataSource());
             try {
-                List<DataRow> rows = mediator.fetchAll(CountyNode.getInstance());
-                DataRowComboModel model = new DataRowComboModel();
-                ((JComboBox) disp.getDisplayComponent()).setModel(model);
-                model.setDisplayMemberIndex(1);
-                ((JComboBox) disp.getDisplayComponent()).setRenderer(
-                        new ComboListCellRenderer(model.getDisplayMemberIndex()));
-                model.fill(rows);
-
-                getDataTable().getColumn(field.getName()).setCellRenderer(
-                        new ReferenceFieldCellRenderer(0, 1, rows));
+                CountyNode countyNode = CountyNode.getInstance();
+                CitiesPanel.this.initializeReferencedData(countyNode, countyNode.getNameField(), getQueryMediator(), disp, field);
             }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(CitiesPanel.this, e.getMessage(),

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.data.DataRow;
@@ -16,7 +12,8 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class ReferenceFieldCellRenderer extends DefaultTableCellRenderer {
 
-    private final List<DataRow> data;
+    private static final long serialVersionUID = 8387079661943076176L;
+    private List<DataRow> data;
     private final int valueColIdx;
     private final int displayColIdx;
 
@@ -26,11 +23,15 @@ public class ReferenceFieldCellRenderer extends DefaultTableCellRenderer {
         this.displayColIdx = displayColIdx;
     }
 
+    public void setData(List<DataRow> data) {
+        this.data = data;
+    }
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         String text = "";
         try {
-            if (null != value) {
+            if (null != value)
                 for (DataRow r : data) {
                     if (r.getValue(valueColIdx).equals(value)) {
                         Object disp = r.getValue(displayColIdx).toString();
@@ -38,9 +39,9 @@ public class ReferenceFieldCellRenderer extends DefaultTableCellRenderer {
                         break;
                     }
                 }
-            }
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        } finally {
+        }
+        finally {
             setText(text);
         }
     }

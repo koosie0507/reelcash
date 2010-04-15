@@ -46,9 +46,8 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
 
     @Override
     public GridBagLayout getLayout() {
-        if (null == layout) {
+        if (null == layout)
             layout = new GridBagLayout();
-        }
         return layout;
     }
 
@@ -64,9 +63,8 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
 
     private FieldDisplay findDisplay(Field f) {
         for (FieldDisplay disp : dispInfo) {
-            if (disp.getKey().equals(f.getName())) {
+            if (disp.getKey().equals(f.getName()))
                 return disp;
-            }
         }
         return null;
     }
@@ -147,9 +145,8 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
         int idx = 0;
         for (Iterator<Field> f = node.iterator(); f.hasNext();) {
             FieldDisplay disp = findDisplay(f.next());
-            if (null != disp) {
+            if (null != disp)
                 result.setValue(idx, disp.getValue());
-            }
             idx++;
         }
         return result;
@@ -166,7 +163,8 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
 
     /**
      * Sets the layout displayInfo responsable for metadata information provided to this component.
-     * @param displayInfo the displayInfo
+     * @param node node providing data layout
+     * @param dispInfo display information for the given node
      */
     public void setNode(DataLayoutNode node, FieldDisplayFactory dispInfo) {
         this.node = node;
@@ -188,11 +186,10 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
     }
 
     public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-        if (orientation == SwingConstants.HORIZONTAL) {
+        if (orientation == SwingConstants.HORIZONTAL)
             return visibleRect.width - 10;
-        } else {
+        else
             return visibleRect.height - 10;
-        }
     }
 
     public boolean getScrollableTracksViewportWidth() {
@@ -213,10 +210,10 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
      * @param row the data row containing relevant data.
      */
     public void setData(DataRow row) {
-        int idx = 0;
         for (FieldDisplay disp : dispInfo) {
-            disp.setValue(row.getValue(idx));
-            idx++;
+            int index = row.getFields().indexOf(disp.getKey());
+            if (index > -1)
+                disp.setValue(row.getValue(index));
         }
     }
 }

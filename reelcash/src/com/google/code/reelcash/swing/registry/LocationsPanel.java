@@ -55,16 +55,8 @@ public class LocationsPanel extends JRegistryPanel {
             // combo boxes are a bit more complicated
             QueryMediator mediator = new QueryMediator(getDataSource());
             try {
-                List<DataRow> rows = mediator.fetchAll(CityNode.getInstance());
-                DataRowComboModel model = new DataRowComboModel();
-                ((JComboBox) disp.getDisplayComponent()).setModel(model);
-                model.setDisplayMemberIndex(1);
-                ((JComboBox) disp.getDisplayComponent()).setRenderer(
-                        new ComboListCellRenderer(model.getDisplayMemberIndex()));
-                model.fill(rows);
-
-                getDataTable().getColumn(field.getName()).setCellRenderer(
-                        new ReferenceFieldCellRenderer(0, 1, rows));
+                CityNode cityNode = CityNode.getInstance();
+                LocationsPanel.this.initializeReferencedData(cityNode, cityNode.getNameField(), mediator, disp, field);
             }
             catch (SQLException e) {
                 JOptionPane.showMessageDialog(LocationsPanel.this, e.getMessage(),

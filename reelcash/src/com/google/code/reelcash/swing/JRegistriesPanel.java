@@ -1,11 +1,27 @@
 package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.data.RegistryLayout;
+import com.google.code.reelcash.data.geo.CityNode;
+import com.google.code.reelcash.data.geo.CountryNode;
+import com.google.code.reelcash.data.geo.CountyNode;
+import com.google.code.reelcash.data.geo.LocationNode;
+import com.google.code.reelcash.data.geo.RegionNode;
+import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.model.DataLayoutTreeModel;
+import com.google.code.reelcash.swing.registry.CitiesPanel;
+import com.google.code.reelcash.swing.registry.CountiesPanel;
+import com.google.code.reelcash.swing.registry.CountriesPanel;
+import com.google.code.reelcash.swing.registry.LocationsPanel;
+import com.google.code.reelcash.swing.registry.RegionsPanel;
 import java.awt.BorderLayout;
+import java.util.Hashtable;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 
 /**
  * <p>
@@ -24,11 +40,15 @@ public class JRegistriesPanel extends JPanel {
     private static final long serialVersionUID = -1475977611395913485L;
     private static final Object SYNC_ROOT = new Object();
     private static JRegistriesPanel instance;
+    private final Hashtable<DataLayoutNode, JRegistryPanel> nodePanelMappings;
     private JScrollPane leftContainer;
+    private JSplitPane mainContainer;
     private JTree registriesTree;
 
     private JRegistriesPanel() {
+        nodePanelMappings = new Hashtable<DataLayoutNode, JRegistryPanel>(23);
         initializeComponents();
+        initializeNodePanelMappings();
     }
 
     /**
@@ -45,22 +65,64 @@ public class JRegistriesPanel extends JPanel {
     }
 
     private JScrollPane getLeftContainer() {
-        if(null == leftContainer) {
+        if (null == leftContainer)
             leftContainer = new JScrollPane(getRegistriesTree());
-        }
         return leftContainer;
+    }
+
+    private JSplitPane getMainContainer() {
+        if (null == mainContainer)
+            mainContainer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, getLeftContainer(), new JPanel());
+        return mainContainer;
     }
 
     private JTree getRegistriesTree() {
         if (null == registriesTree) {
             DataLayoutTreeModel model = new DataLayoutTreeModel(RegistryLayout.getInstance());
             registriesTree = new JTree(model);
+            registriesTree.addTreeSelectionListener(new RegistryTreeSelectionListener());
         }
         return registriesTree;
     }
-    
+
     private void initializeComponents() {
         setLayout(new BorderLayout());
-        add(getLeftContainer(), BorderLayout.LINE_START);
+        add(getMainContainer(), BorderLayout.CENTER);
+    }
+
+    private void initializeNodePanelMappings() {
+        nodePanelMappings.put(CountryNode.getInstance(), new CountriesPanel());
+        nodePanelMappings.put(RegionNode.getInstance(), new RegionsPanel());
+        nodePanelMappings.put(CountyNode.getInstance(), new CountiesPanel());
+        nodePanelMappings.put(CityNode.getInstance(), new CitiesPanel());
+        nodePanelMappings.put(LocationNode.getInstance(), new LocationsPanel());
+    }
+
+    private class RegistryTreeSelectionListener implements TreeSelectionListener {
+
+        public void valueChanged(TreeSelectionEvent e) {
+            TreePath[] selPaths = e.getPaths();
+            TreePath selectedPath = null;
+            int selAddCount = 0;
+            for (int i = selPaths.length - 1; i > -1; i--) {
+                if (e.isAddedPath(i)) {
+                    selAddCount++;
+                    selectedPath = selPaths[i];
+                }
+            }
+
+            JPanel rightComponent = new JPanel();
+            JSplitPane container = JRegistriesPanel.this.getMainContainer();
+            if (null != selectedPath && selAddCount < 2) {
+                Object lastComponent = selectedPath.getLastPathComponent();
+                if (lastComponent instanceof DataLayoutNode && JRegistriesPanel.this.nodePanelMappings.containsKey((DataLayoutNode) lastComponent)) {
+                    rightComponent = JRegistriesPanel.this.nodePanelMappings.get((DataLayoutNode) lastComponent);
+                    ((JRegistryPanel) rightComponent).getDatabaseAdapter().readAll();
+                }
+            }
+            if (container.getRightComponent() instanceof JRegistryPanel)
+                ((JRegistryPanel) container.getRightComponent()).getTableModel().clearQuietly();
+            container.setRightComponent(rightComponent);
+        }
     }
 }

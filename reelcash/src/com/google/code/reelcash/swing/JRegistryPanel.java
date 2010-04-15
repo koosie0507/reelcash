@@ -7,15 +7,20 @@ import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.ReelcashDataSource;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
+import com.google.code.reelcash.data.sql.QueryMediator;
+import com.google.code.reelcash.model.DataRowComboModel;
 import com.google.code.reelcash.model.DataRowTableModel;
 import com.google.code.reelcash.model.DataRowTableModelDatabaseAdapter;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
 import javax.sql.DataSource;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -69,16 +74,14 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     }
 
     public String getCaption() {
-        if (null == caption) {
+        if (null == caption)
             caption = "";
-        }
         return caption;
     }
 
     private CardLayout getContentLayout() {
-        if (null == contentLayout) {
+        if (null == contentLayout)
             contentLayout = new CardLayout();
-        }
         return contentLayout;
     }
 
@@ -105,9 +108,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
      * @return a data source.
      */
     public DataSource getDataSource() {
-        if (null == dataSource) {
+        if (null == dataSource)
             dataSource = ReelcashDataSource.getInstance();
-        }
         return dataSource;
     }
 
@@ -124,9 +126,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     public abstract DataLayoutNode getDataLayoutNode();
 
     public DataRowTableModelDatabaseAdapter getDatabaseAdapter() {
-        if (null == databaseAdapter) {
+        if (null == databaseAdapter)
             databaseAdapter = new DataRowTableModelDatabaseAdapter(getDataSource(), getTableModel());
-        }
         return databaseAdapter;
     }
 
@@ -149,9 +150,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     }
 
     public DataRowTableModel getTableModel() {
-        if (null == tableModel) {
+        if (null == tableModel)
             tableModel = new DataRowTableModel(getDataLayoutNode());
-        }
         return tableModel;
     }
 
@@ -217,7 +217,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 column.setPreferredWidth((int) dispInfo.getPreferredSize().getWidth());
 
                 column.setHeaderValue(dispInfo.getCaption());
-            } else {
+            }
+            else {
                 column.setMinWidth(0);
                 column.setMaxWidth(1);
                 column.setPreferredWidth(0);
@@ -225,7 +226,22 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 column.setResizable(false);
             }
         }
+    }
 
+    protected void initializeReferencedData(DataLayoutNode node, Field displayField, QueryMediator mediator,
+            FieldDisplay disp, Field field) throws SQLException {
+        List<DataRow> rows = mediator.fetchAll(node);
+        int displayMember = node.getFieldList().indexOf(displayField);
+        ReferenceFieldCellRenderer tableCellRenderer = new ReferenceFieldCellRenderer(0, displayMember, rows);
+        DataRowComboModel comboModel = new DataRowComboModel();
+        comboModel.fill(rows);
+        
+        JComboBox countriesCombo = (JComboBox) disp.getDisplayComponent();
+        countriesCombo.setModel(comboModel);
+        countriesCombo.addAncestorListener(new RefreshComponentDataListener(this.getDataSource(), comboModel, tableCellRenderer));
+        countriesCombo.setRenderer(new ComboListCellRenderer(displayMember));
+        // provide initial data
+        getDataTable().getColumn(field.getName()).setCellRenderer(tableCellRenderer);
     }
 
     public void valueChanged(ListSelectionEvent e) {
@@ -262,14 +278,14 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
             JToggleButton button;
             try {
                 button = (JToggleButton) e.getSource();
-            } catch (ClassCastException exc) {
+            }
+            catch (ClassCastException exc) {
                 Log.write().fine(exc.getMessage());
                 button = null;
             }
 
-            if (null == button) {
+            if (null == button)
                 return;
-            }
             JRegistryPanel.this.adapter.setSender(button);
             if (button.isSelected()) {
                 String warning;
@@ -293,7 +309,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.ITEM_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.INSERT;
-            } else {
+            }
+            else {
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.TABLE_CARD_NAME);
                 // this is just another way to cancel creation of rows
@@ -310,14 +327,14 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
             JToggleButton button;
             try {
                 button = (JToggleButton) e.getSource();
-            } catch (ClassCastException exc) {
+            }
+            catch (ClassCastException exc) {
                 Log.write().fine(exc.getMessage());
                 button = null;
             }
 
-            if (null == button) {
+            if (null == button)
                 return;
-            }
             if (0 > selectedIndex) {
                 JOptionPane.showMessageDialog(JRegistryPanel.this, Resources.getString("select_row"),
                         GlobalResources.getString("basic_info_title"), JOptionPane.INFORMATION_MESSAGE);
@@ -349,7 +366,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.ITEM_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.UPDATE;
-            } else {
+            }
+            else {
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.TABLE_CARD_NAME);
                 // this is just another way to cancel creation of rows
@@ -359,6 +377,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
     }
 
     private class DeleteItemAction extends AbstractAction {
+
+        private static final long serialVersionUID = 810551388261185071L;
 
         public void actionPerformed(ActionEvent e) {
             if (0 > selectedIndex) {
@@ -394,30 +414,31 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                         JRegistryPanel.this.getTableModel().update(selectedIndex, modified);
                         break;
                 }
-            } catch (ReelcashException exc) {
+            }
+            catch (ReelcashException exc) {
                 JOptionPane.showMessageDialog(JRegistryPanel.this, exc.getStackTrace(),
-                        GlobalResources.getString("application_error"),
+                        GlobalResources.getString("application_error_title"),
                         JOptionPane.ERROR_MESSAGE);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t) {
                 JOptionPane.showMessageDialog(JRegistryPanel.this, t.getStackTrace(),
                         GlobalResources.getString("fatal_error_title"),
                         JOptionPane.ERROR_MESSAGE);
-            } finally {
+            }
+            finally {
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.TABLE_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.DEFAULT;
 
-                if (null != sender) {
+                if (null != sender)
                     sender.setSelected(false);
-                }
             }
         }
 
         public void actionPerformed(ActionEvent e) {
             String actionCommand = e.getActionCommand();
-            if (null == actionCommand) {
+            if (null == actionCommand)
                 return;
-            }
             if (JDataLayoutNodeComponent.SAVE_ACTION.equals(actionCommand)) {
                 savePerformed();
                 return;
@@ -427,9 +448,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 JRegistryPanel.this.getContentLayout().show(JRegistryPanel.this.getContentPane(),
                         JRegistryPanel.TABLE_CARD_NAME);
                 JRegistryPanel.this.mode = RegistryPanelMode.DEFAULT;
-                if (null != sender) {
+                if (null != sender)
                     sender.setSelected(false);
-                }
             }
         }
 

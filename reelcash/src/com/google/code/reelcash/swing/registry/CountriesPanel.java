@@ -37,7 +37,7 @@ public class CountriesPanel extends JRegistryPanel {
         CountriesDisplayFactory() {
             super();
 
-            CountryNode node = (CountryNode) CountriesPanel.this.getDataLayoutNode();
+            CountryNode node = CountryNode.getInstance();
             FieldDisplay disp = FieldDisplay.newInstance(node.getIdField());
             disp.setVisible(false);
             getData().put(node.getIdField(), disp);
