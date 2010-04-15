@@ -1,17 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.google.code.reelcash.swing.registry;
 
 import com.google.code.reelcash.GlobalResources;
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.DataRowComboModel;
-import com.google.code.reelcash.data.geo.LocationsLayout;
+import com.google.code.reelcash.data.geo.CityNode;
+import com.google.code.reelcash.data.geo.LocationNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
 import com.google.code.reelcash.data.sql.QueryMediator;
+import com.google.code.reelcash.model.DataRowComboModel;
 import com.google.code.reelcash.swing.ComboListCellRenderer;
 import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
@@ -27,46 +23,40 @@ import javax.swing.JOptionPane;
  * @author cusi
  */
 public class LocationsPanel extends JRegistryPanel {
-    private LocationsLayout layout;
-    private FieldDisplayFactory displayInfoFactory;
 
-    private LocationsLayout getLocationsLayout() {
-        if (null == layout) {
-            layout = new LocationsLayout();
-        }
-        return layout;
-    }
+    private static final long serialVersionUID = -1606333121999100933L;
+    private FieldDisplayFactory displayInfoFactory;
 
     @Override
     public DataLayoutNode getDataLayoutNode() {
-        return getLocationsLayout().getLocations();
+        return LocationNode.getInstance();
     }
 
     @Override
     public FieldDisplayFactory getDisplayInfoFactory() {
-        if(null == displayInfoFactory)
+        if (null == displayInfoFactory)
             displayInfoFactory = new LocationsDisplayFactory();
         return displayInfoFactory;
     }
 
     private class LocationsDisplayFactory extends FieldDisplayFactory {
-                LocationsDisplayFactory() {
-            super();
 
-            Field field = LocationsPanel.this.getLocationsLayout().getCityIdField();
+        LocationsDisplayFactory() {
+            super();
+            LocationNode locationNode = LocationNode.getInstance(); // reduce synchronizations
+            Field field = locationNode.getIdField();
             FieldDisplay disp = FieldDisplay.newInstance(field);
             disp.setVisible(false);
             getData().put(field, disp);
 
-            field = LocationsPanel.this.getLocationsLayout().getLocationCityField();
+            field = locationNode.getCityIdField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
             // combo boxes are a bit more complicated
             QueryMediator mediator = new QueryMediator(getDataSource());
-            DataLayoutNode cities = LocationsPanel.this.getLocationsLayout().getCities();
             try {
-                List<DataRow> rows = mediator.fetchAll(cities);
-                DataRowComboModel model = new DataRowComboModel(cities);
+                List<DataRow> rows = mediator.fetchAll(CityNode.getInstance());
+                DataRowComboModel model = new DataRowComboModel();
                 ((JComboBox) disp.getDisplayComponent()).setModel(model);
                 model.setDisplayMemberIndex(1);
                 ((JComboBox) disp.getDisplayComponent()).setRenderer(
@@ -75,17 +65,18 @@ public class LocationsPanel extends JRegistryPanel {
 
                 getDataTable().getColumn(field.getName()).setCellRenderer(
                         new ReferenceFieldCellRenderer(0, 1, rows));
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 JOptionPane.showMessageDialog(LocationsPanel.this, e.getMessage(),
                         GlobalResources.getString("application_error_title"),
                         JOptionPane.ERROR_MESSAGE);
             }
 
-            field = LocationsPanel.this.getLocationsLayout().getLocationAddressField();
+            field = locationNode.getAddressField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
 
-            field = LocationsPanel.this.getLocationsLayout().getLocationPostalCodeField();
+            field = locationNode.getPostalCodeField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
         }
@@ -94,6 +85,5 @@ public class LocationsPanel extends JRegistryPanel {
         public FieldDisplay getUIDisplayInfo(Field field) {
             return getData().get(field);
         }
-
     }
 }

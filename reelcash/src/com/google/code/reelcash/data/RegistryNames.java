@@ -1,4 +1,4 @@
-package com.google.code.reelcash.data.layout.fields;
+package com.google.code.reelcash.data;
 
 import java.util.ResourceBundle;
 
@@ -7,12 +7,12 @@ import java.util.ResourceBundle;
  * 
  * @author andrei.olar
  */
-public class Resources {
+class RegistryNames {
 
     private static final ResourceBundle bundle;
 
     static {
-        bundle = ResourceBundle.getBundle(Resources.class.getPackage().getName().concat("resources"));
+        bundle = ResourceBundle.getBundle(RegistryNames.class.getPackage().getName().concat(".registry_names"));
         if (null == bundle)
             throw new RuntimeException("FATAL: can't initialize field resources!");
     }

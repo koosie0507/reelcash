@@ -1,18 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.GlobalResources;
 import com.google.code.reelcash.Log;
 import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.DataRowTableModel;
-import com.google.code.reelcash.data.DataRowTableModelDatabaseAdapter;
 import com.google.code.reelcash.data.ReelcashDataSource;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
+import com.google.code.reelcash.model.DataRowTableModel;
+import com.google.code.reelcash.model.DataRowTableModelDatabaseAdapter;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;

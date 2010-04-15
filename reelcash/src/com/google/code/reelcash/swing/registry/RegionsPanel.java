@@ -1,16 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.google.code.reelcash.swing.registry;
 
 import com.google.code.reelcash.GlobalResources;
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.DataRowComboModel;
-import com.google.code.reelcash.data.geo.RegionsLayout;
+import com.google.code.reelcash.data.geo.CountryNode;
+import com.google.code.reelcash.data.geo.RegionNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
 import com.google.code.reelcash.data.sql.QueryMediator;
+import com.google.code.reelcash.model.DataRowComboModel;
 import com.google.code.reelcash.swing.ComboListCellRenderer;
 import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
@@ -27,18 +24,11 @@ import javax.swing.JOptionPane;
  */
 public class RegionsPanel extends JRegistryPanel {
 
-    private RegionsLayout layout;
-
-    private RegionsLayout getRegionsLayout() {
-        if (null == layout) {
-            layout = new RegionsLayout();
-        }
-        return layout;
-    }
+    private static final long serialVersionUID = -7314012231968122983L;
 
     @Override
     public DataLayoutNode getDataLayoutNode() {
-        return getRegionsLayout().getRegions();
+        return RegionNode.getInstance();
     }
 
     @Override
@@ -51,39 +41,39 @@ public class RegionsPanel extends JRegistryPanel {
         RegionsDisplayFactory() {
             super();
 
-            Field field = RegionsPanel.this.getRegionsLayout().getRegionIdField();
+            Field field = RegionNode.getInstance().getIdField();
             FieldDisplay disp = FieldDisplay.newInstance(field);
             disp.setVisible(false);
             getData().put(field, disp);
 
-            field = RegionsPanel.this.getRegionsLayout().getRegionCountryField();
+            field = RegionNode.getInstance().getCountryIdField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
             // combo boxes are a bit more complicated
             QueryMediator mediator = new QueryMediator(getDataSource());
-            DataLayoutNode countries = RegionsPanel.this.getRegionsLayout().getCountries();
             try {
-                List<DataRow> rows = mediator.fetchAll(countries);
-                DataRowComboModel model = new DataRowComboModel(countries);
+                List<DataRow> rows = mediator.fetchAll(CountryNode.getInstance());
+                DataRowComboModel model = new DataRowComboModel();
                 ((JComboBox) disp.getDisplayComponent()).setModel(model);
                 model.setDisplayMemberIndex(1);
                 ((JComboBox) disp.getDisplayComponent()).setRenderer(
                         new ComboListCellRenderer(model.getDisplayMemberIndex()));
                 model.fill(rows);
-                
+
                 getDataTable().getColumn(field.getName()).setCellRenderer(
                         new ReferenceFieldCellRenderer(0, 1, rows));
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 JOptionPane.showMessageDialog(RegionsPanel.this, e.getMessage(),
                         GlobalResources.getString("application_error_title"),
                         JOptionPane.ERROR_MESSAGE);
             }
 
-            field = RegionsPanel.this.getRegionsLayout().getRegionNameField();
+            field = RegionNode.getInstance().getNameField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
 
-            field = RegionsPanel.this.getRegionsLayout().getRegionCodeField();
+            field = RegionNode.getInstance().getCodeField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
         }

@@ -14,7 +14,7 @@ import com.google.code.reelcash.data.layout.fields.StringField;
 public class ContactNode extends RootLayoutNode {
 
     private static final Object SYNC_ROOT = new Object();
-    private static final String TABLE_NAME = "locations";
+    private static final String TABLE_NAME = "contacts";
     private static ContactNode instance;
 
     private ContactNode() {

@@ -1,16 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.google.code.reelcash.swing.registry;
 
 import com.google.code.reelcash.GlobalResources;
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.DataRowComboModel;
-import com.google.code.reelcash.data.geo.CountiesLayout;
+import com.google.code.reelcash.data.geo.CountyNode;
+import com.google.code.reelcash.data.geo.RegionNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
 import com.google.code.reelcash.data.sql.QueryMediator;
+import com.google.code.reelcash.model.DataRowComboModel;
 import com.google.code.reelcash.swing.ComboListCellRenderer;
 import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
@@ -28,46 +25,39 @@ import javax.swing.JOptionPane;
  */
 public class CountiesPanel extends JRegistryPanel {
 
-    private CountiesLayout layout;
+    private static final long serialVersionUID = -2794114529164362321L;
     private FieldDisplayFactory displayInfoFactory;
-
-    private CountiesLayout getCountiesLayout() {
-        if (null == layout) {
-            layout = new CountiesLayout();
-        }
-        return layout;
-    }
 
     @Override
     public DataLayoutNode getDataLayoutNode() {
-        return getCountiesLayout().getCounties();
+        return CountyNode.getInstance();
     }
 
     @Override
     public FieldDisplayFactory getDisplayInfoFactory() {
-        if(null == displayInfoFactory)
+        if (null == displayInfoFactory)
             displayInfoFactory = new CountiesDisplayFactory();
         return displayInfoFactory;
     }
 
     private class CountiesDisplayFactory extends FieldDisplayFactory {
-                CountiesDisplayFactory() {
+
+        CountiesDisplayFactory() {
             super();
 
-            Field field = CountiesPanel.this.getCountiesLayout().getRegionIdField();
+            Field field = CountyNode.getInstance().getIdField();
             FieldDisplay disp = FieldDisplay.newInstance(field);
             disp.setVisible(false);
             getData().put(field, disp);
 
-            field = CountiesPanel.this.getCountiesLayout().getCountyRegionField();
+            field = CountyNode.getInstance().getRegionIdField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
             // combo boxes are a bit more complicated
             QueryMediator mediator = new QueryMediator(getDataSource());
-            DataLayoutNode regions = CountiesPanel.this.getCountiesLayout().getRegions();
             try {
-                List<DataRow> rows = mediator.fetchAll(regions);
-                DataRowComboModel model = new DataRowComboModel(regions);
+                List<DataRow> rows = mediator.fetchAll(RegionNode.getInstance());
+                DataRowComboModel model = new DataRowComboModel();
                 ((JComboBox) disp.getDisplayComponent()).setModel(model);
                 model.setDisplayMemberIndex(1);
                 ((JComboBox) disp.getDisplayComponent()).setRenderer(
@@ -76,17 +66,18 @@ public class CountiesPanel extends JRegistryPanel {
 
                 getDataTable().getColumn(field.getName()).setCellRenderer(
                         new ReferenceFieldCellRenderer(0, 1, rows));
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 JOptionPane.showMessageDialog(CountiesPanel.this, e.getMessage(),
                         GlobalResources.getString("application_error_title"),
                         JOptionPane.ERROR_MESSAGE);
             }
 
-            field = CountiesPanel.this.getCountiesLayout().getCountyNameField();
+            field = CountyNode.getInstance().getNameField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
 
-            field = CountiesPanel.this.getCountiesLayout().getCountyCodeField();
+            field = CountyNode.getInstance().getCodeField();
             disp = FieldDisplay.newInstance(field);
             getData().put(field, disp);
         }
@@ -95,6 +86,5 @@ public class CountiesPanel extends JRegistryPanel {
         public FieldDisplay getUIDisplayInfo(Field field) {
             return getData().get(field);
         }
-
     }
 }

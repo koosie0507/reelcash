@@ -2,8 +2,8 @@ package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.DataRowComboModel;
 import com.google.code.reelcash.data.layout.fields.*;
+import com.google.code.reelcash.model.DataRowComboModel;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
