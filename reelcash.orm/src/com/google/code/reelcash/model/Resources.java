@@ -1,6 +1,5 @@
 package com.google.code.reelcash.model;
 
-import com.google.code.reelcash.data.layout.*;
 import java.util.ResourceBundle;
 
 /**

@@ -52,7 +52,7 @@ public class DataRowTableModelDatabaseAdapter implements TableModelListener {
             mediator.updateRow(node, row);
         }
         catch (SQLException exc) {
-            throw new ReelcashException(Resources.getString("insert_failed"), exc);
+            throw new ReelcashException(Resources.getString("update_failed"), exc);
         }
     }
 
@@ -61,7 +61,7 @@ public class DataRowTableModelDatabaseAdapter implements TableModelListener {
             mediator.delete(node, row);
         }
         catch (SQLException exc) {
-            throw new ReelcashException(Resources.getString("insert_failed"), exc);
+            throw new ReelcashException(Resources.getString("delete_failed"), exc);
         }
     }
 

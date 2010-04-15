@@ -4,6 +4,7 @@
  */
 package com.google.code.reelcash.model;
 
+import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.KeyRole;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
@@ -41,8 +42,14 @@ public class DataRowTableModel extends AbstractTableModel {
 
     public void add(DataRow row) {
         int rowCount = dataRows.size();
-        dataRows.add(row);
-        fireTableRowsInserted(rowCount, rowCount);
+        try {
+            dataRows.add(row);
+            fireTableRowsInserted(rowCount, rowCount);
+        }
+        catch (ReelcashException t) {
+            dataRows.remove(row);
+            throw t;
+        }
     }
 
     public void delete(int rowIndex) {
@@ -151,17 +158,21 @@ public class DataRowTableModel extends AbstractTableModel {
     public void update(int rowIndex, DataRow row) {
         if (0 > rowIndex)
             return;
+
         if (rowIndex >= dataRows.size())
             throw new IndexOutOfBoundsException();
+
         DataRow existing = dataRows.get(rowIndex);
         if (row.size() != existing.size())
-            
             return; // mismatch
-        for (int i = existing.size() - 1; i > -1; i--) {
-            if (KeyRole.PRIMARY == existing.getFields().get(i).getKeyRole())
-                continue;
 
-            existing.setValue(i, row.getValue(i));
+        try {
+            dataRows.add(rowIndex, row);
+            fireTableRowsUpdated(rowIndex, rowIndex); // this may throw exception
+            dataRows.remove(rowIndex + 1); // remove old row
+        }
+        catch (ReelcashException e) {
+            dataRows.remove(rowIndex);
         }
     }
 }
