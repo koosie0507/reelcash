@@ -48,8 +48,17 @@ public class DataRow implements Iterable<String> {
             return false;
 
         for (int i = fields.size() - 1; i > -1; i--) {
-            if (!data[i].equals(row.data[i]))
+            // null == null and ref == ref
+            if (data[i] == row.data[i])
+                continue;
+
+            // at this point only one may be null
+            if (null == data[i] || null == row.data[i])
                 return false;
+
+            // neither is null, however they don't point to the same reference - must compare
+            if (data[i].equals(row.data[i]))
+                continue;
         }
         return true;
     }

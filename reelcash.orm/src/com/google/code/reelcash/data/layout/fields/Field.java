@@ -233,7 +233,7 @@ public abstract class Field implements Serializable, Cloneable, Comparable {
             return false;
 
         // check whether the value is assignable to the given type 
-        if (!(type.isInstance(value)))
+        if (null != value && !(type.isInstance(value)))
             return false;
 
         return true;
