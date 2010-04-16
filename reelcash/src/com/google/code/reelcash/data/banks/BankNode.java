@@ -1,6 +1,7 @@
 package com.google.code.reelcash.data.banks;
 
 import com.google.code.reelcash.data.KeyRole;
+import com.google.code.reelcash.data.geo.LocationNode;
 import com.google.code.reelcash.data.layout.RootLayoutNode;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.ReferenceField;
@@ -18,10 +19,34 @@ public class BankNode extends RootLayoutNode {
 
     private BankNode() {
         super(TABLE_NAME);
-        getFieldList().add(new IntegerField("id", KeyRole.PRIMARY, true));
+        IntegerField idField = new IntegerField("id", KeyRole.PRIMARY, true);
+        getFieldList().add(idField);
         getFieldList().add(new StringField("name", KeyRole.UNIQUE, true));
-        
-        getFieldList().add(new ReferenceField(getFieldList().get(0), "parent_id", false));
-        getFieldList().add(new ReferenceField(getFieldList().get(0), "parent_id", false));
+        getFieldList().add(new ReferenceField(LocationNode.getInstance().getIdField(), "location_id", true));
+        getFieldList().add(new ReferenceField(idField, "parent_id", false));
+    }
+
+    public static BankNode getInstance() {
+        synchronized (SYNC_ROOT) {
+            if (null == instance)
+                instance = new BankNode();
+        }
+        return instance;
+    }
+
+    public IntegerField getIdField() {
+        return (IntegerField) getFieldList().get(0);
+    }
+
+    public StringField getNameField() {
+        return (StringField) getFieldList().get(1);
+    }
+
+    public ReferenceField getLocationIdField() {
+        return (ReferenceField) getFieldList().get(2);
+    }
+
+    public ReferenceField getParentIdField() {
+        return (ReferenceField) getFieldList().get(3);
     }
 }
