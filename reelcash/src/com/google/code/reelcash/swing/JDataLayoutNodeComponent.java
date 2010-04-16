@@ -112,6 +112,8 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
         int gridy = 1;
         for (Field field : node) {
             FieldDisplay d = displayInfo.getUIDisplayInfo(field);
+            if (null == d)
+                continue;
             if (d.isVisible()) {
                 JLabel label = d.createDescriptionLabel();
                 JComponent component = d.getDisplayComponent();

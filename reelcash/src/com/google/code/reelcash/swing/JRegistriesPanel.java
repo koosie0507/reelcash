@@ -1,6 +1,8 @@
 package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.data.RegistryLayout;
+import com.google.code.reelcash.data.banks.BankAccountNode;
+import com.google.code.reelcash.data.banks.BankNode;
 import com.google.code.reelcash.data.contacts.ContactIdentityNode;
 import com.google.code.reelcash.data.contacts.ContactLocationNode;
 import com.google.code.reelcash.data.contacts.ContactNode;
@@ -15,6 +17,8 @@ import com.google.code.reelcash.data.geo.LocationNode;
 import com.google.code.reelcash.data.geo.RegionNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.model.DataLayoutTreeModel;
+import com.google.code.reelcash.swing.registry.BankAccountsPanel;
+import com.google.code.reelcash.swing.registry.BanksPanel;
 import com.google.code.reelcash.swing.registry.CitiesPanel;
 import com.google.code.reelcash.swing.registry.ContactIdentitiesPanel;
 import com.google.code.reelcash.swing.registry.ContactLocationsPanel;
@@ -117,6 +121,8 @@ public class JRegistriesPanel extends JPanel {
         nodePanelMappings.put(ContactIdentityNode.getInstance(), new ContactIdentitiesPanel());
         nodePanelMappings.put(ContactPhoneNode.getInstance(), new ContactPhonesPanel());
         nodePanelMappings.put(ContactWebAddressNode.getInstance(), new ContactWebAddressesPanel());
+        nodePanelMappings.put(BankNode.getInstance(), new BanksPanel());
+        nodePanelMappings.put(BankAccountNode.getInstance(), new BankAccountsPanel());
     }
 
     private class RegistryTreeSelectionListener implements TreeSelectionListener {

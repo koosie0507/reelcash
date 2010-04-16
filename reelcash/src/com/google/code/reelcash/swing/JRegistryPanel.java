@@ -246,6 +246,11 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         getDataTable().getColumn(field.getName()).setCellRenderer(tableCellRenderer);
     }
 
+    protected void showError(Exception e) {
+        JOptionPane.showMessageDialog(this, e.getMessage(), GlobalResources.getString("application_error_title"),
+                JOptionPane.ERROR_MESSAGE);
+    }
+
     public void valueChanged(ListSelectionEvent e) {
         if (e.getSource() instanceof ListSelectionModel) {
             ListSelectionModel selmodel = (ListSelectionModel) e.getSource();
