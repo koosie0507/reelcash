@@ -63,6 +63,8 @@ public class DataRowComboModel implements ComboBoxModel {
     }
 
     public void clear() {
+        if (data.isEmpty())
+            return;
         fireIntervalRemoved(0, data.size() - 1);
         data.clear();
     }
@@ -79,14 +81,12 @@ public class DataRowComboModel implements ComboBoxModel {
             DataRow row = data.get(idx);
 
             if (null == row.getValue(valueMemberIndex)) {
-                if (null == aValue) {
+                if (null == aValue)
                     return idx;
-                }
-            } else {
-                if (row.getValue(valueMemberIndex).equals(aValue)) {
-                    return idx;
-                }
             }
+            else
+                if (row.getValue(valueMemberIndex).equals(aValue))
+                    return idx;
             idx--;
         }
         return idx;
@@ -105,16 +105,14 @@ public class DataRowComboModel implements ComboBoxModel {
     }
 
     public Object getSelectedItem() {
-        if (null == selectedRow) {
+        if (null == selectedRow)
             return null;
-        }
         return selectedRow;
     }
 
     public Object getSelectedValue() {
-        if (null == selectedRow) {
+        if (null == selectedRow)
             return null;
-        }
         return selectedRow.getValue(valueMemberIndex);
     }
 
@@ -124,9 +122,8 @@ public class DataRowComboModel implements ComboBoxModel {
 
     public void remove(Object obj) {
         int idx = indexOfValue(obj);
-        if (0 > idx) {
+        if (0 > idx)
             return;
-        }
         fireIntervalRemoved(idx, idx);
         data.remove(idx);
     }
@@ -153,9 +150,8 @@ public class DataRowComboModel implements ComboBoxModel {
 
     public void setSelectedValue(Object anItem) {
         int idx = indexOfValue(anItem);
-        if (0 > idx) {
+        if (0 > idx)
             return;
-        }
         selectedRow = data.get(idx);
     }
 
