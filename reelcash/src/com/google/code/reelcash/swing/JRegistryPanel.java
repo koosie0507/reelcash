@@ -210,6 +210,8 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         for (Field field : getDataLayoutNode()) {
             FieldDisplay dispInfo = getDisplayInfoFactory().getUIDisplayInfo(field);
             TableColumn column = getDataTable().getColumn(field.getName());
+            if (null == dispInfo)
+                continue;
             if (dispInfo.isVisible()) {
                 column.setResizable(true);
                 column.setMinWidth((int) dispInfo.getMinimumSize().getWidth());
@@ -235,10 +237,10 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
         ReferenceFieldCellRenderer tableCellRenderer = new ReferenceFieldCellRenderer(0, displayMember, rows);
         DataRowComboModel comboModel = new DataRowComboModel();
         comboModel.fill(rows);
-        
+
         JComboBox countriesCombo = (JComboBox) disp.getDisplayComponent();
         countriesCombo.setModel(comboModel);
-        countriesCombo.addAncestorListener(new RefreshComponentDataListener(this.getDataSource(), comboModel, tableCellRenderer));
+        countriesCombo.addAncestorListener(new RefreshComponentDataListener(node, this.getDataSource(), comboModel, tableCellRenderer));
         countriesCombo.setRenderer(new ComboListCellRenderer(displayMember));
         // provide initial data
         getDataTable().getColumn(field.getName()).setCellRenderer(tableCellRenderer);

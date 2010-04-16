@@ -1,6 +1,13 @@
 package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.data.RegistryLayout;
+import com.google.code.reelcash.data.contacts.ContactIdentityNode;
+import com.google.code.reelcash.data.contacts.ContactLocationNode;
+import com.google.code.reelcash.data.contacts.ContactNode;
+import com.google.code.reelcash.data.contacts.ContactPhoneNode;
+import com.google.code.reelcash.data.contacts.ContactWebAddressNode;
+import com.google.code.reelcash.data.contacts.PhoneNode;
+import com.google.code.reelcash.data.contacts.WebAddressNode;
 import com.google.code.reelcash.data.geo.CityNode;
 import com.google.code.reelcash.data.geo.CountryNode;
 import com.google.code.reelcash.data.geo.CountyNode;
@@ -9,10 +16,17 @@ import com.google.code.reelcash.data.geo.RegionNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.model.DataLayoutTreeModel;
 import com.google.code.reelcash.swing.registry.CitiesPanel;
+import com.google.code.reelcash.swing.registry.ContactIdentitiesPanel;
+import com.google.code.reelcash.swing.registry.ContactLocationsPanel;
+import com.google.code.reelcash.swing.registry.ContactPhonesPanel;
+import com.google.code.reelcash.swing.registry.ContactWebAddressesPanel;
+import com.google.code.reelcash.swing.registry.ContactsPanel;
 import com.google.code.reelcash.swing.registry.CountiesPanel;
 import com.google.code.reelcash.swing.registry.CountriesPanel;
 import com.google.code.reelcash.swing.registry.LocationsPanel;
+import com.google.code.reelcash.swing.registry.PhonesPanel;
 import com.google.code.reelcash.swing.registry.RegionsPanel;
+import com.google.code.reelcash.swing.registry.WebAddressesPanel;
 import java.awt.BorderLayout;
 import java.util.Hashtable;
 import javax.swing.JPanel;
@@ -96,6 +110,13 @@ public class JRegistriesPanel extends JPanel {
         nodePanelMappings.put(CountyNode.getInstance(), new CountiesPanel());
         nodePanelMappings.put(CityNode.getInstance(), new CitiesPanel());
         nodePanelMappings.put(LocationNode.getInstance(), new LocationsPanel());
+        nodePanelMappings.put(ContactNode.getInstance(), new ContactsPanel());
+        nodePanelMappings.put(PhoneNode.getInstance(), new PhonesPanel());
+        nodePanelMappings.put(WebAddressNode.getInstance(), new WebAddressesPanel());
+        nodePanelMappings.put(ContactLocationNode.getInstance(), new ContactLocationsPanel());
+        nodePanelMappings.put(ContactIdentityNode.getInstance(), new ContactIdentitiesPanel());
+        nodePanelMappings.put(ContactPhoneNode.getInstance(), new ContactPhonesPanel());
+        nodePanelMappings.put(ContactWebAddressNode.getInstance(), new ContactWebAddressesPanel());
     }
 
     private class RegistryTreeSelectionListener implements TreeSelectionListener {

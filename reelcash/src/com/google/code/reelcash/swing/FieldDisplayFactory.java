@@ -28,6 +28,12 @@ public abstract class FieldDisplayFactory {
         return data;
     }
 
+    protected FieldDisplay addFieldDisplayInfo(Field field) {
+        FieldDisplay display = FieldDisplay.newInstance(field);
+        getData().put(field, display);
+        return display;
+    }
+
     public abstract FieldDisplay getUIDisplayInfo(Field field);
 
     /**

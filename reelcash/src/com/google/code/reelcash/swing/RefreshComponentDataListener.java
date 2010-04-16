@@ -6,7 +6,7 @@ package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.GlobalResources;
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.geo.CountyNode;
+import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.sql.QueryMediator;
 import com.google.code.reelcash.model.DataRowComboModel;
 import java.sql.SQLException;
@@ -22,6 +22,8 @@ import javax.swing.event.AncestorListener;
  * @author andrei.olar
  */
 public class RefreshComponentDataListener implements AncestorListener {
+
+    private final DataLayoutNode node;
     private final DataSource dataSource;
     private final DataRowComboModel comboModel;
     private final ReferenceFieldCellRenderer tableCellRenderer;
@@ -29,11 +31,13 @@ public class RefreshComponentDataListener implements AncestorListener {
 
     /**
      *
+     * @param node 
      * @param dataSource
      * @param comboModel
      * @param tableCellRenderer
      */
-    public RefreshComponentDataListener(DataSource dataSource, DataRowComboModel comboModel, ReferenceFieldCellRenderer tableCellRenderer) {
+    public RefreshComponentDataListener(DataLayoutNode node, DataSource dataSource, DataRowComboModel comboModel, ReferenceFieldCellRenderer tableCellRenderer) {
+        this.node = node;
         this.dataSource = dataSource;
         this.comboModel = comboModel;
         this.tableCellRenderer = tableCellRenderer;
@@ -46,25 +50,35 @@ public class RefreshComponentDataListener implements AncestorListener {
     }
 
     public void ancestorAdded(AncestorEvent event) {
-        // the component is made visible
-        if (null != comboModel || null != tableCellRenderer)
-            try {
-                List<DataRow> rows = getQueryMediator().fetchAll(CountyNode.getInstance());
-                if (null != comboModel)
-                    comboModel.fill(rows);
-                if (null != tableCellRenderer)
-                    tableCellRenderer.setData(rows);
-            }
-            catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(),
-                        GlobalResources.getString("application_error_title"),
-                        JOptionPane.ERROR_MESSAGE);
-            }
+        try {
+            // the component is made visible
+            if (null != comboModel || null != tableCellRenderer)
+                try {
+                    List<DataRow> rows = getQueryMediator().fetchAll(node);
+                    if (null != comboModel)
+                        comboModel.fill(rows);
+                    if (null != tableCellRenderer)
+                        tableCellRenderer.setData(rows);
+                }
+                catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage(),
+                            GlobalResources.getString("application_error_title"),
+                            JOptionPane.ERROR_MESSAGE);
+                }
+        }
+        catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     public void ancestorRemoved(AncestorEvent event) {
-        if (null != comboModel)
-            comboModel.clear();
+        try {
+            if (null != comboModel)
+                comboModel.clear();
+        }
+        catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     public void ancestorMoved(AncestorEvent event) {

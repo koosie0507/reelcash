@@ -117,9 +117,9 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
                 JComponent component = d.getDisplayComponent();
                 add(label, getLabelConstraints(gridy));
                 add(component, getComponentConstraints(gridy));
-                dispInfo.add(d);
                 gridy++;
             }
+            dispInfo.add(d);
         }
 
         getLayout().invalidateLayout(this);

@@ -37,11 +37,11 @@ public class ContactNode extends RootLayoutNode {
         return (IntegerField) getFieldList().get(0);
     }
 
-    public StringField getAddressField() {
+    public StringField getNameField() {
         return (StringField) getFieldList().get(1);
     }
 
-    public StringField getPostalCodeField() {
+    public StringField getSurnameField() {
         return (StringField) getFieldList().get(2);
     }
 

@@ -1,22 +1,17 @@
 package com.google.code.reelcash.swing.registry;
 
 import com.google.code.reelcash.GlobalResources;
-import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.geo.CityNode;
 import com.google.code.reelcash.data.geo.CountyNode;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.layout.fields.Field;
 import com.google.code.reelcash.data.sql.QueryMediator;
 import com.google.code.reelcash.model.DataRowComboModel;
-import com.google.code.reelcash.swing.ComboListCellRenderer;
 import com.google.code.reelcash.swing.FieldDisplay;
 import com.google.code.reelcash.swing.FieldDisplayFactory;
 import com.google.code.reelcash.swing.JRegistryPanel;
 import com.google.code.reelcash.swing.ReferenceFieldCellRenderer;
-import com.google.code.reelcash.swing.RefreshComponentDataListener;
 import java.sql.SQLException;
-import java.util.List;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 /**
@@ -42,8 +37,6 @@ public class CitiesPanel extends JRegistryPanel {
 
     private class CitiesDisplayFactory extends FieldDisplayFactory {
 
-        private DataRowComboModel comboModel;
-        private ReferenceFieldCellRenderer tableCellRenderer;
         private QueryMediator queryMediator;
 
         private QueryMediator getQueryMediator() {
@@ -55,6 +48,7 @@ public class CitiesPanel extends JRegistryPanel {
         CitiesDisplayFactory() {
             super();
             CityNode cityNode = CityNode.getInstance();
+            
             Field field = cityNode.getIdField();
             FieldDisplay disp = FieldDisplay.newInstance(field);
             disp.setVisible(false);
