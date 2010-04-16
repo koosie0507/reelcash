@@ -1,5 +1,7 @@
 package com.google.code.reelcash.data;
 
+import com.google.code.reelcash.data.banks.BankAccountNode;
+import com.google.code.reelcash.data.banks.BankNode;
 import com.google.code.reelcash.data.contacts.ContactIdentityNode;
 import com.google.code.reelcash.data.contacts.ContactLocationNode;
 import com.google.code.reelcash.data.contacts.ContactNode;
@@ -22,6 +24,7 @@ import java.util.Hashtable;
  */
 public class RegistryLayout extends DataLayout {
 
+    public static final String TEXT = "_text";
     private static final Object SYNC_ROOT = new Object();
     private static RegistryLayout instance;
     private final String name;
@@ -31,18 +34,20 @@ public class RegistryLayout extends DataLayout {
         name = RegistryNames.getString("registrylayout_name");
 
         descriptions = new Hashtable<DataLayoutNode, String>();
-        CountryNode.getInstance().setText(RegistryNames.getString(CountryNode.getInstance().getName().concat("_text")));
-        RegionNode.getInstance().setText(RegistryNames.getString(RegionNode.getInstance().getName().concat("_text")));
-        CountyNode.getInstance().setText(RegistryNames.getString(CountyNode.getInstance().getName().concat("_text")));
-        CityNode.getInstance().setText(RegistryNames.getString(CityNode.getInstance().getName().concat("_text")));
-        LocationNode.getInstance().setText(RegistryNames.getString(LocationNode.getInstance().getName().concat("_text")));
-        ContactNode.getInstance().setText(RegistryNames.getString(ContactNode.getInstance().getName().concat("_text")));
-        ContactIdentityNode.getInstance().setText(RegistryNames.getString(ContactIdentityNode.getInstance().getName().concat("_text")));
-        ContactLocationNode.getInstance().setText(RegistryNames.getString(ContactLocationNode.getInstance().getName().concat("_text")));
-        ContactPhoneNode.getInstance().setText(RegistryNames.getString(ContactPhoneNode.getInstance().getName().concat("_text")));
-        ContactWebAddressNode.getInstance().setText(RegistryNames.getString(ContactWebAddressNode.getInstance().getName().concat("_text")));
-        PhoneNode.getInstance().setText(RegistryNames.getString(PhoneNode.getInstance().getName().concat("_text")));
-        WebAddressNode.getInstance().setText(RegistryNames.getString(WebAddressNode.getInstance().getName().concat("_text")));
+        CountryNode.getInstance().setText(RegistryNames.getString(CountryNode.getInstance().getName().concat(TEXT)));
+        RegionNode.getInstance().setText(RegistryNames.getString(RegionNode.getInstance().getName().concat(TEXT)));
+        CountyNode.getInstance().setText(RegistryNames.getString(CountyNode.getInstance().getName().concat(TEXT)));
+        CityNode.getInstance().setText(RegistryNames.getString(CityNode.getInstance().getName().concat(TEXT)));
+        LocationNode.getInstance().setText(RegistryNames.getString(LocationNode.getInstance().getName().concat(TEXT)));
+        ContactNode.getInstance().setText(RegistryNames.getString(ContactNode.getInstance().getName().concat(TEXT)));
+        ContactIdentityNode.getInstance().setText(RegistryNames.getString(ContactIdentityNode.getInstance().getName().concat(TEXT)));
+        ContactLocationNode.getInstance().setText(RegistryNames.getString(ContactLocationNode.getInstance().getName().concat(TEXT)));
+        ContactPhoneNode.getInstance().setText(RegistryNames.getString(ContactPhoneNode.getInstance().getName().concat(TEXT)));
+        ContactWebAddressNode.getInstance().setText(RegistryNames.getString(ContactWebAddressNode.getInstance().getName().concat(TEXT)));
+        PhoneNode.getInstance().setText(RegistryNames.getString(PhoneNode.getInstance().getName().concat(TEXT)));
+        WebAddressNode.getInstance().setText(RegistryNames.getString(WebAddressNode.getInstance().getName().concat(TEXT)));
+        BankNode.getInstance().setText(RegistryNames.getString(BankNode.getInstance().getName().concat(TEXT)));
+        BankAccountNode.getInstance().setText(RegistryNames.getString(BankAccountNode.getInstance().getName().concat(TEXT)));
         addRoot(CountryNode.getInstance());
         addRoot(RegionNode.getInstance());
         addRoot(CountyNode.getInstance());
@@ -51,6 +56,7 @@ public class RegistryLayout extends DataLayout {
         addRoot(ContactNode.getInstance());
         addRoot(PhoneNode.getInstance());
         addRoot(WebAddressNode.getInstance());
+        addRoot(BankNode.getInstance());
     }
 
     public static RegistryLayout getInstance() {
