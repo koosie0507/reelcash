@@ -103,37 +103,56 @@ public class QueryMediator {
     /**
      * Creates a new table row in the SQLite database based on the provided data.
      *
-     * @param tableName the name of the table in which we may insert the new data row.
+     * @param tableName the ifieldcurrentField of the table in which we may insert the new data row.
      * @param input the values which should be inserted.
      *
      * @return true upon successful completion of the statement(s).
-     * @throws SQLException 
+     * @throws SQLException
      */
     public boolean createRow(String tableName, DataRow input) throws SQLException {
+        return createRow(tableName, input, true);
+    }
+
+    /**
+     * Creates a new table row in the SQLite database based on the provided data.
+     *
+     * @param tableName the ifieldcurrentField of the table in which we may insert the new data row.
+     * @param input the values which should be inserted.
+     * @param noPk if this is true, the primary key will be left out of the insert statement.
+     * 
+     * @return true upon successful completion of the statement(s).
+     * @throws SQLException 
+     */
+    public boolean createRow(String tableName, DataRow input, boolean noPk) throws SQLException {
         StringBuilder sql = new StringBuilder("INSERT INTO `");
         sql.append(tableName);
-        Iterator<String> name = input.iterator();
-        if (!name.hasNext())
+        FieldList fields = new FieldList();
+        fields.addAll(input.getFields());
+        if (noPk)
+            fields.removeAll(fields.getPrimary());
+
+        Iterator<Field> ifieldcurrentField = fields.iterator();
+        if (!ifieldcurrentField.hasNext())
             return false;
 
         sql.append("` (`");
-        sql.append(name.next());
+        sql.append(ifieldcurrentField.next().getName());
         sql.append("`");
-        while (name.hasNext()) {
+        while (ifieldcurrentField.hasNext()) {
             sql.append(", `");
-            sql.append(name.next());
+            sql.append(ifieldcurrentField.next().getName());
             sql.append("`");
         }
 
         sql.append(") VALUES (?");
-        for (int i = input.getFields().size(); i > 1; i--) {
+        for (int i = fields.size(); i > 1; i--) {
             sql.append(",?");
         }
         sql.append(");");
         PreparedStatement insert = dataSource.getConnection().prepareStatement(sql.toString());
         int idx = 1;
 
-        for (Field field : input.getFields()) {
+        for (Field field : fields) {
             insert.setObject(idx, input.getValue(field.getName()));
             idx++;
         }
@@ -181,7 +200,7 @@ public class QueryMediator {
     /**
      * Updates the database table specified by the layout node.
      *
-     * @param layoutNode the node specifying the name of the database table
+     * @param layoutNode the node specifying the ifieldcurrentField of the database table
      * @param modified the row which was modified.
      * @return true, if no errors occur.
      *
@@ -239,7 +258,7 @@ public class QueryMediator {
      * Returns a list of data rows from the database by using the information provided
      * in the layout node.
      *
-     * @param layoutNode a data layout node containing the list of fields and table name.
+     * @param layoutNode a data layout node containing the list of fields and table ifieldcurrentField.
      *
      * @return a list of data rows.
      * @throws SQLException when the layout node doesn't define fields or when a database
