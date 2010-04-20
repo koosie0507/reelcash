@@ -5,14 +5,22 @@
 package com.google.code.reelcash.data.sql;
 
 import com.google.code.reelcash.data.DataRow;
+import com.google.code.reelcash.data.KeyRole;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
+import com.google.code.reelcash.data.layout.fields.BigDecimalField;
+import com.google.code.reelcash.data.layout.fields.BooleanField;
+import com.google.code.reelcash.data.layout.fields.DateField;
 import com.google.code.reelcash.data.layout.fields.Field;
 import com.google.code.reelcash.data.layout.fields.FieldList;
+import com.google.code.reelcash.data.layout.fields.IntegerField;
+import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.util.SysUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -255,6 +263,89 @@ public class QueryMediator {
     }
 
     /**
+     * Fetches data from the database with a simple (non-parameterized) SQL statement.
+     * @param sql the SQL statement used for fetching data
+     * @return an array of data rows which will point to a field structure deduced from
+     * the query result meta-data.
+     * @throws SQLException if certain errors occur
+     */
+    public DataRow[] fetchSimple(final String sql) throws SQLException {
+        Statement select = dataSource.getConnection().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = null;
+        ArrayList<DataRow> rows = new ArrayList<DataRow>();
+        try {
+            rs = select.executeQuery(sql);
+            ResultSetMetaData meta = rs.getMetaData();
+            FieldList fields = new FieldList();
+            initializeFieldList(meta, fields);
+            int colCount = meta.getColumnCount();
+
+            while (rs.next()) {
+                DataRow row = new DataRow(fields);
+                for (int i = 1; i <= colCount; i++) {
+                    int idx = fields.indexOf(meta.getColumnName(i));
+                    if (idx < 0)
+                        continue;
+                    row.setValue(idx, rs.getObject(i));
+                }
+                rows.add(row);
+            }
+        }
+        finally {
+            tryCloseResultSet(rs);
+        }
+        DataRow[] array = new DataRow[rows.size()];
+        rows.toArray(array);
+        rows = null;
+        return array;
+    }
+
+    /**
+     * Fetches data using a parameterized query.
+     *
+     * @param sql query
+     * @param params the parameters of the query.
+     *
+     * @return returns an array of data rows.
+     *
+     * @throws SQLException when errors occur at the SQL level.
+     */
+    public DataRow[] fetch(String sql, Object... params) throws SQLException {
+        PreparedStatement select = dataSource.getConnection().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = null;
+        ArrayList<DataRow> rows = new ArrayList<DataRow>();
+        try {
+            for (int i = params.length; i > 0; i--) {
+                select.setObject(i, params[i - 1]);
+            }
+            rs = select.executeQuery();
+            ResultSetMetaData meta = rs.getMetaData();
+            FieldList fields = new FieldList();
+            initializeFieldList(meta, fields);
+            int colCount = meta.getColumnCount();
+
+            while (rs.next()) {
+                DataRow row = new DataRow(fields);
+                for (int i = 1; i <= colCount; i++) {
+                    int idx = fields.indexOf(meta.getColumnName(i));
+                    if (idx < 0)
+                        continue;
+                    row.setValue(idx, rs.getObject(i));
+                }
+                rows.add(row);
+            }
+        }
+        finally {
+            tryCloseResultSet(rs);
+        }
+        
+        DataRow[] array = new DataRow[rows.size()];
+        rows.toArray(array);
+        rows = null;
+        return array;
+    }
+
+    /**
      * Returns a list of data rows from the database by using the information provided
      * in the layout node.
      *
@@ -296,14 +387,52 @@ public class QueryMediator {
             }
         }
         finally {
-            TryCloseResultSet(rs);
+            tryCloseResultSet(rs);
         }
         return rows;
     }
 
-    private static void TryCloseResultSet(ResultSet rs) throws SQLException {
+    private static void tryCloseResultSet(ResultSet rs) throws SQLException {
         if (null == rs)
             return;
         rs.close();
+    }
+
+    private static void initializeFieldList(final ResultSetMetaData meta, final FieldList fields) throws SQLException {
+        int colCount = meta.getColumnCount();
+        for (int i = 1; i <= colCount; i++) {
+            Field added = null;
+            switch (meta.getColumnType(i)) {
+                case Types.BIT:
+                    added = new BooleanField(meta.getColumnName(i), KeyRole.NONE, false);
+                    break;
+                case Types.BIGINT:
+                case Types.INTEGER:
+                case Types.TINYINT:
+                    added = new IntegerField(meta.getColumnName(i), KeyRole.NONE, false);
+                    break;
+                case Types.DECIMAL:
+                case Types.DOUBLE:
+                case Types.FLOAT:
+                    added = new BigDecimalField(meta.getColumnName(i), KeyRole.NONE, false);
+                    break;
+                case Types.DATE:
+                case Types.TIME:
+                case Types.TIMESTAMP:
+                    added = new DateField(meta.getColumnName(i), KeyRole.NONE, false);
+                    break;
+                case Types.CHAR:
+                case Types.VARCHAR:
+                case Types.NVARCHAR:
+                case Types.LONGNVARCHAR:
+                case Types.LONGVARCHAR:
+                case Types.NCHAR:
+                case Types.OTHER:
+                    added = new StringField(meta.getColumnName(i), KeyRole.NONE, false);
+            }
+            if (null == added || fields.contains(added))
+                continue;
+            fields.add(added);
+        }
     }
 }

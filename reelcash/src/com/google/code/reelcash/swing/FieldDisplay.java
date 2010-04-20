@@ -521,6 +521,7 @@ class ReferenceFieldDisplay extends FieldDisplay {
             displayComponent.setPreferredSize(getPreferredSize());
             displayComponent.setVisible(isVisible());
             displayComponent.setEnabled(!isReadOnly());
+            //new AutoCompleteJComboBoxer(displayComponent);
         }
         return displayComponent;
     }
