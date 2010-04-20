@@ -84,9 +84,8 @@ public class DataRowComboModel implements ComboBoxModel {
                 if (null == aValue)
                     return idx;
             }
-            else
-                if (row.getValue(valueMemberIndex).equals(aValue))
-                    return idx;
+            else if (row.getValue(valueMemberIndex).equals(aValue))
+                return idx;
             idx--;
         }
         return idx;
@@ -105,8 +104,6 @@ public class DataRowComboModel implements ComboBoxModel {
     }
 
     public Object getSelectedItem() {
-        if (null == selectedRow)
-            return null;
         return selectedRow;
     }
 
@@ -150,8 +147,10 @@ public class DataRowComboModel implements ComboBoxModel {
 
     public void setSelectedValue(Object anItem) {
         int idx = indexOfValue(anItem);
-        if (0 > idx)
+        if (0 > idx) {
+            selectedRow = null;
             return;
+        }
         selectedRow = data.get(idx);
     }
 

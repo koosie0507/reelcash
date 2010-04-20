@@ -57,8 +57,8 @@ public class DataRow implements Iterable<String> {
                 return false;
 
             // neither is null, however they don't point to the same reference - must compare
-            if (data[i].equals(row.data[i]))
-                continue;
+            if (!data[i].equals(row.data[i]))
+                return false;
         }
         return true;
     }
