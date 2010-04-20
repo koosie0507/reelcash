@@ -157,7 +157,6 @@ create table if not exists `businesses` (
 	-- a business is an entity capable of signing contracts. not to be confused with contacts.
 	`id` INTEGER PRIMARY KEY,
 	`name` text not null,
-	`county_id` integer not null,
 	`location_id` integer not null,
 	`bank_account_id` integer not null,
 	`legal_status_id` integer not null,
@@ -222,18 +221,16 @@ create table if not exists `document_states` (
 
 create table if not exists `documents` (
 	-- documents
-	`id` INTEGER PRIMARY KEY,
-	`number` text not null,
-	`type_id` integer not null,
-	`issuer_id` integer not null,
-	`recipient_id` integer not null,
-	`state_id` int not null,
-	`date_issued` datetime not null,
-	`date_finished` datetime not null,
-	`date_due` datetime,
-	`serial_number` text,
+	`id` INTEGER PRIMARY KEY, -- document ID - not displayed
+	`number` text not null, -- internal number which is used to identify the document
+	`type_id` integer not null, -- type of document
+	`issuer_id` integer not null, -- issuer of document
+	`recipient_id` integer not null, -- recipient of document
+	`state_id` int not null, -- document's current state
+	`create_date` datetime not null, -- date/time of record creation in DB
+	`date_issued` datetime not null, -- date/time of legal emission of document
+	`date_due` datetime, -- date/time document will produce effects
 	constraint uq_document_number unique(`number`),
-	constraint uq_document_serial unique(`serial_number`),
 	constraint fk_issuer_business foreign key(`issuer_id`) references `businesses`(`id`),
 	constraint fk_recipient_business foreign key(`recipient_id`) references `businesses`(`id`),
 	constraint fk_document_state foreign key(`state_id`) references `document_states`(`id`),
@@ -251,3 +248,20 @@ create table if not exists `custom_document_fields` (
 	constraint fk_field_attribute foreign key (`document_attribute_id`) references `document_attributes`(`id`)
 );
 
+create table if not exists `permissions` (
+    -- specifies permissions over various operations
+    `id` INTEGER PRIMARY KEY,
+    `name` text not null,
+    `description` text,
+    constraint uq_permission_name unique(`name`)
+);
+
+create table if not exists `business_permissions` (
+    -- assignment of permissions to businesses
+    `id` INTEGER PRIMARY KEY,
+    `business_id` integer not null,
+    `permission_id` integer not null,
+    constraint uq_business_permission unique(`business_id`, `permission_id`),
+    constraint fk_business_permission_business foreign key (`business_id`) references `businesses`(`id`) on delete cascade on update cascade,
+    constraint fk_business_permission_permission foreign key (`permission_id`) references `permissions`(`id`)
+);

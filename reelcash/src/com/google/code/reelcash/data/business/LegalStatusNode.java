@@ -1,11 +1,8 @@
 package com.google.code.reelcash.data.business;
 
 import com.google.code.reelcash.data.KeyRole;
-import com.google.code.reelcash.data.banks.BankNode;
-import com.google.code.reelcash.data.geo.LocationNode;
 import com.google.code.reelcash.data.layout.FlatLayoutNode;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
-import com.google.code.reelcash.data.layout.fields.ReferenceField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 
 /**
@@ -14,7 +11,7 @@ import com.google.code.reelcash.data.layout.fields.StringField;
  */
 public class LegalStatusNode extends FlatLayoutNode {
 
-    private static final String TABLE_NAME = "banks";
+    private static final String TABLE_NAME = "legal_statuses";
     private static final Object SYNC_ROOT = new Object();
     private static LegalStatusNode instance;
 
@@ -39,15 +36,15 @@ public class LegalStatusNode extends FlatLayoutNode {
         return (IntegerField) getFieldList().get(0);
     }
 
-    public ReferenceField getCodeField() {
-        return (ReferenceField) getFieldList().get(1);
+    public StringField getCodeField() {
+        return (StringField) getFieldList().get(1);
     }
 
     public StringField getNameField() {
         return (StringField) getFieldList().get(2);
     }
 
-    public ReferenceField getDescriptionField() {
-        return (ReferenceField) getFieldList().get(3);
+    public StringField getDescriptionField() {
+        return (StringField) getFieldList().get(3);
     }
 }

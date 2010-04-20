@@ -2,6 +2,10 @@ package com.google.code.reelcash.data;
 
 import com.google.code.reelcash.data.banks.BankAccountNode;
 import com.google.code.reelcash.data.banks.BankNode;
+import com.google.code.reelcash.data.business.BusinessNode;
+import com.google.code.reelcash.data.business.BusinessRepresentativeNode;
+import com.google.code.reelcash.data.business.FiscalIdentificationNode;
+import com.google.code.reelcash.data.business.LegalStatusNode;
 import com.google.code.reelcash.data.contacts.ContactIdentityNode;
 import com.google.code.reelcash.data.contacts.ContactLocationNode;
 import com.google.code.reelcash.data.contacts.ContactNode;
@@ -16,6 +20,8 @@ import com.google.code.reelcash.data.geo.LocationNode;
 import com.google.code.reelcash.data.geo.RegionNode;
 import com.google.code.reelcash.data.layout.DataLayout;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
+import com.google.code.reelcash.data.permissions.BusinessPermissionNode;
+import com.google.code.reelcash.data.permissions.PermissionNode;
 import java.util.Hashtable;
 
 /**
@@ -48,6 +54,12 @@ public class RegistryLayout extends DataLayout {
         WebAddressNode.getInstance().setText(RegistryNames.getString(WebAddressNode.getInstance().getName().concat(TEXT)));
         BankNode.getInstance().setText(RegistryNames.getString(BankNode.getInstance().getName().concat(TEXT)));
         BankAccountNode.getInstance().setText(RegistryNames.getString(BankAccountNode.getInstance().getName().concat(TEXT)));
+        BusinessNode.getInstance().setText(RegistryNames.getString(BusinessNode.getInstance().getName().concat(TEXT)));
+        BusinessRepresentativeNode.getInstance().setText(RegistryNames.getString(BusinessRepresentativeNode.getInstance().getName().concat(TEXT)));
+        FiscalIdentificationNode.getInstance().setText(RegistryNames.getString(FiscalIdentificationNode.getInstance().getName().concat(TEXT)));
+        LegalStatusNode.getInstance().setText(RegistryNames.getString(LegalStatusNode.getInstance().getName().concat(TEXT)));
+        PermissionNode.getInstance().setText(RegistryNames.getString(PermissionNode.getInstance().getName().concat(TEXT)));
+        BusinessPermissionNode.getInstance().setText(RegistryNames.getString(BusinessPermissionNode.getInstance().getName().concat(TEXT)));
         addRoot(CountryNode.getInstance());
         addRoot(RegionNode.getInstance());
         addRoot(CountyNode.getInstance());
@@ -57,6 +69,9 @@ public class RegistryLayout extends DataLayout {
         addRoot(PhoneNode.getInstance());
         addRoot(WebAddressNode.getInstance());
         addRoot(BankNode.getInstance());
+        addRoot(LegalStatusNode.getInstance());
+        addRoot(BusinessNode.getInstance());
+        addRoot(PermissionNode.getInstance());
     }
 
     public static RegistryLayout getInstance() {
@@ -78,8 +93,6 @@ public class RegistryLayout extends DataLayout {
             return false;
         return true;
     }
-
-
 
     @Override
     public int hashCode() {
