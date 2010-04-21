@@ -3,6 +3,7 @@ package com.google.code.reelcash.data.banks;
 import com.google.code.reelcash.data.KeyRole;
 import com.google.code.reelcash.data.geo.LocationNode;
 import com.google.code.reelcash.data.layout.RootLayoutNode;
+import com.google.code.reelcash.data.layout.fields.BooleanField;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.ReferenceField;
 import com.google.code.reelcash.data.layout.fields.StringField;
@@ -24,6 +25,7 @@ public class BankNode extends RootLayoutNode {
         getFieldList().add(new StringField("name", KeyRole.UNIQUE, true));
         getFieldList().add(new ReferenceField(LocationNode.getInstance().getIdField(), "location_id", true));
         getFieldList().add(new ReferenceField(idField, "parent_id", false));
+        getFieldList().add(new BooleanField("allow_currency_exchange", KeyRole.NONE, true));
     }
 
     public static BankNode getInstance() {
@@ -48,5 +50,9 @@ public class BankNode extends RootLayoutNode {
 
     public ReferenceField getParentIdField() {
         return (ReferenceField) getFieldList().get(3);
+    }
+
+    public BooleanField getMustExchangeField() {
+        return (BooleanField) getFieldList().get(4);
     }
 }

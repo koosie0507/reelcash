@@ -2,6 +2,7 @@ package com.google.code.reelcash.data;
 
 import com.google.code.reelcash.data.banks.BankAccountNode;
 import com.google.code.reelcash.data.banks.BankNode;
+import com.google.code.reelcash.data.banks.CurrencyNode;
 import com.google.code.reelcash.data.business.BusinessNode;
 import com.google.code.reelcash.data.business.BusinessRepresentativeNode;
 import com.google.code.reelcash.data.business.FiscalIdentificationNode;
@@ -66,6 +67,7 @@ public class RegistryLayout extends DataLayout {
         DocumentTypeNode.getInstance().setText(RegistryNames.getString(DocumentTypeNode.getInstance().getName().concat(TEXT)));
         DocumentAttributeNode.getInstance().setText(RegistryNames.getString(DocumentAttributeNode.getInstance().getName().concat(TEXT)));
         DocumentStateNode.getInstance().setText(RegistryNames.getString(DocumentStateNode.getInstance().getName().concat(TEXT)));
+        CurrencyNode.getInstance().setText(RegistryNames.getString(CurrencyNode.getInstance().getName().concat(TEXT)));
         addRoot(CountryNode.getInstance());
         addRoot(RegionNode.getInstance());
         addRoot(CountyNode.getInstance());
@@ -74,6 +76,7 @@ public class RegistryLayout extends DataLayout {
         addRoot(ContactNode.getInstance());
         addRoot(PhoneNode.getInstance());
         addRoot(WebAddressNode.getInstance());
+        addRoot(CurrencyNode.getInstance());
         addRoot(BankNode.getInstance());
         addRoot(LegalStatusNode.getInstance());
         addRoot(BusinessNode.getInstance());

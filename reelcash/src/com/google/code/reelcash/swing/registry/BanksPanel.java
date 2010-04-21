@@ -34,38 +34,41 @@ public class BanksPanel extends JRegistryPanel {
     private class BankDisplayFactory extends FieldDisplayFactory {
 
         {
-            BankNode node = BankNode.getInstance();
-            Field field = node.getIdField();
-            FieldDisplay display = addFieldDisplayInfo(field);
-            display.setVisible(false);
-
-            field = node.getLocationIdField();
-            display = addFieldDisplayInfo(field);
-            QueryMediator mediator = new QueryMediator(getDataSource());
-            try {
-                LocationNode locationNode = LocationNode.getInstance();
-                initializeReferencedData(locationNode, locationNode.getAddressField(), mediator, display, field);
-            }
-            catch (SQLException e) {
-                showError(e);
-            }
-
-            field = node.getNameField();
-            addFieldDisplayInfo(field);
-
-            field = node.getParentIdField();
-            display = addFieldDisplayInfo(field);
-            try {
-                initializeReferencedData(node, node.getNameField(), mediator, display, field);
-            }
-            catch (SQLException e) {
-                showError(e);
-            }
         }
 
         @Override
-        public FieldDisplay getUIDisplayInfo(Field field) {
-            return getData().get(field);
+        public FieldDisplay getUIDisplayInfo(Field needle) {
+            if (getData().isEmpty()) {
+                BankNode node = BankNode.getInstance();
+                Field field = node.getIdField();
+                FieldDisplay display = addFieldDisplayInfo(field);
+                display.setVisible(false);
+
+                field = node.getLocationIdField();
+                display = addFieldDisplayInfo(field);
+                QueryMediator mediator = new QueryMediator(getDataSource());
+                try {
+                    LocationNode locationNode = LocationNode.getInstance();
+                    initializeReferencedData(locationNode, locationNode.getAddressField(), mediator, display, field);
+                }
+                catch (SQLException e) {
+                    showError(e);
+                }
+
+                field = node.getNameField();
+                addFieldDisplayInfo(field);
+
+                field = node.getParentIdField();
+                display = addFieldDisplayInfo(field);
+                try {
+                    initializeReferencedData(node, node.getNameField(), mediator, display, field);
+                }
+                catch (SQLException e) {
+                    showError(e);
+                }
+                addFieldDisplayInfo(node.getMustExchangeField());
+            }
+            return getData().get(needle);
         }
     }
 }

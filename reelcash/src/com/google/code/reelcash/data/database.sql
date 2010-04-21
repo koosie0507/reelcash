@@ -130,6 +130,7 @@ create table if not exists `banks` (
 	`name` text not null,
 	`location_id` integer not null,
 	`parent_id` INTEGER,
+        `allow_currency_exchange` bit not null default(0),
 	constraint uq_namelocation unique(`name`,`location_id`),
 	constraint fk_parentbank foreign key (`parent_id`) references `banks`(`id`)
 );
@@ -264,4 +265,26 @@ create table if not exists `business_permissions` (
     constraint uq_business_permission unique(`business_id`, `permission_id`),
     constraint fk_business_permission_business foreign key (`business_id`) references `businesses`(`id`) on delete cascade on update cascade,
     constraint fk_business_permission_permission foreign key (`permission_id`) references `permissions`(`id`)
+);
+
+create table if not exists `currencies` (
+    -- contains the currencies known by the application
+    `id` INTEGER PRIMARY KEY,
+    `code` text not null,
+    `must_exchange` bit not null default(0),
+    `name` text,
+    constraint uq_currency_code unique(`code`)
+);
+
+create table if not exists `exchange_rates` (
+    `id` INTEGER PRIMARY KEY,
+    `currency_id` integer not null,
+    `bank_id` integer not null,
+    `start_date` datetime not null default(date('now')),
+    `end_date` datetime not null,
+    `value` decimal(11,4) not null,
+    `exchange_tax_percent` decimal(8,2) not null default(0),
+    constraint uq_currency_bank_interval unique(`currency_id`, `bank_id`, `start_date`, `end_date`),
+    constraint fk_exchange_rate_currency foreign key (`currency_id`) references `currencies`(`id`),
+    constraint fk_exchange_rate_bank foreign key (`bank_id`) references `banks`(`id`) 
 );
