@@ -4,6 +4,7 @@
  */
 package com.google.code.reelcash.data.layout.fields;
 
+import com.google.code.reelcash.data.InvalidFieldValueException;
 import com.google.code.reelcash.data.KeyRole;
 
 /**
@@ -44,11 +45,39 @@ public class BooleanField extends Field {
 
     @Override
     public Object getDefaultValue() {
-       if(isMandatory())
-           return false;
-       else
-           return null;
+        if (isMandatory())
+            return false;
+        else
+            return null;
     }
 
+    @Override
+    public Object getValidValue(Object actualValue) {
+        if (!validateValue(actualValue))
+            throw new InvalidFieldValueException(actualValue, getName());
+        if (null == actualValue)
+            return null;
 
+        if (Boolean.class == actualValue.getClass())
+            return (Boolean) actualValue;
+        else //it's a Number
+            return new Boolean(0 != ((Number) actualValue).intValue());
+    }
+
+    @Override
+    public boolean validateValue(Object aValue) {
+        // check whether the field is mandatory and the value is null
+        if (null == aValue && (isMandatory() || KeyRole.PRIMARY.equals(getKeyRole())))
+            return false;
+
+        if (null == aValue)
+            return true;
+
+        if (Boolean.class != aValue.getClass()) {
+            if (aValue instanceof Number)
+                return true;
+            return false;
+        }
+        return true;
+    }
 }
