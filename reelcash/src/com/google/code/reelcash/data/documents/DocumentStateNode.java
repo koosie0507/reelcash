@@ -5,7 +5,7 @@
 package com.google.code.reelcash.data.documents;
 
 import com.google.code.reelcash.data.KeyRole;
-import com.google.code.reelcash.data.layout.RootLayoutNode;
+import com.google.code.reelcash.data.layout.FlatLayoutNode;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 
@@ -13,7 +13,7 @@ import com.google.code.reelcash.data.layout.fields.StringField;
  *
  * @author cusi
  */
-public class DocumentStateNode extends RootLayoutNode {
+public class DocumentStateNode extends FlatLayoutNode {
 
     private static final String TABLE_NAME = "document_states";
     private static final Object SYNC_ROOT = new Object();
@@ -29,9 +29,8 @@ public class DocumentStateNode extends RootLayoutNode {
 
     public static DocumentStateNode getInstance() {
         synchronized (SYNC_ROOT) {
-            if (null == instance) {
+            if (null == instance)
                 instance = new DocumentStateNode();
-            }
         }
         return instance;
     }

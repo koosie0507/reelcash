@@ -13,6 +13,9 @@ import com.google.code.reelcash.data.contacts.ContactPhoneNode;
 import com.google.code.reelcash.data.contacts.ContactWebAddressNode;
 import com.google.code.reelcash.data.contacts.PhoneNode;
 import com.google.code.reelcash.data.contacts.WebAddressNode;
+import com.google.code.reelcash.data.documents.DocumentAttributeNode;
+import com.google.code.reelcash.data.documents.DocumentStateNode;
+import com.google.code.reelcash.data.documents.DocumentTypeNode;
 import com.google.code.reelcash.data.geo.CityNode;
 import com.google.code.reelcash.data.geo.CountryNode;
 import com.google.code.reelcash.data.geo.CountyNode;
@@ -60,6 +63,9 @@ public class RegistryLayout extends DataLayout {
         LegalStatusNode.getInstance().setText(RegistryNames.getString(LegalStatusNode.getInstance().getName().concat(TEXT)));
         PermissionNode.getInstance().setText(RegistryNames.getString(PermissionNode.getInstance().getName().concat(TEXT)));
         BusinessPermissionNode.getInstance().setText(RegistryNames.getString(BusinessPermissionNode.getInstance().getName().concat(TEXT)));
+        DocumentTypeNode.getInstance().setText(RegistryNames.getString(DocumentTypeNode.getInstance().getName().concat(TEXT)));
+        DocumentAttributeNode.getInstance().setText(RegistryNames.getString(DocumentAttributeNode.getInstance().getName().concat(TEXT)));
+        DocumentStateNode.getInstance().setText(RegistryNames.getString(DocumentStateNode.getInstance().getName().concat(TEXT)));
         addRoot(CountryNode.getInstance());
         addRoot(RegionNode.getInstance());
         addRoot(CountyNode.getInstance());
@@ -72,6 +78,8 @@ public class RegistryLayout extends DataLayout {
         addRoot(LegalStatusNode.getInstance());
         addRoot(BusinessNode.getInstance());
         addRoot(PermissionNode.getInstance());
+        addRoot(DocumentTypeNode.getInstance());
+        addRoot(DocumentStateNode.getInstance());
     }
 
     public static RegistryLayout getInstance() {

@@ -6,8 +6,7 @@ import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 
 /**
- * Represents the structure of a document type. It accepts document nodes
- * as child nodes.
+ * Represents the structure of a document type. 
  * 
  * @author cusi
  */
@@ -25,7 +24,7 @@ public class DocumentTypeNode extends RootLayoutNode {
         getFieldList().add(new StringField("description", KeyRole.NONE, true));
     }
 
-    public DocumentTypeNode getInstance() {
+    public static DocumentTypeNode getInstance() {
         synchronized (SYNC_ROOT) {
             if (null == instance) {
                 instance = new DocumentTypeNode();

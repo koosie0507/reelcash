@@ -14,6 +14,9 @@ import com.google.code.reelcash.data.contacts.ContactPhoneNode;
 import com.google.code.reelcash.data.contacts.ContactWebAddressNode;
 import com.google.code.reelcash.data.contacts.PhoneNode;
 import com.google.code.reelcash.data.contacts.WebAddressNode;
+import com.google.code.reelcash.data.documents.DocumentAttributeNode;
+import com.google.code.reelcash.data.documents.DocumentStateNode;
+import com.google.code.reelcash.data.documents.DocumentTypeNode;
 import com.google.code.reelcash.data.geo.CityNode;
 import com.google.code.reelcash.data.geo.CountryNode;
 import com.google.code.reelcash.data.geo.CountyNode;
@@ -36,6 +39,9 @@ import com.google.code.reelcash.swing.registry.ContactWebAddressesPanel;
 import com.google.code.reelcash.swing.registry.ContactsPanel;
 import com.google.code.reelcash.swing.registry.CountiesPanel;
 import com.google.code.reelcash.swing.registry.CountriesPanel;
+import com.google.code.reelcash.swing.registry.DocumentAttributesPanel;
+import com.google.code.reelcash.swing.registry.DocumentStatesPanel;
+import com.google.code.reelcash.swing.registry.DocumentTypesPanel;
 import com.google.code.reelcash.swing.registry.FiscalIdentificationPanel;
 import com.google.code.reelcash.swing.registry.LegalStatusesPanel;
 import com.google.code.reelcash.swing.registry.LocationsPanel;
@@ -141,6 +147,9 @@ public class JRegistriesPanel extends JPanel {
         nodePanelMappings.put(FiscalIdentificationNode.getInstance(), new FiscalIdentificationPanel());
         nodePanelMappings.put(PermissionNode.getInstance(), new PermissionsPanel());
         nodePanelMappings.put(BusinessPermissionNode.getInstance(), new BusinessPermissionsPanel());
+        nodePanelMappings.put(DocumentTypeNode.getInstance(), new DocumentTypesPanel());
+        nodePanelMappings.put(DocumentAttributeNode.getInstance(), new DocumentAttributesPanel());
+        nodePanelMappings.put(DocumentStateNode.getInstance(), new DocumentStatesPanel());
     }
 
     private class RegistryTreeSelectionListener implements TreeSelectionListener {
