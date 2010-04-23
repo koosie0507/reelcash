@@ -161,8 +161,6 @@ create table if not exists `businesses` (
 	`location_id` integer not null,
 	`bank_account_id` integer not null,
 	`legal_status_id` integer not null,
-	constraint uq_businesscounty unique (`name`, `county_id`),
-	constraint fk_businsesses_county foreign key (`county_id`) references `counties`(`id`),
 	constraint fk_business_location foreign key (`location_id`) references `locations`(`id`),
 	constraint fk_business_bank_account foreign key (`bank_account_id`) references `bank_accounts`(`id`),
 	constraint fk_business_legal_status foreign key (`legal_status_id`) references `legal_status`(`id`)
@@ -288,3 +286,138 @@ create table if not exists `exchange_rates` (
     constraint fk_exchange_rate_currency foreign key (`currency_id`) references `currencies`(`id`),
     constraint fk_exchange_rate_bank foreign key (`bank_id`) references `banks`(`id`) 
 );
+
+create table if not exists `units` (
+    `id` INTEGER PRIMARY KEY,
+    `code` text not null,
+    `name` text,
+    constraint uq_code unique (`code`)
+);
+
+create table if not exists `vat_types` (
+    `id` INTEGER PRIMARY KEY,
+    `code` text not null,
+    `name` text,
+    `percent` decimal(3,2) not null,
+    constraint uq_code unique(`code`)
+);
+
+create table if not exists `tax_types` (
+    `id` INTEGER PRIMARY KEY,
+    `code` text not null,
+    `name` text,
+    `is_percent` bit not null default(1),
+    `value` decimal(9,2) not null,
+    constraint uq_code unique(`code`)
+);
+
+create table if not exists `excise_types` (
+    `id` INTEGER PRIMARY KEY,
+    `code` text not null,
+    `name` text,
+    `is_percent` bit not null default(1),
+    `value` decimal(9,2) not null,
+    constraint uq_code unique(`code`)
+);
+
+create table if not exists `series_ranges` (
+    `id` INTEGER PRIMARY KEY,
+    `prefix` text not null,
+    `min_value` integer not null default(0),
+    `max_value` integer not null default(100),
+    `inc_step` integer not null default(1), -- 0 means random unoccupied value between min and max
+    `suffix` text not null default '',
+    constraint ck_min_max check (`max_value`>`min_value`)
+);
+
+create table if not exists `goods` (
+    `id` INTEGER PRIMARY KEY,
+    `code` text not null,
+    `name` text not null,
+    `description` text, -- some sales description, what it is, what it does
+    `vat_type_id` integer not null, -- which type of vat applies to this good
+    constraint uq_goods_code unique(`code`),
+    constraint fk_goods_vat_type foreign key(`vat_type_id`) references `vat_types`(`id`)
+);
+
+create table if not exists `good_excises` (
+    `id` INTEGER PRIMARY KEY,
+    `good_id` integer not null,
+    `excise_type_id` integer not null,
+    constraint uq_good_excise unique(`good_id`, `excise_type_id`),
+    constraint fk_good_excises_goods foreign key (`good_id`) references `goods`(`id`) on delete restrict on update cascade,
+    constraint fk_good_excises_excise_types foreign key (`excise_type_id`) references `excise_types`(`id`) on delete restrict on update cascade
+);
+
+create table if not exists `good_taxes` (
+    `id` INTEGER PRIMARY KEY,
+    `good_id` integer not null,
+    `tax_type_id` integer not null,
+    constraint uq_good_tax unique(`good_id`, `tax_type_id`),
+    constraint fk_good_taxes_goods foreign key (`good_id`) references `goods`(`id`) on delete restrict on update cascade,
+    constraint fk_good_taxes_tax_types foreign key (`tax_type_id`) references `tax_types`(`id`) on delete restrict on update cascade
+);
+
+create table if not exists `invoices` (
+    `id` INTEGER PRIMARY KEY,
+    `document_id` integer not null, -- document entry holding basic invoice info
+    `series_range_id` integer not null, -- invoices must have fiscal series
+    `currency_id` integer not null, -- invoices are issued with a currency
+    `issuer_rep_id` integer, -- the rep who signed for the issuer
+    `recipient_rep_id` integer, -- the rep who signed for the recipient
+    `exchange_rate_id` integer, -- the exchange rate used, if any
+    `total_amount` decimal(15, 4) not null, -- amount due (without vat, excise or taxes)
+    `total_excise` decimal(15, 4) not null, -- total excise amount
+    `total_taxes` decimal(15, 4) not null, -- total amount of other taxes
+    `total_vat` decimal(15, 4) not null, -- total vat = sum((amount+excise+tax)*vat_percent)
+    constraint uq_document_id unique(`document_id`), -- only one document/invoice allowed
+    constraint fk_invoice_document foreign key(`document_id`) references `documents`(`id`),
+    constraint fk_invoice_series foreign key(`series_range_id`) references `series_ranges`(`id`),
+    constraint fk_invoice_currency foreign key (`currency_id`) references `currencies`(`id`),
+    constraint fk_invoice_issuer_rep foreign key (`issuer_rep_id`) references `business_representatives`(`id`),
+    constraint fk_invoice_recipient_rep foreign key (`recipient_rep_id`) references `business_representatives`(`id`),
+    constraint fk_invoice_exchange_rate foreign key (`exchange_rate_id`) references `exchange_rates`(`id`)
+);
+
+create table if not exists `invoice_details` (
+    `id` INTEGER PRIMARY KEY,
+    `invoice_id` integer not null, -- invoice
+    `position` integer not null, -- position within invoice
+    `good_id` integer, -- good we're invoicing - contains detail information
+    `detail_text` text, -- alternate detail text
+    `unit_id` integer not null, -- measurement unit information
+    `quantity` decimal(9,2) not null, -- quantity of units
+    `unit_price` decimal(11,4) not null, -- base price
+    `tax_amount` decimal(9,2) not null, -- select sum(amount) from invoice_detail_taxes where invoice_detail_id=current_id()
+    `excise_amount` decimal(9,2) not null, -- select sum(amount) from invoice_detail_excises where invoice_detail_id=current_id()
+    `amount` decimal(15,4) not null, -- (tax_amount + excise_amount + unit_price) * quantity
+    `vat_percent` decimal(3,2) not null, -- the selected vat type percent
+    `vat_amount` decimal(15,4) not null, -- amount * vat_percent
+    `price` decimal (15, 4) not null, -- amount + vat_amount
+    constraint uq_position_on_invoice unique(`invoice_id`, `position`),
+    constraint fk_invoice_detail_invoice foreign key (`invoice_id`) references `invoices`(`id`) on delete cascade on update cascade,
+    constraint fk_invoice_detail_goods foreign key(`good_id`) references `goods`(`id`) on delete restrict on update cascade,
+    constraint fk_invoice_detail_unit foreign key (`unit_id`) references `units`(`id`) on delete restrict on update restrict,
+    constraint ck_invoice_detail_description check ((not good_id is null) or (not detail_text is null))
+);
+
+-- mustn't use foreign keys with tax types because taxes may change in time
+create table if not exists `invoice_detail_taxes` (
+    `id` INTEGER PRIMARY KEY,
+    `invoice_detail_id` integer not null,
+    `tax_code` text not null, -- filled from a given tax type
+    `amount` decimal(15, 4) not null, -- computed result based on the selected tax type
+    constraint uq_tax_detail unique (`invoice_detail_id`, `tax_code`), -- double imposition is not allowed
+    constraint fk_invoice_detail_taxes_detail foreign key (`invoice_detail_id`) references `invoice_details`(`id`) on delete cascade on update cascade
+);
+
+-- mustn't use foreign keys with excise types because excises may change
+create table if not exists `invoice_detail_excises` (
+    `id` INTEGER PRIMARY KEY,
+    `invoice_detail_id` integer not null,
+    `excise_code` text not null, -- code obtained from excise type
+    `amount` decimal(15, 4) not null, -- computed result based on the selected excise type
+    constraint uq_excise_detail unique(`invoice_detail_id`, `excise_code`), -- double imposition not allowed
+    constraint fk_invoice_detail_excises_detail foreign key (`invoice_detail_id`) references `invoice_details`(`id`) on delete cascade on update cascade
+);
+
