@@ -242,7 +242,7 @@ class BigDecimalFieldInfo extends FieldDisplay {
 
     @Override
     public Object getValue() {
-        return new java.math.BigDecimal(((JFormattedTextField) getDisplayComponent()).getText());
+        return ((JFormattedTextField) getDisplayComponent()).getValue();
     }
 
     @Override

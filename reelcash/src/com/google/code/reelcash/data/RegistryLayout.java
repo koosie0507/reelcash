@@ -17,15 +17,23 @@ import com.google.code.reelcash.data.contacts.WebAddressNode;
 import com.google.code.reelcash.data.documents.DocumentAttributeNode;
 import com.google.code.reelcash.data.documents.DocumentStateNode;
 import com.google.code.reelcash.data.documents.DocumentTypeNode;
+import com.google.code.reelcash.data.documents.SeriesRangeNode;
 import com.google.code.reelcash.data.geo.CityNode;
 import com.google.code.reelcash.data.geo.CountryNode;
 import com.google.code.reelcash.data.geo.CountyNode;
 import com.google.code.reelcash.data.geo.LocationNode;
 import com.google.code.reelcash.data.geo.RegionNode;
+import com.google.code.reelcash.data.goods.GoodNode;
+import com.google.code.reelcash.data.goods.UnitNode;
 import com.google.code.reelcash.data.layout.DataLayout;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import com.google.code.reelcash.data.permissions.BusinessPermissionNode;
 import com.google.code.reelcash.data.permissions.PermissionNode;
+import com.google.code.reelcash.data.taxes.ExciseTypeNode;
+import com.google.code.reelcash.data.taxes.GoodExciseNode;
+import com.google.code.reelcash.data.taxes.GoodTaxNode;
+import com.google.code.reelcash.data.taxes.TaxTypeNode;
+import com.google.code.reelcash.data.taxes.VatTypeNode;
 import java.util.Hashtable;
 
 /**
@@ -67,7 +75,15 @@ public class RegistryLayout extends DataLayout {
         DocumentTypeNode.getInstance().setText(RegistryNames.getString(DocumentTypeNode.getInstance().getName().concat(TEXT)));
         DocumentAttributeNode.getInstance().setText(RegistryNames.getString(DocumentAttributeNode.getInstance().getName().concat(TEXT)));
         DocumentStateNode.getInstance().setText(RegistryNames.getString(DocumentStateNode.getInstance().getName().concat(TEXT)));
+        SeriesRangeNode.getInstance().setText(RegistryNames.getString(SeriesRangeNode.getInstance().getName().concat(TEXT)));
         CurrencyNode.getInstance().setText(RegistryNames.getString(CurrencyNode.getInstance().getName().concat(TEXT)));
+        VatTypeNode.getInstance().setText(RegistryNames.getString(VatTypeNode.getInstance().getName().concat(TEXT)));
+        ExciseTypeNode.getInstance().setText(RegistryNames.getString(ExciseTypeNode.getInstance().getName().concat(TEXT)));
+        TaxTypeNode.getInstance().setText(RegistryNames.getString(TaxTypeNode.getInstance().getName().concat(TEXT)));
+        GoodNode.getInstance().setText(RegistryNames.getString(GoodNode.getInstance().getName().concat(TEXT)));
+        GoodTaxNode.getInstance().setText(RegistryNames.getString(GoodTaxNode.getInstance().getName().concat(TEXT)));
+        GoodExciseNode.getInstance().setText(RegistryNames.getString(GoodExciseNode.getInstance().getName().concat(TEXT)));
+        UnitNode.getInstance().setText(RegistryNames.getString(UnitNode.getInstance().getName().concat(TEXT)));
         addRoot(CountryNode.getInstance());
         addRoot(RegionNode.getInstance());
         addRoot(CountyNode.getInstance());
@@ -83,6 +99,14 @@ public class RegistryLayout extends DataLayout {
         addRoot(PermissionNode.getInstance());
         addRoot(DocumentTypeNode.getInstance());
         addRoot(DocumentStateNode.getInstance());
+        addRoot(SeriesRangeNode.getInstance());
+        addRoot(VatTypeNode.getInstance());
+        addRoot(ExciseTypeNode.getInstance());
+        addRoot(TaxTypeNode.getInstance());
+        addRoot(GoodNode.getInstance());
+        addRoot(GoodTaxNode.getInstance());
+        addRoot(GoodExciseNode.getInstance());
+        addRoot(UnitNode.getInstance());
     }
 
     public static RegistryLayout getInstance() {

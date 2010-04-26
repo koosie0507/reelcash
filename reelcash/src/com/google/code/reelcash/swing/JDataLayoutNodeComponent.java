@@ -147,8 +147,10 @@ public class JDataLayoutNodeComponent extends JPanel implements Scrollable, Acti
         int idx = 0;
         for (Iterator<Field> f = node.iterator(); f.hasNext();) {
             FieldDisplay disp = findDisplay(f.next());
-            if (null != disp)
-                result.setValue(idx, disp.getValue());
+            if (null != disp) {
+                Object value = disp.getValue();
+                result.setValue(idx, value);
+            }
             idx++;
         }
         return result;
