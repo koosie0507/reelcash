@@ -38,7 +38,8 @@ public class GoodTaxesPanel extends JRegistryPanel {
 
         {
             GoodTaxNode node = GoodTaxNode.getInstance();
-            addFieldDisplayInfo(node.getIdField());
+            addFieldDisplayInfo(node.getIdField()).setVisible(false);
+            
             QueryMediator mediator = new QueryMediator(getDataSource());
             Field field = node.getGoodIdField();
             FieldDisplay display = addFieldDisplayInfo(node.getGoodIdField());
