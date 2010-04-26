@@ -85,18 +85,19 @@ public class BigDecimalField extends Field {
 
     @Override
     public Object getValidValue(Object actualValue) {
-        // TODO: throw an exception
-        if (!(actualValue instanceof BigDecimal) || null == actualValue)
+        if (null == actualValue)
             return actualValue;
 
-        BigDecimal actualDecimal = ((BigDecimal) actualValue);
-        int diff = precision - actualDecimal.precision();
-        actualDecimal = actualDecimal.movePointLeft(diff);
+        BigDecimal actualDecimal;
+        if (actualValue instanceof Number)
+            actualDecimal = new BigDecimal(((Number) actualValue).doubleValue());
+        else
+            actualDecimal = ((BigDecimal) actualValue);
         return actualDecimal.setScale(scale, RoundingMode.HALF_UP);
     }
 
     /**
-     * Sets the precision of the decimals.
+     * Sets the precision of the decimals. (the precision represents the total number of digits in the decimal)
      * @param precision the precision.
      */
     public void setPrecision(int precision) {
@@ -104,7 +105,7 @@ public class BigDecimalField extends Field {
     }
 
     /**
-     * Sets the scale of the decimals.
+     * Sets the scale of the decimals. (the scale represents the number of digits on the right of the decimal point)
      * @param scale the scale.
      */
     public void setScale(int scale) {
@@ -122,10 +123,14 @@ public class BigDecimalField extends Field {
      */
     @Override
     public boolean validateValue(Object value) {
-        if (!super.validateValue(value))
+        // check whether the field is mandatory and the value is null
+        if (null == value && (isMandatory() || KeyRole.PRIMARY.equals(getKeyRole())))
             return false;
 
-        BigDecimal dec = (BigDecimal) value;
-        return (dec.scale() <= scale && dec.precision() <= precision);
+        // check whether the value is assignable to the given type
+        if (null != value)
+            if (!(value instanceof Number))
+                return false;
+        return true;
     }
 }
