@@ -23,6 +23,7 @@ public class SeriesRangeNode extends FlatLayoutNode {
         getFieldList().add(new StringField("prefix", KeyRole.NONE, true));
         getFieldList().add(new IntegerField("min_value", KeyRole.NONE, true));
         getFieldList().add(new IntegerField("max_value", KeyRole.NONE, true));
+        getFieldList().add(new IntegerField("counter", KeyRole.NONE, true));
         getFieldList().add(new IntegerField("inc_step", KeyRole.NONE, true));
         getFieldList().add(new StringField("suffix", KeyRole.NONE, true));
     }
@@ -51,11 +52,15 @@ public class SeriesRangeNode extends FlatLayoutNode {
         return (IntegerField) getFieldList().get(3);
     }
 
-    public IntegerField getIncStepField() {
+    public IntegerField getCounterField() {
         return (IntegerField) getFieldList().get(4);
     }
 
+    public IntegerField getIncStepField() {
+        return (IntegerField) getFieldList().get(5);
+    }
+
     public StringField getSuffixField() {
-        return (StringField) getFieldList().get(5);
+        return (StringField) getFieldList().get(6);
     }
 }

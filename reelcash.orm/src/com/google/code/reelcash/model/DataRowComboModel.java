@@ -75,6 +75,13 @@ public class DataRowComboModel implements ComboBoxModel {
         fireContentsChanged();
     }
 
+    public void fill(DataRow[] fetchSimple) {
+        data.clear();
+        for (DataRow row : fetchSimple)
+            data.add(row);
+        fireContentsChanged();
+    }
+
     public int indexOfValue(Object aValue) {
         int idx = data.size() - 1;
         while (idx > -1) {

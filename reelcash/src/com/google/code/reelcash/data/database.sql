@@ -212,7 +212,7 @@ create table if not exists `document_attributes` (
 
 create table if not exists `document_states` (
 	-- states in which a document may be
-	`id` INTEGER NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`name` text not null,
 	`description` text not null,
 	constraint uq_document_state_name unique(`name`)
@@ -325,9 +325,11 @@ create table if not exists `series_ranges` (
     `prefix` text not null,
     `min_value` integer not null default(0),
     `max_value` integer not null default(100),
+    `counter` integer not null default(0),
     `inc_step` integer not null default(1), -- 0 means random unoccupied value between min and max
     `suffix` text not null default '',
-    constraint ck_min_max check (`max_value`>`min_value`)
+    constraint ck_min_max check (`max_value`>`min_value`),
+    constraint ck_counter check (`max_value`>=`counter` and `counter`>=`min_value`)
 );
 
 create table if not exists `goods` (

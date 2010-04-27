@@ -5,6 +5,7 @@ import com.google.code.reelcash.data.DbManager;
 import com.google.code.reelcash.data.ReelcashDataSource;
 import com.google.code.reelcash.data.sql.QueryMediator;
 import com.google.code.reelcash.swing.JRegistriesPanel;
+import com.google.code.reelcash.swing.invoices.JDocumentPanel;
 import com.google.code.reelcash.util.ScreenUtils;
 import java.awt.BorderLayout;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ public class EntryPoint {
             mainFrame.setLayout(new BorderLayout());
             ScreenUtils.computeMinimumSize(mainFrame);
             ScreenUtils.centerWindowOnScreen(mainFrame);
-            mainFrame.add(JRegistriesPanel.getInstance(), BorderLayout.CENTER);
+            mainFrame.add(new JDocumentPanel());//JRegistriesPanel.getInstance(), BorderLayout.CENTER);
         }
         return mainFrame;
     }

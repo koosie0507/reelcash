@@ -11,6 +11,7 @@ import com.google.code.reelcash.data.sql.QueryMediator;
 import com.google.code.reelcash.model.DataRowComboModel;
 import com.google.code.reelcash.model.DataRowTableModel;
 import com.google.code.reelcash.model.DataRowTableModelDatabaseAdapter;
+import com.google.code.reelcash.util.MsgBox;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
@@ -423,6 +424,7 @@ public abstract class JRegistryPanel extends JPanel implements ListSelectionList
                 }
             }
             catch (ReelcashException exc) {
+                MsgBox.exception(exc);
                 JOptionPane.showMessageDialog(JRegistryPanel.this, exc.getStackTrace(),
                         GlobalResources.getString("application_error_title"),
                         JOptionPane.ERROR_MESSAGE);

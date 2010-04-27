@@ -37,6 +37,7 @@ public class SeriesRangesPanel extends JRegistryPanel {
             addFieldDisplayInfo(node.getIdField()).setVisible(false);
             addFieldDisplayInfo(node.getPrefixField());
             addFieldDisplayInfo(node.getMinValueField());
+            addFieldDisplayInfo(node.getCounterField());
             addFieldDisplayInfo(node.getIncStepField());
             addFieldDisplayInfo(node.getMaxValueField());
             addFieldDisplayInfo(node.getSuffixField());
