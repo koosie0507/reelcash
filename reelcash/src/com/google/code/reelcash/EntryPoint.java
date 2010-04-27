@@ -23,12 +23,16 @@ public class EntryPoint {
 
     private static javax.swing.JFrame getMainFrame() {
         if (null == mainFrame) {
+            mainFrame = new com.google.code.reelcash.swing.invoices.JInvoiceWizard();
+            /*
             mainFrame = new javax.swing.JFrame("Test Frame");
             mainFrame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
             mainFrame.setLayout(new BorderLayout());
             ScreenUtils.computeMinimumSize(mainFrame);
             ScreenUtils.centerWindowOnScreen(mainFrame);
             mainFrame.add(new JDocumentPanel());//JRegistriesPanel.getInstance(), BorderLayout.CENTER);
+             *
+             */
         }
         return mainFrame;
     }

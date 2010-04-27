@@ -80,4 +80,8 @@ public class SysUtils {
 	public static String getFileSeparator() {
 		return System.getProperty("file.separator");
 	}
+
+    public static java.sql.Date now() {
+        return new java.sql.Date(java.util.Calendar.getInstance().getTimeInMillis());
+    }
 }
