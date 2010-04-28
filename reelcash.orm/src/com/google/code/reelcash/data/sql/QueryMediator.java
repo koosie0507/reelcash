@@ -15,6 +15,7 @@ import com.google.code.reelcash.data.layout.fields.FieldList;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.util.SysUtils;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -263,6 +264,64 @@ public class QueryMediator {
     }
 
     /**
+     * Executes the given sql statement as if it were an update statement.
+     * @param sql an sql statement
+     * @return the number of affected records in the DB.
+     * @throws SQLException if something goes wrong
+     */
+    public int execute(String sql) throws SQLException {
+        Statement exec = dataSource.getConnection().createStatement();
+        return exec.executeUpdate(sql);
+    }
+
+    /**
+     * Executes the given sql statement as if it were an update statement.
+     * @param sql an sql statement
+     * @param params sql statement params
+     *
+     * @return the number of affected records in the DB.
+     * @throws SQLException if something goes wrong
+     */
+    public int execute(String sql, Object... params) throws SQLException {
+        PreparedStatement exec = dataSource.getConnection().prepareStatement(sql);
+        for (int i = 0; i < params.length; i++) {
+            exec.setObject(i + 1, params[i]);
+        }
+        return exec.executeUpdate();
+    }
+
+    public Object executeScalar(String sql) throws SQLException {
+        Statement select = dataSource.getConnection().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = null;
+        try {
+            rs = select.executeQuery(sql);
+            if (!rs.next())
+                return null;
+            return rs.getObject(1);
+        }
+        finally {
+            tryCloseResultSet(rs);
+        }
+    }
+
+    public Object executeScalar(String sql, Object... params) throws SQLException {
+        PreparedStatement select = dataSource.getConnection().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = null;
+        try {
+            for (int i = params.length; i > 0; i--) {
+                select.setObject(i, params[i - 1]);
+            }
+            rs = select.executeQuery();
+            if (!rs.next())
+                return null;
+            return rs.getObject(1);
+        }
+        finally {
+            tryCloseResultSet(rs);
+        }
+    }
+
+    /**
      * Fetches data from the database with a simple (non-parameterized) SQL statement.
      * @param sql the SQL statement used for fetching data
      * @return an array of data rows which will point to a field structure deduced from
@@ -338,7 +397,7 @@ public class QueryMediator {
         finally {
             tryCloseResultSet(rs);
         }
-        
+
         DataRow[] array = new DataRow[rows.size()];
         rows.toArray(array);
         rows = null;

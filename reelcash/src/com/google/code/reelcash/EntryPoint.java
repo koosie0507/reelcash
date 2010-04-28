@@ -23,16 +23,13 @@ public class EntryPoint {
 
     private static javax.swing.JFrame getMainFrame() {
         if (null == mainFrame) {
-            mainFrame = new com.google.code.reelcash.swing.invoices.JInvoiceWizard();
-            /*
+            //mainFrame = new com.google.code.reelcash.swing.invoices.JInvoiceWizard();
             mainFrame = new javax.swing.JFrame("Test Frame");
             mainFrame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
             mainFrame.setLayout(new BorderLayout());
             ScreenUtils.computeMinimumSize(mainFrame);
             ScreenUtils.centerWindowOnScreen(mainFrame);
-            mainFrame.add(new JDocumentPanel());//JRegistriesPanel.getInstance(), BorderLayout.CENTER);
-             *
-             */
+            mainFrame.add(JRegistriesPanel.getInstance(), BorderLayout.CENTER);
         }
         return mainFrame;
     }
@@ -44,8 +41,7 @@ public class EntryPoint {
     public static void main(String[] args) {
         try {
             if (DbManager.checkCreateDb()) {
-                QueryMediator mediator = new QueryMediator(ReelcashDataSource.getInstance());
-                DataRow[] data = mediator.fetch("SELECT * FROM banks where id=?;",1);
+                PermissionTable.init();
                 getMainFrame().pack();
                 getMainFrame().setVisible(true);
             }

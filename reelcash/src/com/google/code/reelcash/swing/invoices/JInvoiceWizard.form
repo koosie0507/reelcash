@@ -55,23 +55,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="com.google.code.reelcash.swing.invoices.JDocumentPanel" name="createDocumentPage">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="&lt;User Code&gt;">
-                  <Connection PropertyName="titleX" code="InvoiceResources.getString(&quot;create_document_title&quot;)" type="code"/>
-                  <Font PropertyName="font" name="Tahoma" size="18" style="0"/>
-                </TitledBorder>
-              </Border>
-            </Property>
-          </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-              <CardConstraints cardName="document"/>
-            </Constraint>
-          </Constraints>
-        </Component>
         <Container class="javax.swing.JPanel" name="seriesRangePanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -121,6 +104,23 @@
             </Container>
           </SubComponents>
         </Container>
+        <Component class="com.google.code.reelcash.swing.invoices.JDocumentPanel" name="createDocumentPage">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder title="&lt;User Code&gt;">
+                  <Connection PropertyName="titleX" code="InvoiceResources.getString(&quot;create_document_title&quot;)" type="code"/>
+                  <Font PropertyName="font" name="Tahoma" size="18" style="0"/>
+                </TitledBorder>
+              </Border>
+            </Property>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
+              <CardConstraints cardName="document"/>
+            </Constraint>
+          </Constraints>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="controlPanel">

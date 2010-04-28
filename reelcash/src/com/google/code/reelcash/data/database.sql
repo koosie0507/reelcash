@@ -363,7 +363,6 @@ create table if not exists `good_taxes` (
 create table if not exists `invoices` (
     `id` INTEGER PRIMARY KEY,
     `document_id` integer not null, -- document entry holding basic invoice info
-    `series_range_id` integer not null, -- invoices must have fiscal series
     `currency_id` integer not null, -- invoices are issued with a currency
     `issuer_rep_id` integer, -- the rep who signed for the issuer
     `recipient_rep_id` integer, -- the rep who signed for the recipient

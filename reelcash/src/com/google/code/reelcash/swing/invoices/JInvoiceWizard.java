@@ -14,10 +14,12 @@ import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.ReelcashDataSource;
 import com.google.code.reelcash.data.sql.QueryMediator;
 import com.google.code.reelcash.swing.ComboListCellRenderer;
+import com.google.code.reelcash.util.Confirm;
 import com.google.code.reelcash.util.MsgBox;
 import java.awt.CardLayout;
 import java.sql.SQLException;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -30,8 +32,12 @@ public class JInvoiceWizard extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 4789786767938489010L;
     private ListModel seriesListModel;
-    private final String[] pages = new String[]{"welcome", "document", "series"};
+    private final String[] pages = new String[]{"welcome", "series", "document"};
     private int currentPageIndex = 0;
+    private String documentNo;
+    private boolean first = true;
+    private boolean forward = true;
+    private final QueryMediator mediator = new QueryMediator(ReelcashDataSource.getInstance());
 
     /** Creates new form JInvoiceWizard */
     public JInvoiceWizard() {
@@ -48,22 +54,11 @@ public class JInvoiceWizard extends javax.swing.JFrame {
         nextPageButton.setMnemonic(InvoiceResources.getString(mnemonicKey).charAt(0));
     }
 
-    private void nextPage() {
-        if (currentPageIndex >= pages.length - 1) {
-            MsgBox.info(InvoiceResources.getString("no_more_pages"));
-            return;
-        }
-        currentPageIndex++;
-        ((CardLayout) wizardPages.getLayout()).show(wizardPages, pages[currentPageIndex]);
-        setControlState();
-    }
+    private void showPage() {
+        if ("series".equals(pages[currentPageIndex])) 
+            if (!first || JOptionPane.NO_OPTION == Confirm.confirm(InvoiceResources.getString("attach_series_question")))//NOI18N
+                currentPageIndex++;
 
-    private void prevPage() {
-        if (1 > currentPageIndex) {
-            MsgBox.info(InvoiceResources.getString("no_more_pages"));
-            return;
-        }
-        currentPageIndex--;
         ((CardLayout) wizardPages.getLayout()).show(wizardPages, pages[currentPageIndex]);
         setControlState();
     }
@@ -86,10 +81,10 @@ public class JInvoiceWizard extends javax.swing.JFrame {
     wizardPages = new javax.swing.JPanel();
     welcomePage = new javax.swing.JScrollPane();
     welcomeTextPane = new javax.swing.JTextPane();
-    createDocumentPage = new com.google.code.reelcash.swing.invoices.JDocumentPanel();
     seriesRangePanel = new javax.swing.JPanel();
     seriesScrollPane = new javax.swing.JScrollPane();
     seriesList = new javax.swing.JList();
+    createDocumentPage = new com.google.code.reelcash.swing.invoices.JDocumentPanel();
     controlPanel = new javax.swing.JPanel();
     prevPageButton = new javax.swing.JButton();
     nextPageButton = new javax.swing.JButton();
@@ -106,9 +101,6 @@ public class JInvoiceWizard extends javax.swing.JFrame {
 
     wizardPages.add(welcomePage, "welcome");
 
-    createDocumentPage.setBorder(javax.swing.BorderFactory.createTitledBorder(null, InvoiceResources.getString("create_document_title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
-    wizardPages.add(createDocumentPage, "document");
-
     seriesRangePanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, InvoiceResources.getString("select_series_range_title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18)), javax.swing.BorderFactory.createEmptyBorder(15, 15, 30, 15))); // NOI18N
     seriesRangePanel.setLayout(new java.awt.BorderLayout());
 
@@ -118,6 +110,9 @@ public class JInvoiceWizard extends javax.swing.JFrame {
     seriesRangePanel.add(seriesScrollPane, java.awt.BorderLayout.CENTER);
 
     wizardPages.add(seriesRangePanel, "series");
+
+    createDocumentPage.setBorder(javax.swing.BorderFactory.createTitledBorder(null, InvoiceResources.getString("create_document_title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+    wizardPages.add(createDocumentPage, "document");
 
     getContentPane().add(wizardPages, java.awt.BorderLayout.CENTER);
 
@@ -159,13 +154,26 @@ public class JInvoiceWizard extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
     private void prevPageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prevPageButtonActionPerformed
-        prevPage();
+        if (1 > currentPageIndex) {
+            MsgBox.info(InvoiceResources.getString("no_more_pages"));
+            return;
+        }
+        forward = false;
+        first = false;
+        currentPageIndex--;
+        if ("series".equals(pages[currentPageIndex]))
+            currentPageIndex--;
+        showPage();
     }//GEN-LAST:event_prevPageButtonActionPerformed
 
     private void nextPageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextPageButtonActionPerformed
-
-        if (currentPageIndex < pages.length - 1)
-            nextPage();
+        if (currentPageIndex >= pages.length - 1)
+            // save the invoice ... 
+            return;
+        forward = true;
+        currentPageIndex++;
+        showPage();
+        first = false;
     }//GEN-LAST:event_nextPageButtonActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
@@ -201,23 +209,48 @@ public class JInvoiceWizard extends javax.swing.JFrame {
 
         private final ComboListCellRenderer renderer = new ComboListCellRenderer(1);
 
-        public void ancestorAdded(AncestorEvent event) {
-            if (JInvoiceWizard.this.seriesList.equals(event.getSource())) {
-                QueryMediator mediator = new QueryMediator(ReelcashDataSource.getInstance());
-                try {
-                    DataRow[] rows = mediator.fetchSimple("select id, prefix || counter || suffix || ' - ' || ((max_value-counter)/inc_step) || 'p' as desc from series_ranges where counter<max_value;");
-                    for (DataRow row : rows)
-                        ((DefaultListModel) getSeriesListModel()).addElement(row);
-                    JInvoiceWizard.this.seriesList.setCellRenderer(renderer);
-                }
-                catch (SQLException e) {
-                    MsgBox.error(e.getLocalizedMessage());
-                }
+        private void seriesPageShown() {
+            try {
+                DataRow[] rows = JInvoiceWizard.this.mediator.fetchSimple("select id, prefix || counter || suffix || ' - ' || ((max_value-counter)/inc_step) || 'p' as desc from series_ranges where counter<max_value;");
+                for (DataRow row : rows)
+                    ((DefaultListModel) getSeriesListModel()).addElement(row);
+                JInvoiceWizard.this.seriesList.setCellRenderer(renderer);
+            }
+            catch (SQLException e) {
+                MsgBox.error(e.getLocalizedMessage());
             }
         }
 
-        public void ancestorRemoved(AncestorEvent event) {
+        private void seriesPageHidden() {
+            javax.swing.JList list = JInvoiceWizard.this.seriesList;
+            DefaultListModel model = (DefaultListModel) JInvoiceWizard.this.getSeriesListModel();
+            if (JInvoiceWizard.this.forward && list.getSelectedIndex() > -1) {
+                DataRow row = (DataRow) model.getElementAt(list.getSelectedIndex());
+                try {
+                    Integer seriesRangeId = Integer.valueOf(row.getValue(0).toString());
+                    QueryMediator m = JInvoiceWizard.this.mediator;
+                    if (m.execute("update series_ranges set counter=counter+1 where id=? and counter<max_value", seriesRangeId) > 0) {
+                        Object result = m.executeScalar("select prefix||counter||suffix from series_ranges where id=?", seriesRangeId);
+                        if (null != result)
+                            JInvoiceWizard.this.createDocumentPage.setDocumentNo(result.toString());
+                    }
+                }
+                catch (SQLException e) {
+                    MsgBox.exception(e);
+                }
+            }
             ((DefaultListModel) getSeriesListModel()).removeAllElements();
+
+        }
+
+        public void ancestorAdded(AncestorEvent event) {
+            if (JInvoiceWizard.this.seriesList.equals(event.getSource()))
+                seriesPageShown();
+        }
+
+        public void ancestorRemoved(AncestorEvent event) {
+            if (JInvoiceWizard.this.seriesList.equals(event.getSource()))
+                seriesPageHidden();
         }
 
         public void ancestorMoved(AncestorEvent event) {
