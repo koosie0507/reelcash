@@ -32,7 +32,7 @@ public class JInvoiceWizard extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 4789786767938489010L;
     private ListModel seriesListModel;
-    private final String[] pages = new String[]{"welcome", "series", "document"};
+    private final String[] pages = new String[]{"welcome", "series", "document", "params"};
     private int currentPageIndex = 0;
     private String documentNo;
     private boolean first = true;
@@ -85,6 +85,7 @@ public class JInvoiceWizard extends javax.swing.JFrame {
     seriesScrollPane = new javax.swing.JScrollPane();
     seriesList = new javax.swing.JList();
     createDocumentPage = new com.google.code.reelcash.swing.invoices.JDocumentPanel();
+    invoiceParamsPage = new com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel();
     controlPanel = new javax.swing.JPanel();
     prevPageButton = new javax.swing.JButton();
     nextPageButton = new javax.swing.JButton();
@@ -113,6 +114,7 @@ public class JInvoiceWizard extends javax.swing.JFrame {
 
     createDocumentPage.setBorder(javax.swing.BorderFactory.createTitledBorder(null, InvoiceResources.getString("create_document_title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
     wizardPages.add(createDocumentPage, "document");
+    wizardPages.add(invoiceParamsPage, "params");
 
     getContentPane().add(wizardPages, java.awt.BorderLayout.CENTER);
 
@@ -170,8 +172,17 @@ public class JInvoiceWizard extends javax.swing.JFrame {
         if (currentPageIndex >= pages.length - 1)
             // save the invoice ... 
             return;
+        if ("params".equals(pages[currentPageIndex])) {
+            if (JOptionPane.YES_OPTION == Confirm.confirm(InvoiceResources.getString("save_document_question"))) {
+                // save the document and move on
+            }
+            else {
+                return; // don't do anything, leave the whole thing the way it was
+            }
+        }
         forward = true;
         currentPageIndex++;
+
         showPage();
         first = false;
     }//GEN-LAST:event_nextPageButtonActionPerformed
@@ -195,6 +206,7 @@ public class JInvoiceWizard extends javax.swing.JFrame {
   private javax.swing.JButton closeButton;
   private javax.swing.JPanel controlPanel;
   private com.google.code.reelcash.swing.invoices.JDocumentPanel createDocumentPage;
+  private com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel invoiceParamsPage;
   private javax.swing.JButton nextPageButton;
   private javax.swing.JButton prevPageButton;
   private javax.swing.JList seriesList;

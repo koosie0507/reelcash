@@ -265,27 +265,93 @@ create table if not exists `business_permissions` (
     constraint fk_business_permission_permission foreign key (`permission_id`) references `permissions`(`id`)
 );
 
+drop table `currencies`;
 create table if not exists `currencies` (
     -- contains the currencies known by the application
     `id` INTEGER PRIMARY KEY,
     `code` text not null,
-    `must_exchange` bit not null default(0),
     `name` text,
+    `must_exchange` bit not null constraint df_must_exchange default(0),
     constraint uq_currency_code unique(`code`)
 );
+
+create trigger if not exists `trig_currency_before_insert`
+    before insert on `currencies`
+    when ((NEW.`must_exchange` = 0) and (exists (select * from `currencies` where `must_exchange`=0)))
+begin
+    select RAISE(ROLLBACK, 'currency_must_exchange');
+end;
+
+create trigger if not exists `trig_currency_before_update`
+    before update of `must_exchange` on `currencies`
+    when ((NEW.`must_exchange` = 0) and (OLD.`must_exchange`=1) and (exists (select * from `currencies` where `must_exchange`=0)))
+begin
+    select RAISE(ROLLBACK, 'currency_must_exchange');
+end;
 
 create table if not exists `exchange_rates` (
     `id` INTEGER PRIMARY KEY,
     `currency_id` integer not null,
     `bank_id` integer not null,
-    `start_date` datetime not null default(date('now')),
-    `end_date` datetime not null,
+    `permanent` bit not null default(0),
+    `start_date` datetime default(date('now')),
+    `end_date` datetime,
     `value` decimal(11,4) not null,
     `exchange_tax_percent` decimal(8,2) not null default(0),
     constraint uq_currency_bank_interval unique(`currency_id`, `bank_id`, `start_date`, `end_date`),
     constraint fk_exchange_rate_currency foreign key (`currency_id`) references `currencies`(`id`),
-    constraint fk_exchange_rate_bank foreign key (`bank_id`) references `banks`(`id`) 
+    constraint fk_exchange_rate_bank foreign key (`bank_id`) references `banks`(`id`),
+    constraint ck_exchange_rate_temp check (case permanent when 0 then ((permanent=0) and (start_date is not null) and ((end_date is null) or (end_date is not null) and (end_date >= start_date))) else permanent=1 end)
 );
+
+drop trigger `trig_exchange_rates_before_insert`;
+create trigger if not exists `trig_exchange_rates_before_insert`
+    before insert on `exchange_rates`
+begin
+    select RAISE(ROLLBACK, 'exchange_rate_invalid_bank')
+    where exists (select * from `banks` where `id`=NEW.`bank_id` and `allow_currency_exchange`=0);
+
+    select RAISE(ROLLBACK, 'exchange_rate_invalid_currency')
+    where exists (select * from `currencies` where `id`=NEW.`currency_id` and `must_exchange`=0);
+
+    select RAISE(ROLLBACK, 'exchange_rate_permanent_rate_exists')
+    where exists (select * from `exchange_rates` where bank_id=NEW.bank_id and currency_id=NEW.currency_id and permanent=1);
+
+    select RAISE(ROLLBACK, 'exchange_rate_temp_rate_exists')
+    where exists (select * from `exchange_rates` where NEW.permanent=1 and bank_id=NEW.bank_id and currency_id=NEW.currency_id and permanent=0);
+
+    select RAISE(ROLLBACK, 'exchange_rate_overlapping_rates')
+    where exists (select *
+        from `exchange_rates`
+        where bank_id=NEW.bank_id
+                and currency_id=NEW.currency_id
+                and ((NEW.end_date between start_date and end_date) or (NEW.start_date between start_date and end_date)));
+end;
+
+drop trigger `trig_exchange_rates_before_update`;
+create trigger if not exists `trig_exchange_rates_before_update`
+    before update on `exchange_rates`
+begin
+    select RAISE(ROLLBACK, 'exchange_rate_invalid_bank')
+    where exists (select * from `banks` where `id`=NEW.`bank_id` and `allow_currency_exchange`=0);
+
+    select RAISE(ROLLBACK, 'exchange_rate_invalid_currency')
+    where exists (select * from `currencies` where `id`=NEW.`currency_id` and `must_exchange`=0);
+
+    select RAISE(ROLLBACK, 'exchange_rate_permanent_rate_exists')
+    where exists (select * from `exchange_rates` where NEW.permanent=1 and bank_id=NEW.bank_id and currency_id=NEW.currency_id and permanent=1);
+
+    select RAISE(ROLLBACK, 'exchange_rate_temp_rate_exists')
+    where exists (select * from `exchange_rates` where NEW.permanent=1 and bank_id=NEW.bank_id and currency_id=NEW.currency_id and permanent=0);
+
+    select RAISE(ROLLBACK, 'exchange_rate_overlapping_rates')
+    where exists (select *
+        from `exchange_rates`
+        where bank_id=NEW.bank_id
+                and currency_id=NEW.currency_id
+                and id <> NEW.id
+                and ((NEW.end_date<>OLD.end_date and NEW.end_date between start_date and end_date) or (NEW.start_date <> OLD.start_date and NEW.start_date between start_date and end_date)));
+end;
 
 create table if not exists `units` (
     `id` INTEGER PRIMARY KEY,
