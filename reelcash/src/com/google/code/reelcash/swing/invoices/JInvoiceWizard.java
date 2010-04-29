@@ -17,6 +17,8 @@ import com.google.code.reelcash.swing.ComboListCellRenderer;
 import com.google.code.reelcash.util.Confirm;
 import com.google.code.reelcash.util.MsgBox;
 import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -31,9 +33,12 @@ import javax.swing.event.AncestorListener;
 public class JInvoiceWizard extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 4789786767938489010L;
+    private ActionListener invoiceParamValidator;
+    private InvoiceWizardAncestorListener ancestorListener;
     private ListModel seriesListModel;
     private final String[] pages = new String[]{"welcome", "series", "document", "params"};
     private int currentPageIndex = 0;
+    private Integer documentId = null;
     private String documentNo;
     private boolean first = true;
     private boolean forward = true;
@@ -42,8 +47,14 @@ public class JInvoiceWizard extends javax.swing.JFrame {
     /** Creates new form JInvoiceWizard */
     public JInvoiceWizard() {
         initComponents();
-        seriesList.addAncestorListener(new InvoiceWizardAncestorListener());
         setControlState();
+        seriesList.addAncestorListener(getAncestorListener());
+    }
+
+    private InvoiceWizardAncestorListener getAncestorListener() {
+        if (null == ancestorListener)
+            ancestorListener = new InvoiceWizardAncestorListener();
+        return ancestorListener;
     }
 
     private void setControlState() {
@@ -55,7 +66,7 @@ public class JInvoiceWizard extends javax.swing.JFrame {
     }
 
     private void showPage() {
-        if ("series".equals(pages[currentPageIndex])) 
+        if ("series".equals(pages[currentPageIndex]))
             if (!first || JOptionPane.NO_OPTION == Confirm.confirm(InvoiceResources.getString("attach_series_question")))//NOI18N
                 currentPageIndex++;
 
@@ -160,6 +171,10 @@ public class JInvoiceWizard extends javax.swing.JFrame {
             MsgBox.info(InvoiceResources.getString("no_more_pages"));
             return;
         }
+        if ("params".equals(pages[currentPageIndex]))
+            if (!invoiceParamsPage.isDataValid())
+                return;
+
         forward = false;
         first = false;
         currentPageIndex--;
@@ -172,14 +187,27 @@ public class JInvoiceWizard extends javax.swing.JFrame {
         if (currentPageIndex >= pages.length - 1)
             // save the invoice ... 
             return;
-        if ("params".equals(pages[currentPageIndex])) {
-            if (JOptionPane.YES_OPTION == Confirm.confirm(InvoiceResources.getString("save_document_question"))) {
-                // save the document and move on
-            }
-            else {
-                return; // don't do anything, leave the whole thing the way it was
-            }
-        }
+        if ("document".equals(pages[currentPageIndex]))
+            if (JOptionPane.YES_OPTION == Confirm.confirm(InvoiceResources.getString("save_document_question")))
+                try {
+                    DataRow row = createDocumentPage.getDocumentRow();
+                    documentId = (Integer) mediator.executeScalar("insert into documents(number, type_id, issuer_id, recipient_id, state_id, date_issued, date_due)"
+                            + " select ?, dt.id, ?, ?, ds.id, ?, ?"
+                            + " document_types dt, document_states ds where dt.name=? and ds.name=?; select last_insert_rowid();",
+                            documentNo, row.getValue(3), row.getValue(4), row.getValue(5), "invoice", "new");
+
+                }
+                catch (SQLException e) {
+                    documentId = null;
+                    MsgBox.error(e.getLocalizedMessage());
+                    return;
+                }
+            else
+                return;
+        
+        if ("params".equals(pages[currentPageIndex]))
+            if (!invoiceParamsPage.isDataValid())
+                return;
         forward = true;
         currentPageIndex++;
 

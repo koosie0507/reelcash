@@ -1,15 +1,11 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * JInvoiceParamsPanel.java
  *
  * Created on Apr 29, 2010, 9:55:29 AM
  */
 package com.google.code.reelcash.swing.invoices;
 
+import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.ReelcashDataSource;
 import com.google.code.reelcash.data.sql.QueryMediator;
@@ -17,6 +13,7 @@ import com.google.code.reelcash.model.DataRowComboModel;
 import com.google.code.reelcash.swing.ComboListCellRenderer;
 import com.google.code.reelcash.util.MsgBox;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.event.ItemEvent;
 import java.sql.SQLException;
 import javax.swing.event.AncestorEvent;
@@ -43,11 +40,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     /** Creates new form JInvoiceParamsPanel */
     public JInvoiceParamsPanel() {
         initComponents();
-        addAncestorListener(new SelfAncestorListener());
-        currencyId = -1;
-        exchangeRateId = -1;
-        issuerRepId = -1;
-        recipientRepId = -1;
+        addAncestorListener(new PanelAncestorListener());
         currencyCombo.setRenderer(renderer);
         bankCombo.setRenderer(renderer);
         issuerRepCombo.setRenderer(renderer);
@@ -68,6 +61,23 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
 
     public Integer getRecipientRepId() {
         return recipientRepId;
+    }
+
+    public boolean isDataValid() {
+        try {
+            if (null == JInvoiceParamsPanel.this.currencyId)
+                throw new ReelcashException(InvoiceResources.getString("invoice_currency_missing_error")); // NOI18N
+
+            if (JInvoiceParamsPanel.this.mustExchange && null == JInvoiceParamsPanel.this.exchangeRateId)
+                throw new ReelcashException(InvoiceResources.getString("invoice_exchange_rate_missing_error")); // NOI18N
+
+            return true;
+        }
+        catch (Throwable t) {
+            MsgBox.error(t.getLocalizedMessage());
+            return false;
+        }
+
     }
 
     public void setCurrencyId(Integer currencyId) {
@@ -94,7 +104,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
             if (1 > rows.length) {
                 exchangeRateText.setForeground(Color.red);
                 exchangeRateText.setText(InvoiceResources.getString("exchange_rate_not_found"));
-                exchangeRateId = -1;
+                exchangeRateId = null;
             }
             else {
                 exchangeRateId = (Integer) rows[0].getValue(0);
@@ -103,7 +113,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
             }
         }
         catch (SQLException e) {
-            exchangeRateId = -1;
+            exchangeRateId = null;
             exchangeRateText.setForeground(Color.RED);
             MsgBox.exception(e);
         }
@@ -130,11 +140,11 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     exchangeRateLabel = new javax.swing.JLabel();
     exchangeRateText = new javax.swing.JLabel();
 
-    setMinimumSize(new java.awt.Dimension(235, 163));
-    setPreferredSize(new java.awt.Dimension(235, 163));
+    setMinimumSize(new java.awt.Dimension(235, 200));
+    setPreferredSize(new java.awt.Dimension(235, 200));
     setLayout(new java.awt.GridBagLayout());
 
-    currencyLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    currencyLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
     currencyLabel.setText("Currency:");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -160,7 +170,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     gridBagConstraints.insets = new java.awt.Insets(15, 5, 0, 15);
     add(currencyCombo, gridBagConstraints);
 
-    bankLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    bankLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
     bankLabel.setText("Exchange rate:");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -187,7 +197,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     gridBagConstraints.insets = new java.awt.Insets(15, 5, 0, 15);
     add(bankCombo, gridBagConstraints);
 
-    issuerRepLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    issuerRepLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
     issuerRepLabel.setText("Issuer representative:");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -209,7 +219,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     gridBagConstraints.insets = new java.awt.Insets(15, 5, 0, 15);
     add(issuerRepCombo, gridBagConstraints);
 
-    recipientRepLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    recipientRepLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
     recipientRepLabel.setText("Recipient representative:");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -231,7 +241,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     gridBagConstraints.insets = new java.awt.Insets(15, 5, 15, 15);
     add(recipientRepCombo, gridBagConstraints);
 
-    exchangeRateLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+    exchangeRateLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
     exchangeRateLabel.setText("Exchange rate:");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -242,7 +252,7 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     gridBagConstraints.insets = new java.awt.Insets(15, 15, 0, 5);
     add(exchangeRateLabel, gridBagConstraints);
 
-    exchangeRateText.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+    exchangeRateText.setFont(new java.awt.Font("Tahoma", 2, 11));
     exchangeRateText.setForeground(java.awt.Color.blue);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
@@ -308,15 +318,27 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
   private javax.swing.JLabel recipientRepLabel;
   // End of variables declaration//GEN-END:variables
 
-    private class SelfAncestorListener implements AncestorListener {
+    private class PanelAncestorListener implements AncestorListener {
 
         public void ancestorAdded(AncestorEvent event) {
             if (!JInvoiceParamsPanel.this.equals(event.getSource()))
                 return;
 
+            JInvoiceParamsPanel.this.currencyId = null;
+            JInvoiceParamsPanel.this.exchangeRateId = null;
+            JInvoiceParamsPanel.this.issuerRepId = null;
+            JInvoiceParamsPanel.this.recipientRepId = null;
+            JInvoiceParamsPanel.this.referenceCurrencyCode = "";
+            JInvoiceParamsPanel.this.mustExchange = false;
+
             DataRowComboModel currenciesModel = (DataRowComboModel) JInvoiceParamsPanel.this.currencyCombo.getModel();
+            DataRowComboModel issuerRepsModel = (DataRowComboModel) JInvoiceParamsPanel.this.issuerRepCombo.getModel();
+            DataRowComboModel recipientRepsModel = (DataRowComboModel) JInvoiceParamsPanel.this.recipientRepCombo.getModel();
+            QueryMediator m = JInvoiceParamsPanel.this.mediator;
             try {
-                currenciesModel.fill(JInvoiceParamsPanel.this.mediator.fetchSimple("select id, code, must_exchange from currencies;"));
+                currenciesModel.fill(m.fetchSimple("select id, code, must_exchange from currencies;"));
+                issuerRepsModel.fill(m.fetch("select c.id, c.name||' '||c.surname as full_name from contacts c inner join business_representatives br on br.contact_id=c.id inner join documents d on d.issuer_id=br.business_id where d.id=?", 1));
+                recipientRepsModel.fill(m.fetch("select c.id, c.name||' '||c.surname as full_name from contacts c inner join business_representatives br on br.contact_id=c.id inner join documents d on d.recipient_id=br.business_id where d.id=?", 1));
                 referenceCurrencyCode = (String) JInvoiceParamsPanel.this.mediator.executeScalar("select code from currencies where must_exchange=0;");
                 if (null == referenceCurrencyCode)
                     referenceCurrencyCode = "";
@@ -327,23 +349,28 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
         }
 
         public void ancestorRemoved(AncestorEvent event) {
-            if (!JInvoiceParamsPanel.this.equals(event.getSource()))
-                return;
-            // aici trebuie sa validam valorile din combo-uri si sa setam variabilele
-            referenceCurrencyCode = "";
-            currencyId = -1;
-            exchangeRateId = -1;
-            issuerRepId = -1;
-            recipientRepId = -1;
-            DataRowComboModel model = (DataRowComboModel) JInvoiceParamsPanel.this.currencyCombo.getModel();
-            model.clear();
-            model = (DataRowComboModel) JInvoiceParamsPanel.this.bankCombo.getModel();
-            model.clear();
-            model = (DataRowComboModel) JInvoiceParamsPanel.this.issuerRepCombo.getModel();
-            model.clear();
-            model = (DataRowComboModel) JInvoiceParamsPanel.this.recipientRepCombo.getModel();
-            model.clear();
-            JInvoiceParamsPanel.this.exchangeRateText.setText("");
+            try {
+                if (!JInvoiceParamsPanel.this.equals(event.getSource()))
+                    return;
+
+                Container cntr = event.getAncestor();
+                DataRowComboModel model = (DataRowComboModel) JInvoiceParamsPanel.this.currencyCombo.getModel();
+                model.clear();
+                model = (DataRowComboModel) JInvoiceParamsPanel.this.bankCombo.getModel();
+                model.clear();
+                model = (DataRowComboModel) JInvoiceParamsPanel.this.issuerRepCombo.getModel();
+                model.clear();
+                model = (DataRowComboModel) JInvoiceParamsPanel.this.recipientRepCombo.getModel();
+                model.clear();
+                JInvoiceParamsPanel.this.currencyCombo.setSelectedIndex(-1);
+                JInvoiceParamsPanel.this.bankCombo.setSelectedIndex(-1);
+                JInvoiceParamsPanel.this.exchangeRateText.setText("");
+                JInvoiceParamsPanel.this.issuerRepCombo.setSelectedIndex(-1);
+                JInvoiceParamsPanel.this.recipientRepCombo.setSelectedIndex(-1);
+            }
+            catch (Throwable t) {
+                MsgBox.error(t.getLocalizedMessage());
+            }
         }
 
         public void ancestorMoved(AncestorEvent event) {
