@@ -14,7 +14,10 @@ import com.google.code.reelcash.Permission;
 import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.ReelcashDataSource;
+import com.google.code.reelcash.data.documents.DocumentMediator;
 import com.google.code.reelcash.data.documents.DocumentNode;
+import com.google.code.reelcash.data.documents.DocumentState;
+import com.google.code.reelcash.data.documents.DocumentType;
 import com.google.code.reelcash.data.sql.QueryMediator;
 import com.google.code.reelcash.model.DataRowComboModel;
 import com.google.code.reelcash.swing.ComboListCellRenderer;
@@ -52,8 +55,9 @@ public class JDocumentPanel extends javax.swing.JPanel {
     }
 
     private QueryMediator getMediator() {
-        if (null == mediator)
+        if (null == mediator) {
             mediator = new QueryMediator(ReelcashDataSource.getInstance());
+        }
         return mediator;
     }
 
@@ -62,8 +66,7 @@ public class JDocumentPanel extends javax.swing.JPanel {
             docTypeModel = new DataRowComboModel();
             try {
                 docTypeModel.fill(getMediator().fetchSimple(selectDocTypes));
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 MsgBox.exception(e);
             }
         }
@@ -77,8 +80,7 @@ public class JDocumentPanel extends javax.swing.JPanel {
                 issuerModel.fill(getMediator().fetch(selectBusinessWithPermission, Permission.EMIT.getData()));
                 issuerModel.setValueMemberIndex(0);
                 issuerModel.setDisplayMemberIndex(1);
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 MsgBox.exception(e);
             }
         }
@@ -92,8 +94,7 @@ public class JDocumentPanel extends javax.swing.JPanel {
                 recipientModel.fill(getMediator().fetch(selectBusinessWithPermission, Permission.RECEIVE.getData()));
                 recipientModel.setValueMemberIndex(0);
                 recipientModel.setDisplayMemberIndex(1);
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 MsgBox.exception(e);
             }
         }
@@ -101,12 +102,25 @@ public class JDocumentPanel extends javax.swing.JPanel {
     }
 
     private boolean validateValues() {
-        return (issuerCombo.getSelectedIndex() >= 0)
-                && (recipientCombo.getSelectedIndex() >= 0)
-                && (typeCombo.getSelectedIndex() >= 0)
-                && (numberField.getText().length() > 0)
-                && (dateIssuedField.getValue() != null)
-                && (dateDueField.getValue() != null);
+        if (0 > issuerCombo.getSelectedIndex()) {
+            throw new ReelcashException(InvoiceResources.getString("document_issuer_missing")); // NOI18N
+        }
+        if (0 > recipientCombo.getSelectedIndex()) {
+            throw new ReelcashException(InvoiceResources.getString("document_recipient_missing")); // NOI18N
+        }
+        if (0 > typeCombo.getSelectedIndex()) {
+            throw new ReelcashException(InvoiceResources.getString("document_type_missing")); // NOI18N
+        }
+        if (1 > numberField.getText().length()) {
+            throw new ReelcashException(InvoiceResources.getString("document_number_missing")); // NOI18N
+        }
+        if (null == dateIssuedField.getValue()) {
+            throw new ReelcashException(InvoiceResources.getString("document_issue_date_missing")); // NOI18N
+        }
+        if (null == dateDueField.getValue()) {
+            throw new ReelcashException(InvoiceResources.getString("document_due_date_missing")); // NOI18N
+        }
+        return true;
     }
 
     public void setDocumentNo(Object documentNo) {
@@ -121,20 +135,34 @@ public class JDocumentPanel extends javax.swing.JPanel {
         numberField.setFont(fieldFont);
     }
 
-    public DataRow getDocumentRow() {
-        if (!validateValues())
-            throw new ReelcashException("Vitacom, mai aproape de om!");
-        DataRow row = DocumentNode.getInstance().createRow();
-        row.setValue(1, numberField.getText());
-        row.setValue(2, ((DataRow) typeCombo.getSelectedItem()).getValue(0));
-        row.setValue(3, ((DataRow) issuerCombo.getSelectedItem()).getValue(0));
-        row.setValue(4, ((DataRow) recipientCombo.getSelectedItem()).getValue(0));
-        row.setValue(5, 1);
-        row.setValue(6, SysUtils.now());
-        row.setValue(7, dateIssuedField.getValue());
-        row.setValue(8, dateDueField.getValue());
+    public void setDocumentType(DocumentType docType) {
+        int idx = docTypeModel.getSize() - 1;
+        String name = String.valueOf(docType.getName());
+        while (idx > -1) {
+            if (((DataRow) docTypeModel.getElementAt(idx)).getValue(1).equals(name)) {
+                break;
+            }
+            idx--;
+        }
+        typeCombo.setSelectedIndex(idx);
+        typeCombo.setEnabled(idx < 0);
+    }
 
-        return row;
+    public DataRow getDocumentRow() {
+        if (validateValues()) {
+            DataRow row = DocumentNode.getInstance().createRow();
+            row.setValue(1, numberField.getText());
+            row.setValue(2, ((DataRow) typeCombo.getSelectedItem()).getValue(0));
+            row.setValue(3, ((DataRow) issuerCombo.getSelectedItem()).getValue(0));
+            row.setValue(4, ((DataRow) recipientCombo.getSelectedItem()).getValue(0));
+            row.setValue(5, DocumentMediator.getInstance().getStateId(DocumentState.NEW));
+            row.setValue(6, SysUtils.now());
+            row.setValue(7, dateIssuedField.getValue());
+            row.setValue(8, dateDueField.getValue());
+
+            return row;
+        }
+        return null;
     }
 
     /** This method is called from within the constructor to

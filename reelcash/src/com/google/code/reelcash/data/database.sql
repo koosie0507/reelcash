@@ -265,7 +265,6 @@ create table if not exists `business_permissions` (
     constraint fk_business_permission_permission foreign key (`permission_id`) references `permissions`(`id`)
 );
 
-drop table `currencies`;
 create table if not exists `currencies` (
     -- contains the currencies known by the application
     `id` INTEGER PRIMARY KEY,
@@ -304,7 +303,6 @@ create table if not exists `exchange_rates` (
     constraint ck_exchange_rate_temp check (case permanent when 0 then ((permanent=0) and (start_date is not null) and ((end_date is null) or (end_date is not null) and (end_date >= start_date))) else permanent=1 end)
 );
 
-drop trigger `trig_exchange_rates_before_insert`;
 create trigger if not exists `trig_exchange_rates_before_insert`
     before insert on `exchange_rates`
 begin
@@ -328,7 +326,6 @@ begin
                 and ((NEW.end_date between start_date and end_date) or (NEW.start_date between start_date and end_date)));
 end;
 
-drop trigger `trig_exchange_rates_before_update`;
 create trigger if not exists `trig_exchange_rates_before_update`
     before update on `exchange_rates`
 begin

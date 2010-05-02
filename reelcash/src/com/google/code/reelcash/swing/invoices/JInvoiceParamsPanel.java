@@ -15,6 +15,7 @@ import com.google.code.reelcash.util.MsgBox;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -26,8 +27,6 @@ import javax.swing.event.AncestorListener;
 public class JInvoiceParamsPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 4949072367604042872L;
-    private static final String CURRENCIES_SQL = "select id, code from currencies;";
-    private static final String EXCHANGE_RATES_SQL = "select id, ";
     private final QueryMediator mediator = new QueryMediator(ReelcashDataSource.getInstance());
     private boolean mustExchange;
     private Integer currencyId;
@@ -45,6 +44,9 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
         bankCombo.setRenderer(renderer);
         issuerRepCombo.setRenderer(renderer);
         recipientRepCombo.setRenderer(renderer);
+        RepStateListener listener = new RepStateListener();
+        issuerRepCombo.addItemListener(listener);
+        recipientRepCombo.addItemListener(listener);
     }
 
     public Integer getCurrencyId() {
@@ -65,15 +67,14 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
 
     public boolean isDataValid() {
         try {
-            if (null == JInvoiceParamsPanel.this.currencyId)
+            if (null == JInvoiceParamsPanel.this.currencyId) {
                 throw new ReelcashException(InvoiceResources.getString("invoice_currency_missing_error")); // NOI18N
-
-            if (JInvoiceParamsPanel.this.mustExchange && null == JInvoiceParamsPanel.this.exchangeRateId)
+            }
+            if (JInvoiceParamsPanel.this.mustExchange && null == JInvoiceParamsPanel.this.exchangeRateId) {
                 throw new ReelcashException(InvoiceResources.getString("invoice_exchange_rate_missing_error")); // NOI18N
-
+            }
             return true;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             MsgBox.error(t.getLocalizedMessage());
             return false;
         }
@@ -105,14 +106,12 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
                 exchangeRateText.setForeground(Color.red);
                 exchangeRateText.setText(InvoiceResources.getString("exchange_rate_not_found"));
                 exchangeRateId = null;
-            }
-            else {
+            } else {
                 exchangeRateId = (Integer) rows[0].getValue(0);
                 exchangeRateText.setForeground(Color.blue);
                 exchangeRateText.setText(String.format("1 %s = %s %s", rows[0].getValue(1), rows[0].getValue(2), referenceCurrencyCode));
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             exchangeRateId = null;
             exchangeRateText.setForeground(Color.RED);
             MsgBox.exception(e);
@@ -265,42 +264,44 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
   }// </editor-fold>//GEN-END:initComponents
 
     private void currencyComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_currencyComboItemStateChanged
-        if (null == evt.getItem())
+        if (null == evt.getItem()) {
             return;
-        if (ItemEvent.SELECTED != evt.getStateChange())
+        }
+        if (ItemEvent.SELECTED != evt.getStateChange()) {
             return;
+        }
         DataRowComboModel model = (DataRowComboModel) bankCombo.getModel();
         DataRow row = (DataRow) evt.getItem();
         currencyId = (Integer) row.getValue(0);
         mustExchange = ((Integer) row.getValue(2)).intValue() != 0;
-        if (mustExchange)
+        if (mustExchange) {
             if (model.getSize() < 1 || (bankCombo.getSelectedIndex() < 0)) {
                 try {
                     model.fill(mediator.fetchSimple("select id, name from banks where allow_currency_exchange"));
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     MsgBox.exception(e);
                 }
                 computeExchangeRate(-1);
-            }
-            else { // we already loaded the available banks in the combo
+            } else { // we already loaded the available banks in the combo
                 row = (DataRow) bankCombo.getSelectedItem();
                 Integer bankId = (Integer) row.getValue(0);
                 computeExchangeRate(bankId);
             }
-        else {
+        } else {
             bankCombo.setSelectedIndex(-1);
             model.clear();
             computeExchangeRate(-1);
-            exchangeRateId = -1;
+            exchangeRateId = null;
         }
     }//GEN-LAST:event_currencyComboItemStateChanged
 
     private void bankComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_bankComboItemStateChanged
-        if (null == evt.getItem())
+        if (null == evt.getItem()) {
             return;
-        if (ItemEvent.SELECTED != evt.getStateChange())
+        }
+        if (ItemEvent.SELECTED != evt.getStateChange()) {
             return;
+        }
         DataRow row = (DataRow) evt.getItem();
         Integer bankId = (Integer) row.getValue(0);
         computeExchangeRate(bankId);
@@ -321,8 +322,9 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
     private class PanelAncestorListener implements AncestorListener {
 
         public void ancestorAdded(AncestorEvent event) {
-            if (!JInvoiceParamsPanel.this.equals(event.getSource()))
+            if (!JInvoiceParamsPanel.this.equals(event.getSource())) {
                 return;
+            }
 
             JInvoiceParamsPanel.this.currencyId = null;
             JInvoiceParamsPanel.this.exchangeRateId = null;
@@ -340,18 +342,19 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
                 issuerRepsModel.fill(m.fetch("select c.id, c.name||' '||c.surname as full_name from contacts c inner join business_representatives br on br.contact_id=c.id inner join documents d on d.issuer_id=br.business_id where d.id=?", 1));
                 recipientRepsModel.fill(m.fetch("select c.id, c.name||' '||c.surname as full_name from contacts c inner join business_representatives br on br.contact_id=c.id inner join documents d on d.recipient_id=br.business_id where d.id=?", 1));
                 referenceCurrencyCode = (String) JInvoiceParamsPanel.this.mediator.executeScalar("select code from currencies where must_exchange=0;");
-                if (null == referenceCurrencyCode)
+                if (null == referenceCurrencyCode) {
                     referenceCurrencyCode = "";
-            }
-            catch (SQLException e) {
+                }
+            } catch (SQLException e) {
                 MsgBox.exception(e);
             }
         }
 
         public void ancestorRemoved(AncestorEvent event) {
             try {
-                if (!JInvoiceParamsPanel.this.equals(event.getSource()))
+                if (!JInvoiceParamsPanel.this.equals(event.getSource())) {
                     return;
+                }
 
                 Container cntr = event.getAncestor();
                 DataRowComboModel model = (DataRowComboModel) JInvoiceParamsPanel.this.currencyCombo.getModel();
@@ -367,15 +370,30 @@ public class JInvoiceParamsPanel extends javax.swing.JPanel {
                 JInvoiceParamsPanel.this.exchangeRateText.setText("");
                 JInvoiceParamsPanel.this.issuerRepCombo.setSelectedIndex(-1);
                 JInvoiceParamsPanel.this.recipientRepCombo.setSelectedIndex(-1);
-            }
-            catch (Throwable t) {
+            } catch (Throwable t) {
                 MsgBox.error(t.getLocalizedMessage());
             }
         }
 
         public void ancestorMoved(AncestorEvent event) {
-            if (!JInvoiceParamsPanel.this.equals(event.getSource()))
+            if (!JInvoiceParamsPanel.this.equals(event.getSource())) {
                 return;
+            }
+        }
+    }
+
+    private class RepStateListener implements ItemListener {
+
+        public void itemStateChanged(ItemEvent e) {
+            if (JInvoiceParamsPanel.this.issuerRepCombo.equals(e.getSource())) {
+                JInvoiceParamsPanel.this.issuerRepId = (Integer) ((DataRowComboModel) JInvoiceParamsPanel.this.issuerRepCombo.getModel()).getSelectedValue();
+                return;
+            }
+
+            if (JInvoiceParamsPanel.this.recipientRepCombo.equals(e.getSource())) {
+                JInvoiceParamsPanel.this.recipientRepId = (Integer) ((DataRowComboModel) JInvoiceParamsPanel.this.recipientRepCombo.getModel()).getSelectedValue();
+                return;
+            }
         }
     }
 }
