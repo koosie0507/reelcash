@@ -11,11 +11,14 @@
 package com.google.code.reelcash.swing.invoices;
 
 import com.google.code.reelcash.data.DataRow;
+import com.google.code.reelcash.data.documents.InvoiceDetailNode;
 import com.google.code.reelcash.data.documents.InvoiceMediator;
 import com.google.code.reelcash.data.goods.GoodNode;
 import com.google.code.reelcash.data.goods.UnitNode;
 import com.google.code.reelcash.model.DataRowComboModel;
+import com.google.code.reelcash.model.DataRowTableModel;
 import com.google.code.reelcash.swing.ComboListCellRenderer;
+import com.google.code.reelcash.swing.ReferenceFieldCellRenderer;
 import com.google.code.reelcash.util.MsgBox;
 import java.awt.CardLayout;
 import java.math.BigDecimal;
@@ -25,6 +28,8 @@ import javax.swing.JFrame;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -37,6 +42,9 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
     private DataRowComboModel goodsModel;
     private DataRowComboModel unitsModel;
     private final ComboListCellRenderer renderer;
+    private DataRowTableModel detailsModel;
+    private ReferenceFieldCellRenderer goodCellRenderer;
+    private ReferenceFieldCellRenderer unitCellRenderer;
 
     /** Creates new form JInvoiceDetailsPanel */
     public JInvoiceDetailsPanel() {
@@ -82,6 +90,36 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
         catch (SQLException e) {
             MsgBox.exception(e);
         }
+    }
+
+    public TableCellRenderer getGoodCellRenderer() {
+        if (null == goodCellRenderer)
+            goodCellRenderer = new ReferenceFieldCellRenderer(0, 1, InvoiceMediator.getInstance().getInvoicedGoods(invoiceId));
+        return goodCellRenderer;
+    }
+
+    public TableCellRenderer getUnitCellRenderer() {
+        if (null == unitCellRenderer)
+            unitCellRenderer = new ReferenceFieldCellRenderer(0, 1, InvoiceMediator.getInstance().getInvoicedUnits(invoiceId));
+        return unitCellRenderer;
+    }
+
+    public TableModel getDetailsModel() {
+        if (null == detailsModel) {
+            detailsModel = new DataRowTableModel(InvoiceDetailNode.getInstance()) {
+
+                private static final long serialVersionUID = 2279397616444341919L;
+
+                @Override
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return false;
+                }
+            };
+            for (DataRow row : InvoiceMediator.getInstance().readInvoiceDetails(invoiceId))
+                detailsModel.add(row);
+        }
+
+        return detailsModel;
     }
 
     public ComboBoxModel getGoodsModel() {
@@ -291,6 +329,11 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
     editDetailButton.setFocusable(false);
     editDetailButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     editDetailButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    editDetailButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        onEditDetailPerformed(evt);
+      }
+    });
     detailOperationsBar.add(editDetailButton);
 
     deleteDetailButton.setText("jButton1");
@@ -306,17 +349,7 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
 
     detailsDisplayPanel.add(detailOperationsBar, java.awt.BorderLayout.PAGE_START);
 
-    detailsTable.setModel(new javax.swing.table.DefaultTableModel(
-      new Object [][] {
-        {null, null, null, null},
-        {null, null, null, null},
-        {null, null, null, null},
-        {null, null, null, null}
-      },
-      new String [] {
-        "Title 1", "Title 2", "Title 3", "Title 4"
-      }
-    ));
+    detailsTable.setModel(getDetailsModel());
     detailsTableScroller.setViewportView(detailsTable);
 
     detailsDisplayPanel.add(detailsTableScroller, java.awt.BorderLayout.CENTER);
@@ -543,6 +576,15 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
     private void onCancelDetailDataPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onCancelDetailDataPerformed
         ((CardLayout) detailsPanel.getLayout()).show(detailsPanel, "disp");
     }//GEN-LAST:event_onCancelDetailDataPerformed
+
+    private void onEditDetailPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onEditDetailPerformed
+        if (0 > detailsTable.getSelectedRow()) {
+            MsgBox.warn(InvoiceResources.getString("select_detail_row"));
+            return;
+        }
+
+        ((DataRowTableModel)getDetailsModel()).getRow(detailsTable.getSelectedRow());
+    }//GEN-LAST:event_onEditDetailPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton cancelButton;
   private javax.swing.JButton createDetailButton;

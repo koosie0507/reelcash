@@ -8,8 +8,11 @@ import com.google.code.reelcash.data.layout.fields.DateField;
 import com.google.code.reelcash.data.layout.fields.FieldList;
 import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.data.sql.QueryMediator;
+import com.google.code.reelcash.model.DataRowTableModelDatabaseAdapter;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides persistence related operations for invoices.
@@ -194,6 +197,41 @@ public class InvoiceMediator extends QueryMediator {
         }
         catch (SQLException e) {
             throw new ReelcashException(e);
+        }
+    }
+
+    public List<DataRow> getInvoicedGoods(Integer invoiceId) {
+        try {
+            ArrayList<DataRow> ret = new ArrayList<DataRow>();
+            for (DataRow row : fetch("select g.id, g.name from invoice_details d inner join goods g on g.id=d.good_id where d.invoice_id=?", invoiceId)) {
+                ret.add(row);
+            }
+            return ret;
+        }
+        catch (SQLException ex) {
+            throw new ReelcashException(ex);
+        }
+    }
+
+    public List<DataRow> getInvoicedUnits(Integer invoiceId) {
+        try {
+            ArrayList<DataRow> ret = new ArrayList<DataRow>();
+            for (DataRow row : fetch("select u.id, u.code from invoice_details d inner join units u on u.id=d.unit_id where d.invoice_id=?", invoiceId)) {
+                ret.add(row);
+            }
+            return ret;
+        }
+        catch (SQLException ex) {
+            throw new ReelcashException(ex);
+        }
+    }
+
+    public DataRow[] readInvoiceDetails(Integer invoiceId) {
+        try {
+            return fetch(InvoiceDetailNode.getInstance().getFieldList(), "select * from invoice_details where invoice_id=?", invoiceId);
+        }
+        catch(SQLException ex) {
+            throw new ReelcashException(ex);
         }
     }
 }
