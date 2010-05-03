@@ -184,7 +184,7 @@ public class QueryMediator {
             idx++;
         }
 
-        return insert.execute();
+        return insert.executeUpdate() > 0;
     }
 
     /**
@@ -476,12 +476,16 @@ public class QueryMediator {
         return (connections.empty()) ? dataSource.getConnection() : connections.peek();
     }
 
-    public void rollback() throws SQLException {
+    public void rollback() {
         if (connections.empty()) {
             return;
         }
 
-        connections.pop().rollback();
+        try {
+            connections.pop().rollback();
+        } catch (SQLException e) {
+            // fail silently as we really don't care why the rollback failed
+        }
     }
 
     private static void tryCloseResultSet(ResultSet rs) throws SQLException {
