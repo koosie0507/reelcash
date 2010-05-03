@@ -29,6 +29,7 @@ public class DataRow implements Iterable<String> {
         this.fields = fields;
         data = new Object[fields.size()];
         for (int i = 0; i < data.length; i++) {
+            data[i] = fields.get(i).getDefaultValue();
         }
     }
 

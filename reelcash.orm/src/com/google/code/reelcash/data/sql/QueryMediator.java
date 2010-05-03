@@ -56,9 +56,8 @@ public class QueryMediator {
     }
 
     public void commit() throws SQLException {
-        if (connections.empty()) {
+        if (connections.empty())
             return;
-        }
 
         connections.pop().commit();
     }
@@ -77,9 +76,9 @@ public class QueryMediator {
         sql.append("` ( ");
         sql.append(SysUtils.getNewLine());
         Iterator<Field> f = layoutNode.getFieldList().iterator();
-        if (!f.hasNext()) {
+        if (!f.hasNext())
             sql.append(");");
-        } else {
+        else {
             Field field = f.next();
             SqlFieldRenderer renderer = SqlFieldRenderer.newInstance(field);
             sql.append(renderer.renderName());
@@ -152,14 +151,12 @@ public class QueryMediator {
         sql.append(tableName);
         FieldList fields = new FieldList();
         fields.addAll(input.getFields());
-        if (noPk) {
+        if (noPk)
             fields.removeAll(fields.getPrimary());
-        }
 
         Iterator<Field> ifieldcurrentField = fields.iterator();
-        if (!ifieldcurrentField.hasNext()) {
+        if (!ifieldcurrentField.hasNext())
             return false;
-        }
 
         sql.append("` (`");
         sql.append(ifieldcurrentField.next().getName());
@@ -199,9 +196,8 @@ public class QueryMediator {
     public boolean delete(DataLayoutNode layoutNode, DataRow deleted) throws SQLException {
         List<Field> primary = layoutNode.getFieldList().getPrimary();
         Iterator<Field> p = primary.iterator();
-        if (!p.hasNext()) {
+        if (!p.hasNext())
             throw new SQLException("no_pk_error");
-        }
 
         StringBuilder sql = new StringBuilder("DELETE FROM `");
         sql.append(layoutNode.getName());
@@ -241,13 +237,11 @@ public class QueryMediator {
         normal.removeAll(primaryKey);
         Iterator<Field> p = primaryKey.iterator();
         Iterator<Field> n = normal.iterator();
-        if (!p.hasNext()) {
+        if (!p.hasNext())
             throw new SQLException(Resources.getString("no_pk_error"));
-        }
 
-        if (!n.hasNext()) {
+        if (!n.hasNext())
             throw new SQLException(Resources.getString("all_pk_error"));
-        }
 
         StringBuilder sql = new StringBuilder("UPDATE `");
         sql.append(layoutNode.getName());
@@ -316,11 +310,11 @@ public class QueryMediator {
         ResultSet rs = null;
         try {
             rs = select.executeQuery(sql);
-            if (!rs.next()) {
+            if (!rs.next())
                 return null;
-            }
             return rs.getObject(1);
-        } finally {
+        }
+        finally {
             tryCloseResultSet(rs);
         }
     }
@@ -333,11 +327,11 @@ public class QueryMediator {
                 select.setObject(i, params[i - 1]);
             }
             rs = select.executeQuery();
-            if (!rs.next()) {
+            if (!rs.next())
                 return null;
-            }
             return rs.getObject(1);
-        } finally {
+        }
+        finally {
             tryCloseResultSet(rs);
         }
     }
@@ -364,14 +358,14 @@ public class QueryMediator {
                 DataRow row = new DataRow(fields);
                 for (int i = 1; i <= colCount; i++) {
                     int idx = fields.indexOf(meta.getColumnName(i));
-                    if (idx < 0) {
+                    if (idx < 0)
                         continue;
-                    }
                     row.setValue(idx, rs.getObject(i));
                 }
                 rows.add(row);
             }
-        } finally {
+        }
+        finally {
             tryCloseResultSet(rs);
         }
         DataRow[] array = new DataRow[rows.size()];
@@ -408,14 +402,61 @@ public class QueryMediator {
                 DataRow row = new DataRow(fields);
                 for (int i = 1; i <= colCount; i++) {
                     int idx = fields.indexOf(meta.getColumnName(i));
-                    if (idx < 0) {
+                    if (idx < 0)
                         continue;
-                    }
                     row.setValue(idx, rs.getObject(i));
                 }
                 rows.add(row);
             }
-        } finally {
+        }
+        finally {
+            tryCloseResultSet(rs);
+        }
+
+        DataRow[] array = new DataRow[rows.size()];
+        rows.toArray(array);
+        rows = null;
+        return array;
+    }
+
+    /**
+     * Fetches data using a parameterized query.
+     *
+     * @param fields fields to fetch.
+     * @param sql query
+     * @param params the parameters of the query.
+     *
+     * @return returns an array of data rows.
+     *
+     * @throws SQLException when errors occur at the SQL level.
+     */
+    public DataRow[] fetch(final FieldList fields, String sql, Object... params) throws SQLException {
+        PreparedStatement select = getConnection().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        ResultSet rs = null;
+        ArrayList<DataRow> rows = new ArrayList<DataRow>();
+        try {
+            for (int i = params.length; i > 0; i--) {
+                select.setObject(i, params[i - 1]);
+            }
+            rs = select.executeQuery();
+
+            ResultSetMetaData meta = rs.getMetaData();
+            int colCount = meta.getColumnCount();
+            while (rs.next()) {
+                DataRow row = new DataRow(fields);
+                for (int i = 1; i <= colCount; i++) {
+                    int idx = fields.indexOf(meta.getColumnName(i));
+                    if (idx < 0)
+                        continue;
+                    if (fields.get(idx) instanceof DateField)
+                        row.setValue(idx, rs.getDate(i));
+                    else
+                        row.setValue(idx, rs.getObject(i));
+                }
+                rows.add(row);
+            }
+        }
+        finally {
             tryCloseResultSet(rs);
         }
 
@@ -438,9 +479,8 @@ public class QueryMediator {
     public List<DataRow> fetchAll(DataLayoutNode layoutNode) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT ");
         Iterator<Field> f = layoutNode.iterator();
-        if (!f.hasNext()) {
+        if (!f.hasNext())
             throw new SQLException(Resources.getString("expected_select_fields_errornull"));
-        }
 
         SqlFieldRenderer renderer = SqlFieldRenderer.newInstance(f.next());
         sql.append(renderer.renderName());
@@ -466,7 +506,8 @@ public class QueryMediator {
                 }
                 rows.add(row);
             }
-        } finally {
+        }
+        finally {
             tryCloseResultSet(rs);
         }
         return rows;
@@ -477,21 +518,20 @@ public class QueryMediator {
     }
 
     public void rollback() {
-        if (connections.empty()) {
+        if (connections.empty())
             return;
-        }
 
         try {
             connections.pop().rollback();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             // fail silently as we really don't care why the rollback failed
         }
     }
 
     private static void tryCloseResultSet(ResultSet rs) throws SQLException {
-        if (null == rs) {
+        if (null == rs)
             return;
-        }
         rs.close();
     }
 
@@ -527,9 +567,8 @@ public class QueryMediator {
                 case Types.OTHER:
                     added = new StringField(meta.getColumnName(i), KeyRole.NONE, false);
             }
-            if (null == added || fields.contains(added)) {
+            if (null == added || fields.contains(added))
                 continue;
-            }
             fields.add(added);
         }
     }

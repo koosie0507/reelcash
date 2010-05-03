@@ -485,3 +485,20 @@ create table if not exists `invoice_detail_excises` (
     constraint fk_invoice_detail_excises_detail foreign key (`invoice_detail_id`) references `invoice_details`(`id`) on delete cascade on update cascade
 );
 
+create view if not exists `business_addresses`
+as
+select 
+    b1.id as business_id,
+    b1.name as name,
+    l1.address || ', ' || l1.postal_code as address,
+    c1.name as city,
+    ct1.name as county,
+    r1.name as region,
+    co1.name as country,
+    l1.address || ', ' || l1.postal_code || ', ' || c1.name || ', ' || ct1.name || ', ' || r1.name || ', ' || co1.name as full_address
+from businesses b1
+    inner join locations l1 on l1.id=b1.location_id
+    inner join cities c1 on c1.id=l1.city_id
+    inner join counties ct1 on ct1.id = c1.county_id
+    inner join regions r1 on r1.id = ct1.region_id
+    inner join countries co1 on co1.id = r1.country_id;

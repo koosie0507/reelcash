@@ -2,7 +2,11 @@ package com.google.code.reelcash.data.documents;
 
 import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
+import com.google.code.reelcash.data.KeyRole;
 import com.google.code.reelcash.data.ReelcashDataSource;
+import com.google.code.reelcash.data.layout.fields.DateField;
+import com.google.code.reelcash.data.layout.fields.FieldList;
+import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.data.sql.QueryMediator;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -27,9 +31,8 @@ public class InvoiceMediator extends QueryMediator {
      * @return an instance of the current class.
      */
     public static InvoiceMediator getInstance() {
-        if (null == instance) {
+        if (null == instance)
             instance = new InvoiceMediator();
-        }
         return instance;
     }
 
@@ -43,14 +46,13 @@ public class InvoiceMediator extends QueryMediator {
         try {
             beginTransaction();
             invoiceDocTypeId = (Integer) executeScalar(sql1, DocumentType.INVOICE.getName());
-            if (null == invoiceDocTypeId) {
+            if (null == invoiceDocTypeId)
                 // we don't have the invoice type in the DB
-                if (0 < execute(sql2, DocumentType.INVOICE.getName(), DocumentType.INVOICE.getLocalizedDescription())) {
+                if (0 < execute(sql2, DocumentType.INVOICE.getName(), DocumentType.INVOICE.getLocalizedDescription()))
                     invoiceDocTypeId = (Integer) executeScalar(sql3);
-                }
-            }
             commit();
-        } catch (SQLException ex) {
+        }
+        catch (SQLException ex) {
             rollback();
             throw new ReelcashException(ex);
         }
@@ -79,11 +81,11 @@ public class InvoiceMediator extends QueryMediator {
         Integer invoiceId = null;
         try {
             beginTransaction();
-            if (0 < execute(sql, documentId, currencyId, issuerRep, recipientRep, exchangeRate, 0, 0, 0, 0)) {
+            if (0 < execute(sql, documentId, currencyId, issuerRep, recipientRep, exchangeRate, 0, 0, 0, 0))
                 invoiceId = (Integer) executeScalar("select last_insert_rowid();");
-            }
             commit();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             rollback();
             throw new ReelcashException(e);
         }
@@ -113,19 +115,18 @@ public class InvoiceMediator extends QueryMediator {
                 invoiceDetail.setValue(11, vatPercent);
                 invoiceDetail.setValue(12, vatAmount);
                 invoiceDetail.setValue(13, amount.add(vatAmount));
-                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail)) {
+                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail))
                     invoiceDetail.setValue(0, executeScalar("select last_insert_rowid();"));
-                }
-            } else {
-                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail)) {
+            }
+            else {
+                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail))
                     invoiceDetail.setValue(0, executeScalar("select last_insert_rowid();"));
-                }
                 Object ret = executeScalar("select vt.percent from vat_types vt inner join goods g on vt.id=g.vat_type_id where g.id=?", goodId);
                 BigDecimal vatPercent = BigDecimal.valueOf(((Number) ret).doubleValue());
                 BigDecimal basicPrice = quantity.multiply(unitPrice);
 
                 // compute applied taxes
-                DataRow[] taxes = fetch("select tt.code, tt.ispercent, tt.value from tax_types tt inner join good_taxes gt on gt.tax_type_id=tt.id where gt.good_id=?", goodId);
+                DataRow[] taxes = fetch("select tt.code, tt.is_percent, tt.value from tax_types tt inner join good_taxes gt on gt.tax_type_id=tt.id where gt.good_id=?", goodId);
                 for (DataRow tax : taxes) {
                     BigDecimal taxValue = (0 == ((Number) tax.getValue(1)).intValue())
                             ? BigDecimal.valueOf(((Number) tax.getValue(2)).doubleValue())
@@ -136,7 +137,7 @@ public class InvoiceMediator extends QueryMediator {
                 }
 
                 // compute applied excises
-                DataRow[] excises = fetch("select et.code, et.ispercent, et.value from excise_types et inner join good_excises ge on ge.excise_type_id = et.id where ge.good_id=?", goodId);
+                DataRow[] excises = fetch("select et.code, et.is_percent, et.value from excise_types et inner join good_excises ge on ge.excise_type_id = et.id where ge.good_id=?", goodId);
                 for (DataRow excise : excises) {
                     BigDecimal exciseValue = (0 == ((Number) excise.getValue(1)).intValue())
                             ? BigDecimal.valueOf(((Number) excise.getValue(2)).doubleValue())
@@ -146,18 +147,52 @@ public class InvoiceMediator extends QueryMediator {
                 }
 
                 // compute totals on detail
-                BigDecimal taxAmount = BigDecimal.valueOf(((Number) executeScalar("select sum(amount) from invoice_detail_taxes where invoice_detail_id=?;", invoiceDetail.getValue(0))).doubleValue());
-                BigDecimal exciseAmount = BigDecimal.valueOf(((Number) executeScalar("select sum(amount) from invoice_detail_excises where invoice_detail_id=?;", invoiceDetail.getValue(0))).doubleValue());
-                execute("update invoice_details set tax_amount=?, excise_amount=? where invoice_detail_id=?;",
+                Number buf = (Number) executeScalar("select sum(amount) from invoice_detail_taxes where invoice_detail_id=?;", invoiceDetail.getValue(0));
+                BigDecimal taxAmount = BigDecimal.valueOf((null == buf) ? 0 : buf.doubleValue());
+                buf = (Number) executeScalar("select sum(amount) from invoice_detail_excises where invoice_detail_id=?;", invoiceDetail.getValue(0));
+                BigDecimal exciseAmount = BigDecimal.valueOf(null == buf ? 0 : buf.doubleValue());
+                execute("update invoice_details set tax_amount=?, excise_amount=? where id=?;",
                         taxAmount, exciseAmount, invoiceDetail.getValue(0));
-                execute("update invoice_details set amount=tax_amount+excise_amount+(unit_price*quantity) where invoice_detail_id=?;",
-                        invoiceDetail.getValue(0));
-                execute("update invoice_details set vat_amount=vat_percent*amount, price=amount*(1+vat_percent) where invoice_detail_id=?",
+                execute("update invoice_details set amount=tax_amount+excise_amount+(unit_price*quantity), vat_percent=? where id=?;",
+                        vatPercent, invoiceDetail.getValue(0));
+                execute("update invoice_details set vat_amount=vat_percent*amount, price=amount*(1+vat_percent) where id=?",
                         invoiceDetail.getValue(0));
             }
             commit();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             rollback();
+            throw new ReelcashException(e);
+        }
+    }
+
+    public DataRow getInvoiceInformation(Integer invoiceId) {
+        final String sql = "select d.number, d.date_issued, d.date_due, b1.name || ', ' || b1.address || ' - ' || b1.city || ', ' || b1.county as issuer, b2.name || ', ' || b2.address || ' - ' || b2.city || ', ' || b2.county as recipient from invoices i inner join documents d on d.id = i.document_id inner join business_addresses b1 on b1.business_id = d.issuer_id inner join business_addresses b2 on b2.business_id = d.recipient_id where i.id=?";
+        try {
+            FieldList list = new FieldList();
+            list.add(new StringField("d.number", KeyRole.NONE, true));
+            list.add(new DateField("d.date_issued", KeyRole.NONE, true));
+            list.add(new DateField("d.date_due", KeyRole.NONE, true));
+            list.add(new StringField("issuer", KeyRole.NONE, true));
+            list.add(new StringField("recipient", KeyRole.NONE, true));
+
+            DataRow[] row = fetch(list, sql, invoiceId);
+            if (1 > row.length)
+                throw new ReelcashException(DocumentResources.getString("invoice_information_not_found")); // NOI18N
+            return row[0];
+        }
+        catch (SQLException e) {
+            throw new ReelcashException(e);
+        }
+    }
+
+    public Integer getNextDetailPosition(Integer invoiceId) {
+        final String sql = "select max(position) + 1 from invoice_details where invoice_id=?";
+        try {
+            Object val = executeScalar(sql, invoiceId);
+            return (Integer) (null == val ? 1 : val);
+        }
+        catch (SQLException e) {
             throw new ReelcashException(e);
         }
     }
