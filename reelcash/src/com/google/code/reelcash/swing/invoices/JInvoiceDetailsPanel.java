@@ -566,6 +566,7 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
             BigDecimal qty = BigDecimal.valueOf(((Number) jFormattedTextField1.getValue()).doubleValue());
             BigDecimal unitPrice = BigDecimal.valueOf(((Number) jFormattedTextField2.getValue()).doubleValue());
             InvoiceMediator.getInstance().createInvoiceDetail(invoiceId, position, goodId, desc, unitId, qty, unitPrice);
+            InvoiceMediator.getInstance().readInvoiceDetails(invoiceId);
             ((CardLayout) detailsPanel.getLayout()).show(detailsPanel, "disp");
         }
         catch (Throwable t) {
