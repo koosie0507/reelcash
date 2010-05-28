@@ -275,18 +275,14 @@ create table if not exists `currencies` (
 );
 
 create trigger if not exists `trig_currency_before_insert`
-    before insert on `currencies`
-    when ((NEW.`must_exchange` = 0) and (exists (select * from `currencies` where `must_exchange`=0)))
-begin
+before insert on `currencies`
+when ((NEW.`must_exchange` = 0) and (exists (select * from `currencies` where `must_exchange`=0)))
     select RAISE(ROLLBACK, 'currency_must_exchange');
-end;
 
 create trigger if not exists `trig_currency_before_update`
-    before update of `must_exchange` on `currencies`
-    when ((NEW.`must_exchange` = 0) and (OLD.`must_exchange`=1) and (exists (select * from `currencies` where `must_exchange`=0)))
-begin
+before update of `must_exchange` on `currencies`
+when ((NEW.`must_exchange` = 0) and (OLD.`must_exchange`=1) and (exists (select * from `currencies` where `must_exchange`=0)))
     select RAISE(ROLLBACK, 'currency_must_exchange');
-end;
 
 create table if not exists `exchange_rates` (
     `id` INTEGER PRIMARY KEY,

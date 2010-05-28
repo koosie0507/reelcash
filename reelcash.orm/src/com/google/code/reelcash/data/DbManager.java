@@ -122,7 +122,7 @@ public class DbManager {
 
 		Connection createConnection = DriverManager.getConnection(defaultJdbcUrl);
 		Statement createDb = createConnection.createStatement();
-		StringTokenizer tokenizer = new StringTokenizer(sql, ";");
+		StringTokenizer tokenizer = new StringTokenizer(sql, "CREATE ");
 		while (tokenizer.hasMoreTokens()) {
 			String sqlPart = tokenizer.nextToken().trim();
 			if (0 < sqlPart.length())
