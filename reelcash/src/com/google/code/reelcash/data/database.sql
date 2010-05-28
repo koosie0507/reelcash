@@ -277,12 +277,16 @@ create table if not exists `currencies` (
 create trigger if not exists `trig_currency_before_insert`
 before insert on `currencies`
 when ((NEW.`must_exchange` = 0) and (exists (select * from `currencies` where `must_exchange`=0)))
+begin
     select RAISE(ROLLBACK, 'currency_must_exchange');
+end;
 
 create trigger if not exists `trig_currency_before_update`
 before update of `must_exchange` on `currencies`
 when ((NEW.`must_exchange` = 0) and (OLD.`must_exchange`=1) and (exists (select * from `currencies` where `must_exchange`=0)))
+begin
     select RAISE(ROLLBACK, 'currency_must_exchange');
+end;
 
 create table if not exists `exchange_rates` (
     `id` INTEGER PRIMARY KEY,
@@ -432,7 +436,6 @@ create table if not exists `invoices` (
     `total_vat` decimal(15, 4) not null, -- total vat = sum((amount+excise+tax)*vat_percent)
     constraint uq_document_id unique(`document_id`), -- only one document/invoice allowed
     constraint fk_invoice_document foreign key(`document_id`) references `documents`(`id`),
-    constraint fk_invoice_series foreign key(`series_range_id`) references `series_ranges`(`id`),
     constraint fk_invoice_currency foreign key (`currency_id`) references `currencies`(`id`),
     constraint fk_invoice_issuer_rep foreign key (`issuer_rep_id`) references `business_representatives`(`id`),
     constraint fk_invoice_recipient_rep foreign key (`recipient_rep_id`) references `business_representatives`(`id`),
