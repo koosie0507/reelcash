@@ -41,7 +41,7 @@ public class EntryPoint {
     public static void main(String[] args) {
         try {
             if (DbManager.checkCreateDb()) {
-                PermissionTable.init();
+                //PermissionTable.init();
                 getMainFrame().pack();
                 getMainFrame().setVisible(true);
             }
