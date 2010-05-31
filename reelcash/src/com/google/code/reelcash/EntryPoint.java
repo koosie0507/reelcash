@@ -1,13 +1,8 @@
 package com.google.code.reelcash;
 
-import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.DbManager;
-import com.google.code.reelcash.data.ReelcashDataSource;
-import com.google.code.reelcash.data.sql.QueryMediator;
-import com.google.code.reelcash.swing.JRegistriesPanel;
-import com.google.code.reelcash.swing.invoices.JDocumentPanel;
+import com.google.code.reelcash.swing.MainFrame;
 import com.google.code.reelcash.util.ScreenUtils;
-import java.awt.BorderLayout;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,20 +13,12 @@ import java.util.logging.Logger;
  */
 public class EntryPoint {
 
-    private static javax.swing.JFrame mainFrame;
     private static com.google.code.reelcash.swing.JRegistryPanel panel;
 
     private static javax.swing.JFrame getMainFrame() {
-        if (null == mainFrame) {
-            //mainFrame = new com.google.code.reelcash.swing.invoices.JInvoiceWizard();
-            mainFrame = new javax.swing.JFrame("Test Frame");
-            mainFrame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-            mainFrame.setLayout(new BorderLayout());
-            ScreenUtils.computeMinimumSize(mainFrame);
-            ScreenUtils.centerWindowOnScreen(mainFrame);
-            mainFrame.add(JRegistriesPanel.getInstance(), BorderLayout.CENTER);
-        }
-        return mainFrame;
+        ScreenUtils.computeMinimumSize(MainFrame.getInstance());
+        ScreenUtils.centerWindowOnScreen(MainFrame.getInstance());
+        return MainFrame.getInstance();
     }
 
     /**
@@ -41,7 +28,6 @@ public class EntryPoint {
     public static void main(String[] args) {
         try {
             if (DbManager.checkCreateDb()) {
-                //PermissionTable.init();
                 getMainFrame().pack();
                 getMainFrame().setVisible(true);
             }
