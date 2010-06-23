@@ -1,6 +1,11 @@
 package com.google.code.reelcash.swing.invoices;
 
+import com.google.code.reelcash.ReelcashException;
+import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.documents.InvoiceDetailsTableModel;
+import com.google.code.reelcash.data.documents.InvoiceMediator;
+import com.google.code.reelcash.util.MsgBox;
+import javax.swing.DefaultListModel;
 
 /**
  * This class of panels works as a master/detail view for invoices.
@@ -8,11 +13,20 @@ import com.google.code.reelcash.data.documents.InvoiceDetailsTableModel;
  * @author andrei.olar
  */
 public class JInvoicesPanel extends javax.swing.JPanel {
+
     private static final long serialVersionUID = 5635559986924134535L;
 
     /** Creates new form JInvoicesPanel */
     public JInvoicesPanel() {
         initComponents();
+    }
+
+    private void loadInvoices() {
+        DefaultListModel listModel = (DefaultListModel) invoiceList.getModel();
+        listModel.removeAllElements();
+        for (DataRow row : InvoiceMediator.getInstance().readInvoices()) {
+            listModel.addElement(row);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -62,12 +76,22 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     addButton.setFocusable(false);
     addButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     addButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    addButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        onAddInvoicePerformed(evt);
+      }
+    });
     operationBar.add(addButton);
 
     delButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/google/code/reelcash/images/toolbar/delete_small.png"))); // NOI18N
     delButton.setFocusable(false);
     delButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     delButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    delButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        onDeleteInvoicePerformed(evt);
+      }
+    });
     operationBar.add(delButton);
 
     masterPane.add(operationBar, java.awt.BorderLayout.PAGE_START);
@@ -100,10 +124,21 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 5);
     masterListPanel.add(filterButton, gridBagConstraints);
 
-    invoiceList.setModel(new javax.swing.AbstractListModel() {
-      String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-      public int getSize() { return strings.length; }
-      public Object getElementAt(int i) { return strings[i]; }
+    invoiceList.setModel(new DefaultListModel());
+    invoiceList.setCellRenderer(new DataRowListCellRenderer(InvoiceResources.getString("invoice_format"), 2,3,7,9));
+    invoiceList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+      public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+        onSelectionChanged(evt);
+      }
+    });
+    invoiceList.addAncestorListener(new javax.swing.event.AncestorListener() {
+      public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+      }
+      public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+        onListAddedOnAncestor(evt);
+      }
+      public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+      }
     });
     listScroller.setViewportView(invoiceList);
 
@@ -125,6 +160,7 @@ public class JInvoicesPanel extends javax.swing.JPanel {
 
     invoiceNoLabel.setFont(invoiceNoLabel.getFont().deriveFont((invoiceNoLabel.getFont().getStyle() | java.awt.Font.ITALIC), 14));
     invoiceNoLabel.setForeground(javax.swing.UIManager.getDefaults().getColor("Label.disabledForeground"));
+    invoiceNoLabel.setLabelFor(invoiceNoText);
     invoiceNoLabel.setText(InvoiceResources.getString("invoiceNoLabel_text")); // NOI18N
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -135,6 +171,7 @@ public class JInvoicesPanel extends javax.swing.JPanel {
 
     invoiceNoText.setFont(invoiceNoText.getFont().deriveFont(invoiceNoText.getFont().getStyle() | java.awt.Font.BOLD, 14));
     invoiceNoText.setForeground(javax.swing.UIManager.getDefaults().getColor("textHighlight"));
+    invoiceNoText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 0;
@@ -165,11 +202,13 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     detailPane.add(invoiceDateLabel, gridBagConstraints);
 
     invoiceDateText.setFont(invoiceDateText.getFont().deriveFont((float)14));
+    invoiceDateText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
     gridBagConstraints.weightx = 0.33;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
     detailPane.add(invoiceDateText, gridBagConstraints);
 
     invoiceIssueDateLabel.setFont(invoiceIssueDateLabel.getFont().deriveFont((invoiceIssueDateLabel.getFont().getStyle() | java.awt.Font.ITALIC), 14));
@@ -183,11 +222,13 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     detailPane.add(invoiceIssueDateLabel, gridBagConstraints);
 
     invoiceIssueDateText.setFont(invoiceIssueDateText.getFont().deriveFont((float)14));
+    invoiceIssueDateText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
     gridBagConstraints.weightx = 0.33;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
     detailPane.add(invoiceIssueDateText, gridBagConstraints);
 
     invoiceDueDateLabel.setFont(invoiceDueDateLabel.getFont().deriveFont((invoiceDueDateLabel.getFont().getStyle() | java.awt.Font.ITALIC), 14));
@@ -201,12 +242,13 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     detailPane.add(invoiceDueDateLabel, gridBagConstraints);
 
     invoiceDueDateText.setFont(invoiceDueDateText.getFont().deriveFont((float)14));
+    invoiceDueDateText.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 5;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
     gridBagConstraints.weightx = 0.33;
-    gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 15);
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 15);
     detailPane.add(invoiceDueDateText, gridBagConstraints);
 
     detailsTable.setModel(new InvoiceDetailsTableModel());
@@ -228,7 +270,42 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     add(masterDetailPane, java.awt.BorderLayout.CENTER);
   }// </editor-fold>//GEN-END:initComponents
 
+    private void onListAddedOnAncestor(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_onListAddedOnAncestor
+        loadInvoices();
+    }//GEN-LAST:event_onListAddedOnAncestor
 
+    private void onAddInvoicePerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onAddInvoicePerformed
+        JInvoiceWizard wizard = new JInvoiceWizard();
+        wizard.pack();
+        wizard.setModal(true);
+        wizard.setVisible(true);
+        loadInvoices();
+    }//GEN-LAST:event_onAddInvoicePerformed
+
+    private void onSelectionChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_onSelectionChanged
+        DataRow row = (DataRow) invoiceList.getModel().getElementAt(invoiceList.getSelectedIndex());
+        Integer invoiceId = (Integer) row.getValue(0);
+        DataRow invoiceInfo = InvoiceMediator.getInstance().getInvoiceInformation(invoiceId);
+        invoiceNoText.setText(invoiceInfo.getValue(0).toString());
+        invoiceStateText.setText(invoiceInfo.getValue(5).toString());
+        invoiceDateText.setText(invoiceInfo.getValue(6).toString());
+        invoiceIssueDateText.setText(invoiceInfo.getValue(1).toString());
+        invoiceDueDateText.setText(invoiceInfo.getValue(2).toString());
+    }//GEN-LAST:event_onSelectionChanged
+
+    private void onDeleteInvoicePerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onDeleteInvoicePerformed
+        int selIdx = invoiceList.getSelectedIndex();
+        if (0 > selIdx)
+            return;
+        Integer invoiceId = (Integer) ((DataRow) invoiceList.getModel().getElementAt(selIdx)).getValue(0);
+        try {
+            InvoiceMediator.getInstance().deleteInvoice(invoiceId);
+            ((DefaultListModel)invoiceList.getModel()).remove(selIdx);
+        }
+        catch (ReelcashException e) {
+            MsgBox.error(e.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_onDeleteInvoicePerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton addButton;
   private javax.swing.JButton delButton;
@@ -253,5 +330,4 @@ public class JInvoicesPanel extends javax.swing.JPanel {
   private javax.swing.JPanel masterPane;
   private javax.swing.JToolBar operationBar;
   // End of variables declaration//GEN-END:variables
-
 }

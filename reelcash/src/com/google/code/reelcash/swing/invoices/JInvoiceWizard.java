@@ -34,7 +34,7 @@ import javax.swing.text.html.HTMLEditorKit;
  *
  * @author andrei.olar
  */
-public class JInvoiceWizard extends javax.swing.JFrame {
+public class JInvoiceWizard extends javax.swing.JDialog {
 
     private static final long serialVersionUID = 4789786767938489010L;
     private ActionListener invoiceParamValidator;
@@ -117,7 +117,8 @@ public class JInvoiceWizard extends javax.swing.JFrame {
     nextPageButton = new javax.swing.JButton();
     closeButton = new javax.swing.JButton();
 
-    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+    setTitle("Create invoice");
 
     wizardPages.setLayout(new java.awt.CardLayout());
 

@@ -5,6 +5,7 @@ import com.google.code.reelcash.swing.MainFrame;
 import com.google.code.reelcash.util.ScreenUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 
 /**
  * <p>Class responsible for providing the point of entry in the application.</p>
@@ -27,6 +28,7 @@ public class EntryPoint {
      */
     public static void main(String[] args) {
         try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             if (DbManager.checkCreateDb()) {
                 getMainFrame().pack();
                 getMainFrame().setVisible(true);

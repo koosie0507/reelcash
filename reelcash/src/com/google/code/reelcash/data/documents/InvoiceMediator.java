@@ -6,9 +6,9 @@ import com.google.code.reelcash.data.KeyRole;
 import com.google.code.reelcash.data.ReelcashDataSource;
 import com.google.code.reelcash.data.layout.fields.DateField;
 import com.google.code.reelcash.data.layout.fields.FieldList;
+import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.data.sql.QueryMediator;
-import com.google.code.reelcash.model.DataRowTableModelDatabaseAdapter;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -169,8 +169,21 @@ public class InvoiceMediator extends QueryMediator {
         }
     }
 
+    public void deleteInvoice(Integer invoiceId) {
+        try {
+            beginTransaction();
+            execute("delete from documents where id in (select distinct document_id from invoices where id = ?);", invoiceId);
+            execute("delete from invoices where id = ?;", invoiceId);
+            commit();
+        }
+        catch (SQLException e) {
+            rollback();
+            throw new ReelcashException(e);
+        }
+    }
+
     public DataRow getInvoiceInformation(Integer invoiceId) {
-        final String sql = "select d.number, d.date_issued, d.date_due, b1.name || ', ' || b1.address || ' - ' || b1.city || ', ' || b1.county as issuer, b2.name || ', ' || b2.address || ' - ' || b2.city || ', ' || b2.county as recipient from invoices i inner join documents d on d.id = i.document_id inner join business_addresses b1 on b1.business_id = d.issuer_id inner join business_addresses b2 on b2.business_id = d.recipient_id where i.id=?";
+        final String sql = "select d.number, d.date_issued, d.date_due, b1.name || ', ' || b1.address || ' - ' || b1.city || ', ' || b1.county as issuer, b2.name || ', ' || b2.address || ' - ' || b2.city || ', ' || b2.county as recipient, ds.name, d.create_date from invoices i inner join documents d on d.id = i.document_id inner join business_addresses b1 on b1.business_id = d.issuer_id inner join business_addresses b2 on b2.business_id = d.recipient_id inner join document_states ds on ds.id = d.state_id where i.id=?";
         try {
             FieldList list = new FieldList();
             list.add(new StringField("d.number", KeyRole.NONE, true));
@@ -178,6 +191,8 @@ public class InvoiceMediator extends QueryMediator {
             list.add(new DateField("d.date_due", KeyRole.NONE, true));
             list.add(new StringField("issuer", KeyRole.NONE, true));
             list.add(new StringField("recipient", KeyRole.NONE, true));
+            list.add(new StringField("ds.name", KeyRole.NONE, true));
+            list.add(new DateField("d.create_date", KeyRole.NONE, true));
 
             DataRow[] row = fetch(list, sql, invoiceId);
             if (1 > row.length)
@@ -230,7 +245,34 @@ public class InvoiceMediator extends QueryMediator {
         try {
             return fetch(InvoiceDetailNode.getInstance().getFieldList(), "select * from invoice_details where invoice_id=?", invoiceId);
         }
-        catch(SQLException ex) {
+        catch (SQLException ex) {
+            throw new ReelcashException(ex);
+        }
+    }
+
+    /**
+     * Returns a list of invoices. The structure of the returned data rows is not necessarily the one described by the
+     * @see InvoiceNode class.
+     * @return an array of data rows. Each data row contains information about an invoice header.
+     */
+    public DataRow[] readInvoices() {
+        final String selectListInvoices = "select `invoices`.`id` as invoice_id, `documents`.`id` as document_id, `documents`.`number` as invoice_number, `documents`.`create_date` as create_date, `documents`.`date_issued` as date_issued, `documents`.`date_due` as date_due, issuers.`id` as issuer_id, issuers.`name` as issuer_name, recipients.`id` as recipient_id, recipients.`name` as recipient_name from `invoices` inner join `documents` on `documents`.`id` = `invoices`.`document_id` inner join `businesses` issuers on issuers.`id` = `documents`.`issuer_id` inner join `businesses` recipients on recipients.`id` = `documents`.`recipient_id`";
+        try {
+            FieldList list = new FieldList();
+            list.add(new IntegerField("invoice_id", KeyRole.NONE, true));
+            list.add(new IntegerField("document_id", KeyRole.NONE, true));
+            list.add(new StringField("invoice_number", KeyRole.NONE, true));
+            list.add(new DateField("create_date", KeyRole.NONE, true));
+            list.add(new DateField("date_issued", KeyRole.NONE, true));
+            list.add(new DateField("date_due", KeyRole.NONE, true));
+            list.add(new IntegerField("issuer_id", KeyRole.NONE, true));
+            list.add(new StringField("issuer_name", KeyRole.NONE, true));
+            list.add(new IntegerField("recipient_id", KeyRole.NONE, true));
+            list.add(new StringField("recipient_name", KeyRole.NONE, true));
+
+            return fetch(list, selectListInvoices);
+        }
+        catch (SQLException ex) {
             throw new ReelcashException(ex);
         }
     }
