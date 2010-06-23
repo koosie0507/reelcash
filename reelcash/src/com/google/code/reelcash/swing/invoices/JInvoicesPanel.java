@@ -1,21 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * JInvoicesPanel.java
- *
- * Created on Jun 21, 2010, 3:10:02 PM
- */
-
 package com.google.code.reelcash.swing.invoices;
 
+import com.google.code.reelcash.data.documents.InvoiceDetailsTableModel;
+
 /**
+ * This class of panels works as a master/detail view for invoices.
  *
  * @author andrei.olar
  */
 public class JInvoicesPanel extends javax.swing.JPanel {
+    private static final long serialVersionUID = 5635559986924134535L;
 
     /** Creates new form JInvoicesPanel */
     public JInvoicesPanel() {
@@ -30,17 +23,39 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
+    java.awt.GridBagConstraints gridBagConstraints;
 
+    masterDetailPane = new javax.swing.JSplitPane();
+    masterPane = new javax.swing.JPanel();
     operationBar = new javax.swing.JToolBar();
     addButton = new javax.swing.JButton();
     delButton = new javax.swing.JButton();
-    tableScroller = new javax.swing.JScrollPane();
-    invoicesTable = new javax.swing.JTable();
+    masterListPanel = new javax.swing.JPanel();
+    filterField = new javax.swing.JTextField();
+    filterButton = new javax.swing.JButton();
+    listScroller = new javax.swing.JScrollPane();
+    invoiceList = new javax.swing.JList();
+    detailPane = new javax.swing.JPanel();
+    invoiceNoLabel = new javax.swing.JLabel();
+    invoiceNoText = new javax.swing.JLabel();
+    invoiceStateText = new javax.swing.JLabel();
+    invoiceDateLabel = new javax.swing.JLabel();
+    invoiceDateText = new javax.swing.JLabel();
+    invoiceIssueDateLabel = new javax.swing.JLabel();
+    invoiceIssueDateText = new javax.swing.JLabel();
+    invoiceDueDateLabel = new javax.swing.JLabel();
+    invoiceDueDateText = new javax.swing.JLabel();
+    detailsScroller = new javax.swing.JScrollPane();
+    detailsTable = new javax.swing.JTable();
 
     setLayout(new java.awt.BorderLayout());
 
+    masterDetailPane.setDividerLocation(160);
+    masterDetailPane.setResizeWeight(0.33);
+
+    masterPane.setLayout(new java.awt.BorderLayout());
+
     operationBar.setFloatable(false);
-    operationBar.setOrientation(1);
     operationBar.setDoubleBuffered(true);
 
     addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/google/code/reelcash/images/toolbar/add_small.png"))); // NOI18N
@@ -55,21 +70,188 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     delButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     operationBar.add(delButton);
 
-    add(operationBar, java.awt.BorderLayout.WEST);
+    masterPane.add(operationBar, java.awt.BorderLayout.PAGE_START);
 
-    invoicesTable.setModel(null);
-    tableScroller.setViewportView(invoicesTable);
+    masterListPanel.setLayout(new java.awt.GridBagLayout());
 
-    add(tableScroller, java.awt.BorderLayout.CENTER);
+    filterField.setMaximumSize(new java.awt.Dimension(1200, 20));
+    filterField.setMinimumSize(new java.awt.Dimension(75, 20));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.ipadx = 50;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(15, 15, 0, 5);
+    masterListPanel.add(filterField, gridBagConstraints);
+
+    filterButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/google/code/reelcash/images/toolbar/filter.png"))); // NOI18N
+    filterButton.setMnemonic('f');
+    filterButton.setToolTipText("");
+    filterButton.setMaximumSize(new java.awt.Dimension(20, 20));
+    filterButton.setMinimumSize(new java.awt.Dimension(20, 20));
+    filterButton.setPreferredSize(new java.awt.Dimension(20, 20));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_START;
+    gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 5);
+    masterListPanel.add(filterButton, gridBagConstraints);
+
+    invoiceList.setModel(new javax.swing.AbstractListModel() {
+      String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+      public int getSize() { return strings.length; }
+      public Object getElementAt(int i) { return strings[i]; }
+    });
+    listScroller.setViewportView(invoiceList);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.gridwidth = 2;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 15, 15, 5);
+    masterListPanel.add(listScroller, gridBagConstraints);
+
+    masterPane.add(masterListPanel, java.awt.BorderLayout.CENTER);
+
+    masterDetailPane.setLeftComponent(masterPane);
+
+    detailPane.setLayout(new java.awt.GridBagLayout());
+
+    invoiceNoLabel.setFont(invoiceNoLabel.getFont().deriveFont((invoiceNoLabel.getFont().getStyle() | java.awt.Font.ITALIC), 14));
+    invoiceNoLabel.setForeground(javax.swing.UIManager.getDefaults().getColor("Label.disabledForeground"));
+    invoiceNoLabel.setText(InvoiceResources.getString("invoiceNoLabel_text")); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 10, 0);
+    detailPane.add(invoiceNoLabel, gridBagConstraints);
+
+    invoiceNoText.setFont(invoiceNoText.getFont().deriveFont(invoiceNoText.getFont().getStyle() | java.awt.Font.BOLD, 14));
+    invoiceNoText.setForeground(javax.swing.UIManager.getDefaults().getColor("textHighlight"));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.gridwidth = 3;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(0, 4, 10, 0);
+    detailPane.add(invoiceNoText, gridBagConstraints);
+
+    invoiceStateText.setFont(invoiceStateText.getFont().deriveFont(invoiceStateText.getFont().getStyle() | java.awt.Font.BOLD, 14));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 5;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    gridBagConstraints.weightx = 0.1;
+    gridBagConstraints.insets = new java.awt.Insets(0, 4, 10, 15);
+    detailPane.add(invoiceStateText, gridBagConstraints);
+
+    invoiceDateLabel.setFont(invoiceDateLabel.getFont().deriveFont((invoiceDateLabel.getFont().getStyle() | java.awt.Font.ITALIC), 14));
+    invoiceDateLabel.setForeground(javax.swing.UIManager.getDefaults().getColor("Label.disabledForeground"));
+    invoiceDateLabel.setLabelFor(invoiceDateText);
+    invoiceDateLabel.setText(InvoiceResources.getString("invoiceDateLabel_text")); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+    detailPane.add(invoiceDateLabel, gridBagConstraints);
+
+    invoiceDateText.setFont(invoiceDateText.getFont().deriveFont((float)14));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 1;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    gridBagConstraints.weightx = 0.33;
+    detailPane.add(invoiceDateText, gridBagConstraints);
+
+    invoiceIssueDateLabel.setFont(invoiceIssueDateLabel.getFont().deriveFont((invoiceIssueDateLabel.getFont().getStyle() | java.awt.Font.ITALIC), 14));
+    invoiceIssueDateLabel.setForeground(javax.swing.UIManager.getDefaults().getColor("Label.disabledForeground"));
+    invoiceIssueDateLabel.setLabelFor(invoiceIssueDateText);
+    invoiceIssueDateLabel.setText(InvoiceResources.getString("invoiceIssueDateLabel_text")); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    detailPane.add(invoiceIssueDateLabel, gridBagConstraints);
+
+    invoiceIssueDateText.setFont(invoiceIssueDateText.getFont().deriveFont((float)14));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 3;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    gridBagConstraints.weightx = 0.33;
+    detailPane.add(invoiceIssueDateText, gridBagConstraints);
+
+    invoiceDueDateLabel.setFont(invoiceDueDateLabel.getFont().deriveFont((invoiceDueDateLabel.getFont().getStyle() | java.awt.Font.ITALIC), 14));
+    invoiceDueDateLabel.setForeground(javax.swing.UIManager.getDefaults().getColor("Label.disabledForeground"));
+    invoiceDueDateLabel.setLabelFor(invoiceDueDateText);
+    invoiceDueDateLabel.setText(InvoiceResources.getString("invoiceDueDateLabel_text")); // NOI18N
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 4;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    detailPane.add(invoiceDueDateLabel, gridBagConstraints);
+
+    invoiceDueDateText.setFont(invoiceDueDateText.getFont().deriveFont((float)14));
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 5;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+    gridBagConstraints.weightx = 0.33;
+    gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 15);
+    detailPane.add(invoiceDueDateText, gridBagConstraints);
+
+    detailsTable.setModel(new InvoiceDetailsTableModel());
+    detailsTable.setToolTipText("");
+    detailsScroller.setViewportView(detailsTable);
+
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 2;
+    gridBagConstraints.gridwidth = 6;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(5, 5, 15, 15);
+    detailPane.add(detailsScroller, gridBagConstraints);
+
+    masterDetailPane.setRightComponent(detailPane);
+
+    add(masterDetailPane, java.awt.BorderLayout.CENTER);
   }// </editor-fold>//GEN-END:initComponents
 
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton addButton;
   private javax.swing.JButton delButton;
-  private javax.swing.JTable invoicesTable;
+  private javax.swing.JPanel detailPane;
+  private javax.swing.JScrollPane detailsScroller;
+  private javax.swing.JTable detailsTable;
+  private javax.swing.JButton filterButton;
+  private javax.swing.JTextField filterField;
+  private javax.swing.JLabel invoiceDateLabel;
+  private javax.swing.JLabel invoiceDateText;
+  private javax.swing.JLabel invoiceDueDateLabel;
+  private javax.swing.JLabel invoiceDueDateText;
+  private javax.swing.JLabel invoiceIssueDateLabel;
+  private javax.swing.JLabel invoiceIssueDateText;
+  private javax.swing.JList invoiceList;
+  private javax.swing.JLabel invoiceNoLabel;
+  private javax.swing.JLabel invoiceNoText;
+  private javax.swing.JLabel invoiceStateText;
+  private javax.swing.JScrollPane listScroller;
+  private javax.swing.JSplitPane masterDetailPane;
+  private javax.swing.JPanel masterListPanel;
+  private javax.swing.JPanel masterPane;
   private javax.swing.JToolBar operationBar;
-  private javax.swing.JScrollPane tableScroller;
   // End of variables declaration//GEN-END:variables
 
 }

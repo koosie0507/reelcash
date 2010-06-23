@@ -1,14 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * MainFrame.java
- *
- * Created on May 31, 2010, 10:47:49 AM
- */
 package com.google.code.reelcash.swing;
+
+import com.google.code.reelcash.swing.invoices.JInvoicesPanel;
 
 /**
  *
@@ -22,6 +14,7 @@ public class MainFrame extends javax.swing.JFrame {
     /** Creates new form MainFrame */
     private MainFrame() {
         initComponents();
+        add(new JInvoicesPanel());
     }
 
     /**
@@ -44,43 +37,13 @@ public class MainFrame extends javax.swing.JFrame {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
-    contentPane = new javax.swing.JSplitPane();
-    operationsPanel = new javax.swing.JPanel();
-    operations = new javax.swing.JToolBar();
-    btnNewInvoice = new javax.swing.JButton();
-
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/google/code/reelcash/swing/resources"); // NOI18N
     setTitle(bundle.getString("MainFrame_title")); // NOI18N
     setName("mainFrame"); // NOI18N
 
-    contentPane.setDividerLocation(300);
-
-    operationsPanel.setLayout(new java.awt.BorderLayout());
-
-    operations.setOrientation(1);
-    operations.setRollover(true);
-
-    btnNewInvoice.setMnemonic('i');
-    btnNewInvoice.setText("New Invoice");
-    btnNewInvoice.setActionCommand("new_invoice");
-    btnNewInvoice.setFocusable(false);
-    btnNewInvoice.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-    btnNewInvoice.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-    operations.add(btnNewInvoice);
-
-    operationsPanel.add(operations, java.awt.BorderLayout.EAST);
-
-    contentPane.setLeftComponent(operationsPanel);
-
-    getContentPane().add(contentPane, java.awt.BorderLayout.CENTER);
-
     pack();
   }// </editor-fold>//GEN-END:initComponents
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton btnNewInvoice;
-  private javax.swing.JSplitPane contentPane;
-  private javax.swing.JToolBar operations;
-  private javax.swing.JPanel operationsPanel;
   // End of variables declaration//GEN-END:variables
 }
