@@ -6,7 +6,6 @@ package com.google.code.reelcash.model;
 
 import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
-import com.google.code.reelcash.data.KeyRole;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
 import java.util.ArrayList;
 import java.util.Collection;
