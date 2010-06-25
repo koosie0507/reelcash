@@ -17,6 +17,7 @@ import javax.swing.table.TableCellRenderer;
  */
 public class FormattedDateRenderer extends JLabel implements TableCellRenderer {
 
+    private static final long serialVersionUID = -674411452143647868L;
     private String customFormat;
     private DateFormat dateFormatInstance;
 
