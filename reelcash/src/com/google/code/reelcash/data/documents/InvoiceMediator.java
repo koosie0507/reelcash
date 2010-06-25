@@ -173,6 +173,9 @@ public class InvoiceMediator extends QueryMediator {
         try {
             beginTransaction();
             execute("delete from documents where id in (select distinct document_id from invoices where id = ?);", invoiceId);
+            execute("delete from invoice_detail_taxes where invoice_detail_id in (select distinct id from invoice_details where invoice_id = ?);", invoiceId);
+            execute("delete from invoice_detail_excises where invoice_detail_id in (select distinct id from invoice_details where invoice_id = ?);", invoiceId);
+            execute("delete from invoice_details where invoice_id = ?;", invoiceId);
             execute("delete from invoices where id = ?;", invoiceId);
             commit();
         }

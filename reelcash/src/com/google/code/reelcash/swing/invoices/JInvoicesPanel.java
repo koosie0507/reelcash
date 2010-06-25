@@ -4,6 +4,7 @@ import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.documents.InvoiceDetailsTableModel;
 import com.google.code.reelcash.data.documents.InvoiceMediator;
+import com.google.code.reelcash.swing.SwingUtils;
 import com.google.code.reelcash.util.MsgBox;
 import javax.swing.DefaultListModel;
 
@@ -19,6 +20,36 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     /** Creates new form JInvoicesPanel */
     public JInvoicesPanel() {
         initComponents();
+        initDetailsTable();
+    }
+
+    private void initDetailsTable() {
+        if (null == detailsTable)
+            return;
+
+        SwingUtils.setTableColumnVisible(detailsTable, "id", false, "", 0);
+        SwingUtils.setTableColumnVisible(detailsTable, "invoice_id", false, "", 0);
+        SwingUtils.setTableColumnVisible(detailsTable, "unit_id", false, "", 0);
+        SwingUtils.setTableColumnVisible(detailsTable, "good_id", false, "", 0);
+        SwingUtils.setTableColumnVisible(detailsTable, "tax_amount", false, "", 0);
+        SwingUtils.setTableColumnVisible(detailsTable, "excise_amount", false, "", 0);
+        /*
+        SwingUtils.setTableColumnVisible(detailsTable, "position", true, "Pos.", 25);
+        SwingUtils.setTableColumnVisible(detailsTable, "detail_text", true, " ", 175);
+        SwingUtils.setTableColumnVisible(detailsTable, "unit_code", true, "UM", 45);
+        SwingUtils.setTableColumnVisible(detailsTable, "quantity", true, "Q", 65);
+        SwingUtils.setTableColumnVisible(detailsTable, "unit_price", true, "PU", 90);
+        SwingUtils.setTableColumnVisible(detailsTable, "vat_percent", true, "%", 45);
+        SwingUtils.setTableColumnVisible(detailsTable, "vat_amount", true, "TVA", 75);
+        */
+        SwingUtils.setTableColumnDecimalFormat(detailsTable, "unit_price", 11, 2);
+        SwingUtils.setTableColumnDecimalFormat(detailsTable, "quantity", 11, 2);
+        SwingUtils.setTableColumnDecimalFormat(detailsTable, "tax_amount", 11, 2);
+        SwingUtils.setTableColumnDecimalFormat(detailsTable, "excise_amount", 11, 2);
+        SwingUtils.setTableColumnDecimalFormat(detailsTable, "amount", 11, 2);
+        SwingUtils.setTableColumnPercentFormat(detailsTable, "vat_percent", 2, 1);
+        SwingUtils.setTableColumnDecimalFormat(detailsTable, "vat_amount", 11, 2);
+        SwingUtils.setTableColumnDecimalFormat(detailsTable, "price", 11, 2);
     }
 
     private void loadInvoices() {
@@ -283,14 +314,26 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_onAddInvoicePerformed
 
     private void onSelectionChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_onSelectionChanged
-        DataRow row = (DataRow) invoiceList.getModel().getElementAt(invoiceList.getSelectedIndex());
-        Integer invoiceId = (Integer) row.getValue(0);
-        DataRow invoiceInfo = InvoiceMediator.getInstance().getInvoiceInformation(invoiceId);
-        invoiceNoText.setText(invoiceInfo.getValue(0).toString());
-        invoiceStateText.setText(invoiceInfo.getValue(5).toString());
-        invoiceDateText.setText(invoiceInfo.getValue(6).toString());
-        invoiceIssueDateText.setText(invoiceInfo.getValue(1).toString());
-        invoiceDueDateText.setText(invoiceInfo.getValue(2).toString());
+        if (0 > invoiceList.getSelectedIndex()) {
+            invoiceNoText.setText("");
+            invoiceStateText.setText("");
+            invoiceDateText.setText("");
+            invoiceIssueDateText.setText("");
+            invoiceDueDateText.setText("");
+
+            ((InvoiceDetailsTableModel) detailsTable.getModel()).loadData(-1);
+        }
+        else {
+            DataRow row = (DataRow) invoiceList.getModel().getElementAt(invoiceList.getSelectedIndex());
+            Integer invoiceId = (Integer) row.getValue(0);
+            DataRow invoiceInfo = InvoiceMediator.getInstance().getInvoiceInformation(invoiceId);
+            invoiceNoText.setText(invoiceInfo.getValue(0).toString());
+            invoiceStateText.setText(invoiceInfo.getValue(5).toString());
+            invoiceDateText.setText(invoiceInfo.getValue(6).toString());
+            invoiceIssueDateText.setText(invoiceInfo.getValue(1).toString());
+            invoiceDueDateText.setText(invoiceInfo.getValue(2).toString());
+            ((InvoiceDetailsTableModel) detailsTable.getModel()).loadData(invoiceId);
+        }
     }//GEN-LAST:event_onSelectionChanged
 
     private void onDeleteInvoicePerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onDeleteInvoicePerformed
@@ -299,8 +342,8 @@ public class JInvoicesPanel extends javax.swing.JPanel {
             return;
         Integer invoiceId = (Integer) ((DataRow) invoiceList.getModel().getElementAt(selIdx)).getValue(0);
         try {
+            ((DefaultListModel) invoiceList.getModel()).remove(selIdx);
             InvoiceMediator.getInstance().deleteInvoice(invoiceId);
-            ((DefaultListModel)invoiceList.getModel()).remove(selIdx);
         }
         catch (ReelcashException e) {
             MsgBox.error(e.getLocalizedMessage());
