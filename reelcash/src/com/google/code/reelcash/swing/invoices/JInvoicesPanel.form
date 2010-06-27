@@ -77,6 +77,33 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onDeleteInvoicePerformed"/>
                   </Events>
                 </Component>
+                <Component class="javax.swing.JToolBar$Separator" name="invOpPrevOpSep">
+                  <Properties>
+                    <Property name="toolTipText" type="java.lang.String" value=""/>
+                    <Property name="separatorSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[2, 10]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="previewButton">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/com/google/code/reelcash/images/toolbar/print_preview.png"/>
+                    </Property>
+                    <Property name="mnemonic" type="int" value="118"/>
+                    <Property name="actionCommand" type="java.lang.String" value="preview"/>
+                    <Property name="focusable" type="boolean" value="false"/>
+                    <Property name="horizontalTextPosition" type="int" value="0"/>
+                    <Property name="name" type="java.lang.String" value="preview" noResource="true"/>
+                    <Property name="verticalTextPosition" type="int" value="3"/>
+                  </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Preview Invoice"/>
+                  </AccessibilityProperties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onPrintPreviewRequested"/>
+                  </Events>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="masterListPanel">

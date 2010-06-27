@@ -1,13 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * JInvoiceWizard.java
- *
- * Created on Apr 27, 2010, 4:39:36 PM
- */
 package com.google.code.reelcash.swing.invoices;
 
 import com.google.code.reelcash.ReelcashException;
@@ -23,6 +13,8 @@ import com.google.code.reelcash.util.MsgBox;
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
@@ -77,9 +69,12 @@ public class JInvoiceWizard extends javax.swing.JDialog {
 
     private void showPage() {
         if ("series".equals(pages[currentPageIndex])) {
-            if (!first || JOptionPane.NO_OPTION == Confirm.confirm(InvoiceResources.getString("attach_series_question")))//NOI18N
-            {
-                currentPageIndex++;
+            try {
+                if (!first || 1 > (Integer) mediator.executeScalar("select count(*) from `series_ranges` where counter < max_value") || JOptionPane.NO_OPTION == Confirm.confirm(InvoiceResources.getString("attach_series_question"))) {
+                    currentPageIndex++;
+                }
+            } catch (SQLException ex) {
+                MsgBox.error(ex.getLocalizedMessage());
             }
         }
 
