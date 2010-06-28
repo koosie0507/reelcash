@@ -1,29 +1,385 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD JasperReport//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
-
-<jasperReport name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Factura" pageWidth="595" pageHeight="842" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" resourceBundle="invoice_report" whenResourceMissingType="Key">
+	<style name="title" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="20" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
+	<style name="subtitle" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="16" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
+	<style name="column_header" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="13" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
+	<style name="total" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="12" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
+	<style name="note" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="9" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
+	<style name="default" isDefault="true" forecolor="#000000" scaleImage="FillFrame" hAlign="Left" vAlign="Top" rotation="None" lineSpacing="Single" markup="styled" fontSize="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
+	<parameter name="INVOICE_ID" class="java.lang.Integer">
+		<parameterDescription><![CDATA[The ID of the invoice being printed]]></parameterDescription>
+		<defaultValueExpression><![CDATA[new Integer(-1)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+    `documents`.`number` as invoice_number,
+    `documents`.`date_issued` as invoice_date_issued,
+    `documents`.`date_due` as invoice_date_due,
+    `documents`.`issuer_id`,
+    b1.bname as issuer_name,
+    b1.baddress as issuer_address,
+    b1.bpostal as issuer_postal,
+    b1.bcity as issuer_city,
+    b1.bcounty as issuer_county,
+    b1.bregion as issuer_region,
+    b1.bcountry as issuer_country,
+    b1.bbank as issuer_bank,
+    b1.baccount as issuer_account,
+    b1.blegal as issuer_legal_status,
+    fissuer1.`value` as issuer_serial,
+    fissuer2.`value` as issuer_fiscal_id,
+    `documents`.`recipient_id`,
+    b2.bname as recipient_name,
+    b2.baddress as recipient_address,
+    b2.bpostal as recipient_postal,
+    b2.bcity as recipient_city,
+    b2.bcounty as recipient_county,
+    b2.bregion as recipient_region,
+    b2.bcountry as recipient_country,
+    b2.bbank as recipient_bank,
+    b2.baccount as recipient_account,
+    b2.blegal as recipient_legal_status,
+    frecipient1.`value` as recipient_serial,
+    frecipient2.`value` as recipient_fiscal_id,
+    `invoices`.`total_amount`,
+    `invoices`.`total_excise`,
+    `invoices`.`total_taxes`,
+    `invoices`.`total_vat`,
+    `currencies`.`code` as currency,
+    coalesce(`exchange_rates`.`value`, 1) as exchange_rate
+from `invoices`
+    inner join `documents` on `documents`.`id` = `invoices`.`document_id`
+    inner join `business_info` b1 on b1.business_id = `documents`.`issuer_id`
+    inner join `business_info` b2 on b2.business_id = `documents`.`recipient_id`
+    inner join `currencies` on `currencies`.`id` = `invoices`.`currency_id`
+    left join `exchange_rates` on `exchange_rates`.`id` = `invoices`.`exchange_rate_id`
+    left join `fiscal_identification` fissuer1 on fissuer1.business_id = b1.business_id and fissuer1.`name` = 'ORC'
+    left join `fiscal_identification` fissuer2 on fissuer2.business_id = b1.business_id and fissuer2.`name` = 'CIF'
+    left join `fiscal_identification` frecipient1 on frecipient1.business_id = b2.business_id and frecipient1.`name` = 'ORC'
+    left join `fiscal_identification` frecipient2 on frecipient2.business_id = b2.business_id and frecipient2.`name` = 'CIF']]>
+	</queryString>
+	<field name="invoice_number" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="invoice_date_issued" class="java.util.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="invoice_date_due" class="java.util.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="`documents`.`issuer_id`" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_name" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_address" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_postal" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_city" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_county" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_region" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_country" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_bank" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_account" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_legal_status" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_serial" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="issuer_fiscal_id" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="`documents`.`recipient_id`" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_name" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_address" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_postal" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_city" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_county" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_region" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_country" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_bank" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_account" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_legal_status" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_serial" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="recipient_fiscal_id" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="`invoices`.`total_amount`" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="`invoices`.`total_excise`" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="`invoices`.`total_taxes`" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="`invoices`.`total_vat`" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="currency" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="exchange_rate" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<background>
-		<band/>
+		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79"/>
+		<band height="55" splitType="Stretch">
+			<textField pattern="">
+				<reportElement style="title" x="0" y="0" width="511" height="28"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString("invoice_title")]]></textFieldExpression>
+			</textField>
+			<elementGroup>
+				<textField pattern="dd.MM.yyyy" isBlankWhenNull="false">
+					<reportElement style="subtitle" x="229" y="28" width="150" height="23"/>
+					<textElement textAlignment="Left"/>
+					<textFieldExpression class="java.util.Date"><![CDATA[$F{invoice_date_issued}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="subtitle" x="75" y="28" width="150" height="23"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice_number}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="subtitle" x="224" y="28" width="6" height="23"/>
+					<textElement/>
+					<text><![CDATA[/]]></text>
+				</staticText>
+			</elementGroup>
+		</band>
 	</title>
 	<pageHeader>
-		<band height="35"/>
+		<band height="161" splitType="Stretch">
+			<elementGroup>
+				<textField>
+					<reportElement style="default" x="51" y="95" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_serial}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="51" y="146" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_bank}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="10" y="76" width="192" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_country}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="0" y="95" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "orc_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="10" y="61" width="192" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_city} + ", jud. " + $F{issuer_county}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="0" y="23" width="202" height="23"/>
+					<textElement textAlignment="Left">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_name}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="0" y="146" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "bank_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="0" y="131" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "account_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="10" y="46" width="192" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_address} + ", " + $F{issuer_postal}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="51" y="131" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_account}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="51" y="110" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_fiscal_id}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="0" y="110" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "cif_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="column_header" x="0" y="0" width="75" height="23"/>
+					<textElement textAlignment="Left">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString("issuer_text")]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<elementGroup>
+				<textField>
+					<reportElement style="default" x="361" y="95" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_serial}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="361" y="146" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_bank}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="320" y="76" width="192" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_country}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="310" y="95" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "orc_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="320" y="61" width="192" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_city} + ", jud. " + $F{recipient_county}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="310" y="23" width="202" height="23"/>
+					<textElement textAlignment="Left">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_name}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="310" y="146" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "bank_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="310" y="131" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "account_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="320" y="46" width="192" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_address} + ", " + $F{recipient_postal}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="361" y="131" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_account}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="361" y="110" width="151" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_fiscal_id}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="default" x="310" y="110" width="51" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "cif_text" )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="column_header" x="310" y="0" width="75" height="23"/>
+					<textElement textAlignment="Left">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString("recipient_text")]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="61"/>
-	</columnHeader>
 	<detail>
-		<band height="125"/>
+		<band height="111" splitType="Stretch">
+			<textField pattern="###0.00;-###0.00">
+				<reportElement style="column_header" x="321" y="16" width="99" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_amount`}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement style="column_header" x="320" y="56" width="99" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_taxes`}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement style="column_header" x="320" y="36" width="99" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_excise`}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement style="column_header" x="320" y="76" width="99" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_vat`}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
-	<columnFooter>
-		<band height="45"/>
-	</columnFooter>
 	<pageFooter>
-		<band height="54"/>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement style="note" x="23" y="34" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{currency}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
-		<band height="42"/>
+		<band height="42" splitType="Stretch"/>
 	</summary>
 </jasperReport>

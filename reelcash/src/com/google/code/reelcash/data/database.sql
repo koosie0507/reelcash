@@ -501,3 +501,27 @@ from businesses b1
     inner join counties ct1 on ct1.id = c1.county_id
     inner join regions r1 on r1.id = ct1.region_id
     inner join countries co1 on co1.id = r1.country_id;
+
+create view if not exists `business_info`
+as
+select
+    `businesses`.`id` as business_id,
+    `businesses`.`name` as bname,
+    `locations`.`address` as baddress,
+    `locations`.`postal_code` as bpostal,
+    `cities`.`name` as bcity,
+    `counties`.`name` as bcounty,
+    `regions`.`name` as bregion,
+    `countries`.`name` as bcountry,
+    `banks`.`name` as bbank,
+    `bank_accounts`.`account` as baccount,
+    `legal_statuses`.`code` as blegal
+from `businesses`
+    inner join `locations` on `locations`.`id` = `businesses`.`location_id`
+    inner join `cities` on `cities`.`id` = `locations`.`city_id`
+    inner join `counties` on `counties`.`id` = `cities`.`id`
+    inner join `regions` on `regions`.`id` = `counties`.`region_id`
+    inner join `countries` on `countries`.`id` = `regions`.`country_id`
+    inner join `bank_accounts` on `bank_accounts`.`id` = `businesses`.`bank_account_id`
+    inner join `banks` on `banks`.`id` = `bank_accounts`.`bank_id`
+    inner join `legal_statuses` on `legal_statuses`.`id` = `businesses`.`legal_status_id`;

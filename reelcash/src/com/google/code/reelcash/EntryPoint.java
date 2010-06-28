@@ -2,6 +2,7 @@ package com.google.code.reelcash;
 
 import com.google.code.reelcash.data.DbManager;
 import com.google.code.reelcash.swing.MainFrame;
+import com.google.code.reelcash.util.ReportingUtils;
 import com.google.code.reelcash.util.ScreenUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ public class EntryPoint {
      */
     public static void main(String[] args) {
         try {
+            ReportingUtils.compileReports();
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             if (DbManager.checkCreateDb()) {
                 getMainFrame().pack();
