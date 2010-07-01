@@ -45,6 +45,7 @@
     `invoices`.`total_excise`,
     `invoices`.`total_taxes`,
     `invoices`.`total_vat`,
+
     `currencies`.`code` as currency,
     coalesce(`exchange_rates`.`value`, 1) as exchange_rate
 from `invoices`
@@ -58,7 +59,7 @@ from `invoices`
     left join `fiscal_identification` frecipient1 on frecipient1.business_id = b2.business_id and frecipient1.`name` = 'ORC'
     left join `fiscal_identification` frecipient2 on frecipient2.business_id = b2.business_id and frecipient2.`name` = 'CIF']]>
 	</queryString>
-	<field name="invoice_number" class="java.lang.String">
+	<field name="invoice_number" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="invoice_date_issued" class="java.util.Date">
@@ -67,100 +68,100 @@ from `invoices`
 	<field name="invoice_date_due" class="java.util.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`documents`.`issuer_id`" class="java.lang.Object">
+	<field name="`documents`.`issuer_id`" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_name" class="java.lang.Object">
+	<field name="issuer_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_address" class="java.lang.Object">
+	<field name="issuer_address" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_postal" class="java.lang.Object">
+	<field name="issuer_postal" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_city" class="java.lang.Object">
+	<field name="issuer_city" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_county" class="java.lang.Object">
+	<field name="issuer_county" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_region" class="java.lang.Object">
+	<field name="issuer_region" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_country" class="java.lang.Object">
+	<field name="issuer_country" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_bank" class="java.lang.Object">
+	<field name="issuer_bank" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_account" class="java.lang.Object">
+	<field name="issuer_account" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_legal_status" class="java.lang.Object">
+	<field name="issuer_legal_status" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_serial" class="java.lang.Object">
+	<field name="issuer_serial" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="issuer_fiscal_id" class="java.lang.Object">
+	<field name="issuer_fiscal_id" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`documents`.`recipient_id`" class="java.lang.Object">
+	<field name="`documents`.`recipient_id`" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_name" class="java.lang.Object">
+	<field name="recipient_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_address" class="java.lang.Object">
+	<field name="recipient_address" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_postal" class="java.lang.Object">
+	<field name="recipient_postal" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_city" class="java.lang.Object">
+	<field name="recipient_city" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_county" class="java.lang.Object">
+	<field name="recipient_county" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_region" class="java.lang.Object">
+	<field name="recipient_region" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_country" class="java.lang.Object">
+	<field name="recipient_country" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_bank" class="java.lang.Object">
+	<field name="recipient_bank" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_account" class="java.lang.Object">
+	<field name="recipient_account" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_legal_status" class="java.lang.Object">
+	<field name="recipient_legal_status" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_serial" class="java.lang.Object">
+	<field name="recipient_serial" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="recipient_fiscal_id" class="java.lang.Object">
+	<field name="recipient_fiscal_id" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_amount`" class="java.lang.Object">
+	<field name="`invoices`.`total_amount`" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_excise`" class="java.lang.Object">
+	<field name="`invoices`.`total_excise`" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_taxes`" class="java.lang.Object">
+	<field name="`invoices`.`total_taxes`" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_vat`" class="java.lang.Object">
+	<field name="`invoices`.`total_vat`" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="currency" class="java.lang.Object">
+	<field name="currency" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="exchange_rate" class="java.lang.Object">
+	<field name="exchange_rate" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -182,7 +183,7 @@ from `invoices`
 				<textField>
 					<reportElement style="subtitle" x="75" y="28" width="150" height="23"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice_number}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{invoice_number}.toString()]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement style="subtitle" x="224" y="28" width="6" height="23"/>
@@ -339,47 +340,112 @@ from `invoices`
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="111" splitType="Stretch">
+		<band height="88" splitType="Stretch">
 			<textField pattern="###0.00;-###0.00">
-				<reportElement style="column_header" x="321" y="16" width="99" height="20"/>
+				<reportElement style="column_header" x="321" y="16" width="98" height="20"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_amount`}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
-				<reportElement style="column_header" x="320" y="56" width="99" height="20"/>
-				<textElement textAlignment="Right">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_taxes`}]]></textFieldExpression>
-			</textField>
-			<textField pattern="###0.00;-###0.00">
 				<reportElement style="column_header" x="320" y="36" width="99" height="20"/>
-				<textElement textAlignment="Right">
-					<font isBold="true"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_excise`}]]></textFieldExpression>
-			</textField>
-			<textField pattern="###0.00;-###0.00">
-				<reportElement style="column_header" x="320" y="76" width="99" height="20"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_vat`}]]></textFieldExpression>
 			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement style="column_header" x="320" y="55" width="99" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Number"><![CDATA[Double.valueOf($F{`invoices`.`total_amount`}.doubleValue() +  $F{`invoices`.`total_vat`}.doubleValue())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="230" y="18" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pret:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="229" y="38" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TVA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="56" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="54" splitType="Stretch">
+		<band height="32" splitType="Stretch">
 			<textField>
-				<reportElement style="note" x="23" y="34" width="100" height="20"/>
-				<textElement/>
+				<reportElement style="note" x="96" y="0" width="72" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{currency}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement style="note" x="10" y="0" width="83" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Moneda facturii:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="note" x="3" y="12" width="102" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Cursul de schimb: 1]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="note" x="105" y="12" width="24" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{currency}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement style="note" x="135" y="12" width="22" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{exchange_rate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="note" x="129" y="12" width="6" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[=]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="note" x="157" y="12" width="21" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[RON]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="81" splitType="Stretch">
+			<rectangle>
+				<reportElement isPrintRepeatedValues="false" x="271" y="0" width="122" height="81"/>
+			</rectangle>
+			<rectangle>
+				<reportElement isPrintRepeatedValues="false" x="391" y="0" width="122" height="81"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="285" y="13" width="100" height="68"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Semnatura si stampila furnizorului]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="404" y="13" width="100" height="51"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Semnatura si stampila beneficiarului]]></text>
+			</staticText>
+		</band>
 	</summary>
 </jasperReport>

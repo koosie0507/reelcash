@@ -80,11 +80,11 @@ public class InvoiceMediator extends QueryMediator {
      * @return invoice ID.
      */
     public Integer createInvoice(Integer documentId, Integer currencyId, Integer issuerRep, Integer recipientRep, Integer exchangeRate) {
-        final String sql = "insert into invoices(document_id, currency_id, issuer_rep_id, recipient_rep_id, exchange_rate_id, total_amount, total_excise, total_taxes, total_vat) values(?,?,?,?,?,?,?,?,?);";
+        final String sql = "insert into invoices(document_id, currency_id, issuer_rep_id, recipient_rep_id, exchange_rate_id, total_amount, total_excise, total_taxes, total_vat, total) values(?,?,?,?,?,?,?,?,?,?);";
         Integer invoiceId = null;
         try {
             beginTransaction();
-            if (0 < execute(sql, documentId, currencyId, issuerRep, recipientRep, exchangeRate, 0, 0, 0, 0))
+            if (0 < execute(sql, documentId, currencyId, issuerRep, recipientRep, exchangeRate, 0, 0, 0, 0, 0))
                 invoiceId = (Integer) executeScalar("select last_insert_rowid();");
             commit();
         }
@@ -160,6 +160,8 @@ public class InvoiceMediator extends QueryMediator {
                         vatPercent, invoiceDetail.getValue(0));
                 execute("update invoice_details set vat_amount=vat_percent*amount, price=amount*(1+vat_percent) where id=?",
                         invoiceDetail.getValue(0));
+
+                // compute invoice totals
             }
             commit();
         }

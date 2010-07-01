@@ -434,6 +434,7 @@ create table if not exists `invoices` (
     `total_excise` decimal(15, 4) not null, -- total excise amount
     `total_taxes` decimal(15, 4) not null, -- total amount of other taxes
     `total_vat` decimal(15, 4) not null, -- total vat = sum((amount+excise+tax)*vat_percent)
+    `total` decimal(15, 4) not null, -- total = total_vat + total_amount
     constraint uq_document_id unique(`document_id`), -- only one document/invoice allowed
     constraint fk_invoice_document foreign key(`document_id`) references `documents`(`id`),
     constraint fk_invoice_currency foreign key (`currency_id`) references `currencies`(`id`),
@@ -463,6 +464,42 @@ create table if not exists `invoice_details` (
     constraint fk_invoice_detail_unit foreign key (`unit_id`) references `units`(`id`) on delete restrict on update restrict,
     constraint ck_invoice_detail_description check ((not good_id is null) or (not detail_text is null))
 );
+
+create trigger if not exists `trig_invoice_details_after_insert`
+after insert on `invoice_details`
+begin
+    update `invoices` set
+        total_amount = (select sum(amount) from `invoice_details` where `id` = NEW.id),
+        total_excise = (select sum(excise_amount) from `invoice_details` where `id` = NEW.id),
+        total_taxes = (select sum(tax_amount) from `invoice_details` where `id` = NEW.id),
+        total_vat = (select sum(vat_amount) from `invoice_details` where `id` = NEW.id),
+        total = (select sum(price) from `invoice_details` where `id` = NEW.id)
+    where `invoices`.`id` = NEW.invoice_id;
+end;
+
+create trigger if not exists `trig_invoice_details_after_update`
+after update on `invoice_details`
+begin
+    update `invoices` set
+        total_amount = (select sum(amount) from `invoice_details` where `id` = NEW.id),
+        total_excise = (select sum(excise_amount) from `invoice_details` where `id` = NEW.id),
+        total_taxes = (select sum(tax_amount) from `invoice_details` where `id` = NEW.id),
+        total_vat = (select sum(vat_amount) from `invoice_details` where `id` = NEW.id),
+        total = (select sum(price) from `invoice_details` where `id` = NEW.id)
+    where `invoices`.`id` = NEW.invoice_id;
+end;
+
+create trigger if not exists `trig_invoice_details_after_delete`
+after delete on `invoice_details`
+begin
+    update `invoices` set
+        total_amount = (select sum(amount) from `invoice_details` where `id` = OLD.id),
+        total_excise = (select sum(excise_amount) from `invoice_details` where `id` = OLD.id),
+        total_taxes = (select sum(tax_amount) from `invoice_details` where `id` = OLD.id),
+        total_vat = (select sum(vat_amount) from `invoice_details` where `id` = OLD.id),
+        total = (select sum(price) from `invoice_details` where `id` = OLD.id)
+    where `invoices`.`id` = OLD.invoice_id;
+end;
 
 -- mustn't use foreign keys with tax types because taxes may change in time
 create table if not exists `invoice_detail_taxes` (
@@ -525,3 +562,4 @@ from `businesses`
     inner join `bank_accounts` on `bank_accounts`.`id` = `businesses`.`bank_account_id`
     inner join `banks` on `banks`.`id` = `bank_accounts`.`bank_id`
     inner join `legal_statuses` on `legal_statuses`.`id` = `businesses`.`legal_status_id`;
+
