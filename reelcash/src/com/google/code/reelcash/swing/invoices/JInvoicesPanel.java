@@ -382,7 +382,7 @@ public class JInvoicesPanel extends javax.swing.JPanel {
             MsgBox.info(InvoiceResources.getString("select_invoice"));
             return;
         }
-        JasperReport report = ReportingUtils.loadReport("invoice_simple.jasper");
+        JasperReport report = ReportingUtils.loadReport("invoice_detailed.jasper");
         JasperPrint print = ReportingUtils.fillInvoice(report, 0, ReelcashDataSource.getInstance());
         ReportingUtils.showPreview(print);
     }//GEN-LAST:event_onPrintPreviewRequested

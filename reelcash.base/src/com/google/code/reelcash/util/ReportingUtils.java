@@ -36,8 +36,7 @@ import net.sf.jasperreports.swing.JRViewer;
 public final class ReportingUtils {
 
     private static final String invoiceReportUrl = "/com/google/code/reelcash/reports/invoice_simple.jrxml";
-    private static final String invoiceSub1Url = "/com/google/code/reelcash/reports/report2_subreport1.jrxml";
-    private static final String invoiceSub2Url = "/com/google/code/reelcash/reports/report2_subreport2.jrxml";
+    private static final String invoiceDetailedReportUrl = "/com/google/code/reelcash/reports/invoice_detailed.jrxml";
     private static final String reportsDir;
     private static JDialog dlg;
     public static final String SIMPLE_INVOICE_REPORT_NAME = "invoice_simple.jasper";
@@ -121,9 +120,11 @@ public final class ReportingUtils {
     }
 
     public static boolean compileReports() {
-        if (compileReport(invoiceReportUrl, "invoice_simple.jasper"))
-            return true;
-        return false;
+        if (!compileReport(invoiceReportUrl, "invoice_simple.jasper"))
+            return false;
+        if (!compileReport(invoiceDetailedReportUrl, "invoice_detailed.jasper"))
+            return false;
+        return true;
     }
 
     public static JasperReport loadReport(String reportName) {
@@ -141,7 +142,7 @@ public final class ReportingUtils {
             HashMap map = new HashMap();
             map.put("INVOICEID", invoiceId);
             map.put("SUBREPORT_DIR", reportsDir);
-            File f = new File(getReportPath("invoice_simple.jasper"));
+            File f = new File(getReportPath("invoice_detailed.jasper"));
             return JasperFillManager.fillReport(f.getPath(), map, dataSource.getConnection());
         }
         catch(SQLException ex) {
