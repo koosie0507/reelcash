@@ -4,8 +4,8 @@ import com.google.code.reelcash.data.DbManager;
 import com.google.code.reelcash.swing.MainFrame;
 import com.google.code.reelcash.util.ReportingUtils;
 import com.google.code.reelcash.util.ScreenUtils;
+import com.google.code.reelcash.util.SysUtils;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.UIManager;
 
 /**
@@ -29,6 +29,7 @@ public class EntryPoint {
      */
     public static void main(String[] args) {
         try {
+            String debug = SysUtils.getHome();
             ReportingUtils.compileReports();
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             if (DbManager.checkCreateDb()) {
@@ -37,7 +38,7 @@ public class EntryPoint {
             }
         }
         catch (Throwable t) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Uncaught exception", t);
+            Log.write().log(Level.SEVERE, "Uncaught exception", t);
         }
     }
 }

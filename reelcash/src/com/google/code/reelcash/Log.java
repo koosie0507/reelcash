@@ -4,6 +4,7 @@
  */
 package com.google.code.reelcash;
 
+import com.google.code.reelcash.util.SysUtils;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -19,8 +20,9 @@ public final class Log {
 
     static {
         try {
-            fh = new FileHandler("reelcash.log");
+            fh = new FileHandler(SysUtils.getHome() + SysUtils.getFileSeparator() +  "reelcash.log");
         } catch (IOException e) {
+            Logger.getAnonymousLogger().severe("unable to configure logging to file! " + e.getLocalizedMessage());
             fh = null;
         }
     }
