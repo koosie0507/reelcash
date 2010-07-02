@@ -74,6 +74,34 @@ public class FieldList implements List<Field> {
         return data.containsAll(c);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final FieldList other = (FieldList) obj;
+        if (this.data != other.data && (this.data == null || !this.data.equals(other.data)))
+            return false;
+        if (this.primary != other.primary && (this.primary == null || !this.primary.equals(other.primary)))
+            return false;
+        if (this.unique != other.unique && (this.unique == null || !this.unique.equals(other.unique)))
+            return false;
+        if (this.keys != other.keys && (this.keys == null || !this.keys.equals(other.keys)))
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + (this.data != null ? this.data.hashCode() : 0);
+        hash = 53 * hash + (this.primary != null ? this.primary.hashCode() : 0);
+        hash = 53 * hash + (this.unique != null ? this.unique.hashCode() : 0);
+        hash = 53 * hash + (this.keys != null ? this.keys.hashCode() : 0);
+        return hash;
+    }
+
     /**
      * Gets the field with the given name.
      * 

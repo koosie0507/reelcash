@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Factura" pageWidth="595" pageHeight="842" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" resourceBundle="invoice_report" whenResourceMissingType="Key">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Factura" pageWidth="595" pageHeight="842" columnWidth="511" leftMargin="42" rightMargin="42" topMargin="42" bottomMargin="42" resourceBundle="com.google.code.reelcash.reports.invoice_report" whenResourceMissingType="Key">
 	<style name="title" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="20" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
 	<style name="subtitle" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="16" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
 	<style name="column_header" isDefault="false" forecolor="#000000" scaleImage="FillFrame" hAlign="Center" vAlign="Middle" rotation="None" lineSpacing="Single" markup="styled" fontSize="13" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1250"/>
@@ -41,13 +41,14 @@
     b2.blegal as recipient_legal_status,
     frecipient1.`value` as recipient_serial,
     frecipient2.`value` as recipient_fiscal_id,
-    `invoices`.`total_amount`,
-    `invoices`.`total_excise`,
-    `invoices`.`total_taxes`,
-    `invoices`.`total_vat`,
-
+    `invoices`.`total_amount` * coalesce(`exchange_rates`.`value`, 1) as total_amount,
+    `invoices`.`total_excise` * coalesce(`exchange_rates`.`value`, 1) as total_excise,
+    `invoices`.`total_taxes` * coalesce(`exchange_rates`.`value`, 1) as total_taxes,
+    `invoices`.`total_vat` * coalesce(`exchange_rates`.`value`, 1) as total_vat,
+    `invoices`.`total` * coalesce(`exchange_rates`.`value`, 1) as total,
     `currencies`.`code` as currency,
-    coalesce(`exchange_rates`.`value`, 1) as exchange_rate
+    coalesce(`exchange_rates`.`value`, 1) as exchange_rate,
+    case `currencies`.`code` when 'RON' then '-' else '1 '||`currencies`.`code`||' = '|| cast(coalesce(`exchange_rates`.`value`, 1.00) as text) || ' RON' end as exchange_rate_text
 from `invoices`
     inner join `documents` on `documents`.`id` = `invoices`.`document_id`
     inner join `business_info` b1 on b1.business_id = `documents`.`issuer_id`
@@ -59,7 +60,7 @@ from `invoices`
     left join `fiscal_identification` frecipient1 on frecipient1.business_id = b2.business_id and frecipient1.`name` = 'ORC'
     left join `fiscal_identification` frecipient2 on frecipient2.business_id = b2.business_id and frecipient2.`name` = 'CIF']]>
 	</queryString>
-	<field name="invoice_number" class="java.lang.Integer">
+	<field name="invoice_number" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="invoice_date_issued" class="java.util.Date">
@@ -146,22 +147,28 @@ from `invoices`
 	<field name="recipient_fiscal_id" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_amount`" class="java.lang.Double">
+	<field name="total_amount" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_excise`" class="java.lang.Double">
+	<field name="total_excise" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_taxes`" class="java.lang.Double">
+	<field name="total_taxes" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="`invoices`.`total_vat`" class="java.lang.Double">
+	<field name="total_vat" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="currency" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="exchange_rate" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="exchange_rate_text" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -342,110 +349,98 @@ from `invoices`
 	<detail>
 		<band height="88" splitType="Stretch">
 			<textField pattern="###0.00;-###0.00">
-				<reportElement style="column_header" x="321" y="16" width="98" height="20"/>
-				<textElement textAlignment="Right">
+				<reportElement style="column_header" x="78" y="17" width="98" height="20"/>
+				<textElement textAlignment="Left">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_amount`}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{total_amount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
-				<reportElement style="column_header" x="320" y="36" width="99" height="20"/>
-				<textElement textAlignment="Right">
+				<reportElement style="column_header" x="78" y="34" width="99" height="20"/>
+				<textElement textAlignment="Left">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.Number"><![CDATA[$F{`invoices`.`total_vat`}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{total_vat}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
-				<reportElement style="column_header" x="320" y="55" width="99" height="20"/>
-				<textElement textAlignment="Right">
-					<font isBold="true"/>
+				<reportElement style="column_header" x="321" y="38" width="99" height="30"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="16" isBold="false"/>
 				</textElement>
-				<textFieldExpression class="java.lang.Number"><![CDATA[Double.valueOf($F{`invoices`.`total_amount`}.doubleValue() +  $F{`invoices`.`total_vat`}.doubleValue())]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="230" y="18" width="100" height="20"/>
+				<reportElement x="38" y="18" width="39" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Pret:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="229" y="38" width="100" height="20"/>
+				<reportElement x="28" y="36" width="49" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="13" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TVA:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="230" y="56" width="100" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="13" isBold="true"/>
+				<reportElement x="320" y="17" width="100" height="21"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="16" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
 		</band>
 	</detail>
-	<pageFooter>
-		<band height="32" splitType="Stretch">
-			<textField>
-				<reportElement style="note" x="96" y="0" width="72" height="20"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{currency}]]></textFieldExpression>
-			</textField>
+	<lastPageFooter>
+		<band height="133">
+			<rectangle>
+				<reportElement isPrintRepeatedValues="false" x="208" y="28" width="122" height="81"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Dotted"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement isPrintRepeatedValues="false" x="389" y="28" width="122" height="81"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Dotted"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement style="note" x="10" y="0" width="83" height="20"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<text><![CDATA[Moneda facturii:]]></text>
+				<reportElement x="208" y="10" width="55" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Furnizor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="note" x="3" y="12" width="102" height="20"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<text><![CDATA[Cursul de schimb: 1]]></text>
-			</staticText>
-			<textField>
-				<reportElement style="note" x="105" y="12" width="24" height="20"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{currency}]]></textFieldExpression>
-			</textField>
-			<textField pattern="###0.00;-###0.00">
-				<reportElement style="note" x="135" y="12" width="22" height="20"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.Double"><![CDATA[$F{exchange_rate}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement style="note" x="129" y="12" width="6" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[=]]></text>
+				<reportElement x="389" y="9" width="56" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Beneficiar]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="note" x="157" y="12" width="21" height="20"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[RON]]></text>
+				<reportElement style="note" x="-1" y="113" width="512" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Preturile de pe prezenta factura sunt exprimate in RON la cursul specificat]]></text>
 			</staticText>
 		</band>
-	</pageFooter>
+	</lastPageFooter>
 	<summary>
-		<band height="81" splitType="Stretch">
-			<rectangle>
-				<reportElement isPrintRepeatedValues="false" x="271" y="0" width="122" height="81"/>
-			</rectangle>
-			<rectangle>
-				<reportElement isPrintRepeatedValues="false" x="391" y="0" width="122" height="81"/>
-			</rectangle>
+		<band height="50">
 			<staticText>
-				<reportElement x="285" y="13" width="100" height="68"/>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Semnatura si stampila furnizorului]]></text>
+				<reportElement style="note" x="4" y="12" width="102" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Cursul de schimb:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="404" y="13" width="100" height="51"/>
-				<textElement textAlignment="Center">
-					<font size="12" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Semnatura si stampila beneficiarului]]></text>
-			</staticText>
+			<textField>
+				<reportElement style="note" x="109" y="12" width="382" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{exchange_rate_text}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

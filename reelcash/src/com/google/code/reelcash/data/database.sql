@@ -464,16 +464,20 @@ create table if not exists `invoice_details` (
     constraint fk_invoice_detail_unit foreign key (`unit_id`) references `units`(`id`) on delete restrict on update restrict,
     constraint ck_invoice_detail_description check ((not good_id is null) or (not detail_text is null))
 );
+drop trigger `trig_invoice_details_after_insert`;
+drop trigger `trig_invoice_details_after_update`;
+drop trigger `trig_invoice_details_after_delete`;
+
 
 create trigger if not exists `trig_invoice_details_after_insert`
 after insert on `invoice_details`
 begin
     update `invoices` set
-        total_amount = (select sum(amount) from `invoice_details` where `id` = NEW.id),
-        total_excise = (select sum(excise_amount) from `invoice_details` where `id` = NEW.id),
-        total_taxes = (select sum(tax_amount) from `invoice_details` where `id` = NEW.id),
-        total_vat = (select sum(vat_amount) from `invoice_details` where `id` = NEW.id),
-        total = (select sum(price) from `invoice_details` where `id` = NEW.id)
+        total_amount = coalesce((select sum(amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total_excise = coalesce((select sum(excise_amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total_taxes = coalesce((select sum(tax_amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total_vat = coalesce((select sum(vat_amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total = coalesce((select sum(price) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0)
     where `invoices`.`id` = NEW.invoice_id;
 end;
 
@@ -481,11 +485,11 @@ create trigger if not exists `trig_invoice_details_after_update`
 after update on `invoice_details`
 begin
     update `invoices` set
-        total_amount = (select sum(amount) from `invoice_details` where `id` = NEW.id),
-        total_excise = (select sum(excise_amount) from `invoice_details` where `id` = NEW.id),
-        total_taxes = (select sum(tax_amount) from `invoice_details` where `id` = NEW.id),
-        total_vat = (select sum(vat_amount) from `invoice_details` where `id` = NEW.id),
-        total = (select sum(price) from `invoice_details` where `id` = NEW.id)
+        total_amount = coalesce((select sum(amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total_excise = coalesce((select sum(excise_amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total_taxes = coalesce((select sum(tax_amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total_vat = coalesce((select sum(vat_amount) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0),
+        total = coalesce((select sum(price) from `invoice_details` where `invoice_id` = NEW.invoice_id), 0)
     where `invoices`.`id` = NEW.invoice_id;
 end;
 
@@ -493,11 +497,11 @@ create trigger if not exists `trig_invoice_details_after_delete`
 after delete on `invoice_details`
 begin
     update `invoices` set
-        total_amount = (select sum(amount) from `invoice_details` where `id` = OLD.id),
-        total_excise = (select sum(excise_amount) from `invoice_details` where `id` = OLD.id),
-        total_taxes = (select sum(tax_amount) from `invoice_details` where `id` = OLD.id),
-        total_vat = (select sum(vat_amount) from `invoice_details` where `id` = OLD.id),
-        total = (select sum(price) from `invoice_details` where `id` = OLD.id)
+        total_amount = coalesce((select sum(amount) from `invoice_details` where `invoice_id` = OLD.invoice_id), 0),
+        total_excise = coalesce((select sum(excise_amount) from `invoice_details` where `invoice_id` = OLD.invoice_id), 0),
+        total_taxes = coalesce((select sum(tax_amount) from `invoice_details` where `invoice_id` = OLD.invoice_id), 0),
+        total_vat = coalesce((select sum(vat_amount) from `invoice_details` where `invoice_id` = OLD.invoice_id), 0),
+        total = coalesce((select sum(price) from `invoice_details` where `invoice_id` = OLD.invoice_id), 0)
     where `invoices`.`id` = OLD.invoice_id;
 end;
 

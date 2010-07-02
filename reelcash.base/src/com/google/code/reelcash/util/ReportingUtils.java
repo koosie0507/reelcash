@@ -14,9 +14,10 @@ import java.awt.Window;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
+import javax.sql.DataSource;
 import javax.swing.JDialog;
 
 import net.sf.jasperreports.engine.JRException;
@@ -121,13 +122,8 @@ public final class ReportingUtils {
 
     public static boolean compileReports() {
         if (compileReport(invoiceReportUrl, "invoice_simple.jasper"))
-            if (!compileReport(invoiceReportUrl, "report2.jasper"))
-                return false;
-        if (!compileReport(invoiceSub1Url, "report2_subreport1.jasper"))
-            return false;
-        if (!compileReport(invoiceSub2Url, "report2_subreport2.jasper"))
-            return false;
-        return true;
+            return true;
+        return false;
     }
 
     public static JasperReport loadReport(String reportName) {
@@ -140,17 +136,19 @@ public final class ReportingUtils {
         }
     }
 
-    public static JasperPrint fillInvoice(JasperReport report, int accountId, int invoiceId, Connection connection) {
+    public static JasperPrint fillInvoice(JasperReport report, int invoiceId, DataSource dataSource) {
         try {
             HashMap map = new HashMap();
-            map.put("ACCOUNTID", accountId);
             map.put("INVOICEID", invoiceId);
             map.put("SUBREPORT_DIR", reportsDir);
-            File f = new File(getReportPath("report2.jasper"));
-            return JasperFillManager.fillReport(f.getPath(), map, connection);
+            File f = new File(getReportPath("invoice_simple.jasper"));
+            return JasperFillManager.fillReport(f.getPath(), map, dataSource.getConnection());
+        }
+        catch(SQLException ex) {
+            Log.write().log(Level.SEVERE, "DB error on prepare report", ex);
         }
         catch (JRException ex) {
-            Log.write().log(Level.SEVERE, "Fill ended up pretty badly", ex);
+            Log.write().log(Level.SEVERE, "Reporting error", ex);
         }
         return null;
     }

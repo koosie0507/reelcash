@@ -1,8 +1,11 @@
 package com.google.code.reelcash.model;
 
+import com.google.code.reelcash.Log;
 import com.google.code.reelcash.data.DataRow;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -19,6 +22,7 @@ public class DataRowComboModel implements ComboBoxModel {
     private int valueMemberIndex;
     private int displayMemberIndex;
     private DataRow selectedRow;
+    private DataRowComparator comparator;
 
     public DataRowComboModel() {
         data = new ArrayList();
@@ -26,6 +30,7 @@ public class DataRowComboModel implements ComboBoxModel {
         valueMemberIndex = 0;
         displayMemberIndex = 1;
         selectedRow = null;
+        comparator = new DataRowComparator();
     }
 
     protected void fireContentsChanged() {
@@ -133,7 +138,9 @@ public class DataRowComboModel implements ComboBoxModel {
     }
 
     public void remove(DataRow row) {
-        data.remove(row);
+        if(!data.remove(row)) {
+            Log.write().warning("blana mare");
+        }
     }
 
     public void remove(int idx) {
@@ -161,6 +168,11 @@ public class DataRowComboModel implements ComboBoxModel {
         selectedRow = data.get(idx);
     }
 
+    public void sortBy(int fieldIndex) {
+        comparator.setFieldIndex(fieldIndex);
+        Collections.sort(data, comparator);
+    }
+
     public int getDisplayMemberIndex() {
         return displayMemberIndex;
     }
@@ -179,5 +191,34 @@ public class DataRowComboModel implements ComboBoxModel {
 
     public DataRow getSelectedRow() {
         return selectedRow;
+    }
+
+    private class DataRowComparator implements Comparator<DataRow> {
+
+        private int fieldIndex = 0;
+
+        public int compare(DataRow o1, DataRow o2) {
+            if (o1.size() < o2.size())
+                return -1;
+            else if (o1.size() > o2.size())
+                return 1;
+            else if (o1.size() < 1)
+                return 0;
+            else {
+                if (fieldIndex > -1 && fieldIndex < o1.size()) {
+                    Object value = o1.getValue(fieldIndex);
+                    if (null == value)
+                        return -1;
+
+                    if (value instanceof Comparable)
+                        return ((Comparable) value).compareTo(o2.getValue(fieldIndex));
+                }
+                return 0;
+            }
+        }
+
+        void setFieldIndex(int fieldIndex) {
+            this.fieldIndex = fieldIndex;
+        }
     }
 }

@@ -29,9 +29,8 @@ public class JInvoicesPanel extends javax.swing.JPanel {
     }
 
     private void initDetailsTable() {
-        if (null == detailsTable) {
+        if (null == detailsTable)
             return;
-        }
 
         SwingUtils.setTableColumnVisible(detailsTable, "id", false, "", 0);
         SwingUtils.setTableColumnVisible(detailsTable, "invoice_id", false, "", 0);
@@ -349,7 +348,8 @@ public class JInvoicesPanel extends javax.swing.JPanel {
             invoiceDueDateText.setText("");
 
             ((InvoiceDetailsTableModel) detailsTable.getModel()).loadData(-1);
-        } else {
+        }
+        else {
             DataRow row = (DataRow) invoiceList.getModel().getElementAt(invoiceList.getSelectedIndex());
             Integer invoiceId = (Integer) row.getValue(0);
             DataRow invoiceInfo = InvoiceMediator.getInstance().getInvoiceInformation(invoiceId);
@@ -364,14 +364,14 @@ public class JInvoicesPanel extends javax.swing.JPanel {
 
     private void onDeleteInvoicePerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onDeleteInvoicePerformed
         int selIdx = invoiceList.getSelectedIndex();
-        if (0 > selIdx) {
+        if (0 > selIdx)
             return;
-        }
         Integer invoiceId = (Integer) ((DataRow) invoiceList.getModel().getElementAt(selIdx)).getValue(0);
         try {
             ((DefaultListModel) invoiceList.getModel()).remove(selIdx);
             InvoiceMediator.getInstance().deleteInvoice(invoiceId);
-        } catch (ReelcashException e) {
+        }
+        catch (ReelcashException e) {
             MsgBox.error(e.getLocalizedMessage());
         }
     }//GEN-LAST:event_onDeleteInvoicePerformed
@@ -382,13 +382,9 @@ public class JInvoicesPanel extends javax.swing.JPanel {
             MsgBox.info(InvoiceResources.getString("select_invoice"));
             return;
         }
-        try {
-            JasperReport report = ReportingUtils.loadReport("invoice_simple.jasper");
-            JasperPrint print = ReportingUtils.fillInvoice(report, 0, 0, ReelcashDataSource.getInstance().getConnection());
-            ReportingUtils.showPreview(print);
-        } catch (SQLException e) {
-            MsgBox.exception(e);
-        }
+        JasperReport report = ReportingUtils.loadReport("invoice_simple.jasper");
+        JasperPrint print = ReportingUtils.fillInvoice(report, 0, ReelcashDataSource.getInstance());
+        ReportingUtils.showPreview(print);
     }//GEN-LAST:event_onPrintPreviewRequested
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
