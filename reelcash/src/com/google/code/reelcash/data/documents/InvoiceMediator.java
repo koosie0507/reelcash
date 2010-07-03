@@ -24,6 +24,11 @@ public class InvoiceMediator extends QueryMediator {
     private static InvoiceMediator instance;
     private Integer invoiceDocTypeId;
 
+    /**
+     * Represents the VAT percent with which we operate.
+     */
+    public static final BigDecimal DEFAULT_VAT_PERCENT = BigDecimal.valueOf(0.24);
+
     private InvoiceMediator() {
         super(ReelcashDataSource.getInstance());
     }
@@ -107,7 +112,7 @@ public class InvoiceMediator extends QueryMediator {
         try {
             beginTransaction();
             if (null == goodId) {
-                BigDecimal vatPercent = BigDecimal.valueOf(0.19);
+                BigDecimal vatPercent = DEFAULT_VAT_PERCENT;
                 BigDecimal amount = quantity.multiply(unitPrice);
                 BigDecimal vatAmount = amount.multiply(vatPercent);
 
