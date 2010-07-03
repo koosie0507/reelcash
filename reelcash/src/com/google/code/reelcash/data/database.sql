@@ -464,10 +464,6 @@ create table if not exists `invoice_details` (
     constraint fk_invoice_detail_unit foreign key (`unit_id`) references `units`(`id`) on delete restrict on update restrict,
     constraint ck_invoice_detail_description check ((not good_id is null) or (not detail_text is null))
 );
-drop trigger `trig_invoice_details_after_insert`;
-drop trigger `trig_invoice_details_after_update`;
-drop trigger `trig_invoice_details_after_delete`;
-
 
 create trigger if not exists `trig_invoice_details_after_insert`
 after insert on `invoice_details`

@@ -503,12 +503,12 @@ from `invoices`
 			</textField>
 			<textField>
 				<reportElement x="156" y="0" width="42" height="20"/>
-				<textElement/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{unit}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="198" y="0" width="71" height="20"/>
-				<textElement/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
