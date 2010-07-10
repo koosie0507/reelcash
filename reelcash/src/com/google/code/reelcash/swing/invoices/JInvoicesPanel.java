@@ -383,7 +383,9 @@ public class JInvoicesPanel extends javax.swing.JPanel {
             return;
         }
         JasperReport report = ReportingUtils.loadReport("invoice_detailed.jasper");
-        JasperPrint print = ReportingUtils.fillInvoice(report, 0, ReelcashDataSource.getInstance());
+        DataRow invoice = (DataRow) ((DefaultListModel)invoiceList.getModel()).getElementAt(selInvoiceIdx);
+        int invoiceId = ((Integer)invoice.getValue("invoice_id")).intValue();
+        JasperPrint print = ReportingUtils.fillInvoice(report, invoiceId, ReelcashDataSource.getInstance());
         ReportingUtils.showPreview(print);
     }//GEN-LAST:event_onPrintPreviewRequested
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -95,7 +95,7 @@ public class InvoiceMediator extends QueryMediator {
         return invoiceId;
     }
 
-    public void createInvoiceDetail(Integer invoiceId, Integer position, Integer goodId, String detailText, Integer unitId, BigDecimal quantity, BigDecimal unitPrice) {
+    public DataRow createInvoiceDetail(Integer invoiceId, Integer position, Integer goodId, String detailText, Integer unitId, BigDecimal quantity, BigDecimal unitPrice) {
         final DataRow invoiceDetail = InvoiceDetailNode.getInstance().createRow();
         invoiceDetail.setValue(1, invoiceId);
         invoiceDetail.setValue(2, position);
@@ -164,6 +164,7 @@ public class InvoiceMediator extends QueryMediator {
                 // compute invoice totals
             }
             commit();
+            return invoiceDetail;
         }
         catch (SQLException e) {
             rollback();

@@ -223,58 +223,34 @@ from `invoices`
 			<band height="234">
 				<textField>
 					<reportElement style="default" x="371" y="156" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_bank}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="105" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "orc_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="156" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "bank_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="141" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_account}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="33" width="202" height="23"/>
-					<textElement textAlignment="Left">
-						<font fontName="Arial" isBold="true"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_name}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="156" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "bank_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="120" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_fiscal_id}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="120" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "cif_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -286,9 +262,6 @@ from `invoices`
 				</textField>
 				<textField>
 					<reportElement style="default" x="330" y="56" width="192" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_address} + ", " + $F{recipient_postal}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -300,134 +273,92 @@ from `invoices`
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="105" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_serial}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="371" y="120" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_fiscal_id}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="33" width="202" height="23"/>
 					<textElement textAlignment="Left">
-						<font fontName="Arial" isBold="true"/>
+						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_name}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="20" y="86" width="192" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_country}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="120" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "cif_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="141" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "account_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="330" y="71" width="192" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_city} + ", jud. " + $F{recipient_county}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="371" y="141" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_account}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="330" y="86" width="192" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_country}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="20" y="71" width="192" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_city} + ", jud. " + $F{issuer_county}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="156" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_bank}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="141" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "account_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="20" y="56" width="192" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_address} + ", " + $F{issuer_postal}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="105" width="51" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "orc_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="371" y="105" width="151" height="15"/>
-					<textElement>
-						<font fontName="Arial"/>
-					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_serial}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement style="column_header" mode="Opaque" x="0" y="191" width="156" height="43" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica"/>
+						<font size="10" isBold="true" pdfFontName="Helvetica"/>
 					</textElement>
 					<text><![CDATA[Descriere]]></text>
 				</staticText>
 				<staticText>
 					<reportElement style="column_header" mode="Opaque" x="157" y="191" width="41" height="43" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica"/>
+						<font size="10" isBold="true" pdfFontName="Helvetica"/>
 					</textElement>
 					<text><![CDATA[U.M.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement style="column_header" mode="Opaque" x="198" y="191" width="71" height="43" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica"/>
+						<font size="10" isBold="true" pdfFontName="Helvetica"/>
 					</textElement>
 					<text><![CDATA[Cantitate]]></text>
 				</staticText>
 				<staticText>
 					<reportElement style="column_header" mode="Opaque" x="269" y="191" width="71" height="43" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica"/>
+						<font size="10" isBold="true" pdfFontName="Helvetica"/>
 					</textElement>
 					<text><![CDATA[Preţ unitar
                     (LEI / U.M.)]]></text>
@@ -435,7 +366,7 @@ from `invoices`
 				<staticText>
 					<reportElement style="column_header" mode="Opaque" x="340" y="191" width="71" height="43" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica"/>
+						<font size="10" isBold="true" pdfFontName="Helvetica"/>
 					</textElement>
 					<text><![CDATA[Valoare
                     (LEI)]]></text>
@@ -443,7 +374,7 @@ from `invoices`
 				<staticText>
 					<reportElement style="column_header" mode="Opaque" x="411" y="191" width="71" height="43" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica"/>
+						<font size="10" isBold="true" pdfFontName="Helvetica"/>
 					</textElement>
 					<text><![CDATA[Valoare TVA
                     (LEI)]]></text>
@@ -451,7 +382,7 @@ from `invoices`
 				<staticText>
 					<reportElement style="column_header" mode="Opaque" x="482" y="191" width="73" height="43" backcolor="#CCCCCC"/>
 					<textElement textAlignment="Center" verticalAlignment="Top">
-						<font fontName="Arial" size="10" isBold="true" pdfFontName="Helvetica"/>
+						<font size="10" isBold="true" pdfFontName="Helvetica"/>
 					</textElement>
 					<text><![CDATA[Total
                     (LEI)]]></text>
@@ -463,42 +394,42 @@ from `invoices`
 				<textField pattern="###0.00;-###0.00">
 					<reportElement style="column_header" positionType="FixRelativeToBottom" x="390" y="83" width="99" height="21"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" size="16" isBold="true"/>
+						<font size="16" isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.Number"><![CDATA[$F{total}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement positionType="FixRelativeToBottom" x="244" y="42" width="146" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font size="13" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Valoare fără TVA (LEI):]]></text>
 				</staticText>
 				<staticText>
 					<reportElement positionType="FixRelativeToBottom" x="274" y="62" width="116" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" size="13" isBold="true"/>
+						<font size="13" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Valoare TVA (LEI):]]></text>
 				</staticText>
 				<textField pattern="###0.00;-###0.00">
 					<reportElement style="column_header" positionType="FixRelativeToBottom" x="390" y="43" width="99" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" isBold="true"/>
+						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.Number"><![CDATA[$F{total_amount}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.00;-###0.00">
 					<reportElement style="column_header" positionType="FixRelativeToBottom" x="390" y="63" width="99" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" isBold="true"/>
+						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.Number"><![CDATA[$F{total_vat}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement positionType="FixRelativeToBottom" x="345" y="82" width="45" height="21"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" size="16" isBold="true"/>
+						<font size="16" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Total:]]></text>
 				</staticText>
@@ -545,49 +476,42 @@ from `invoices`
 			<textField>
 				<reportElement x="0" y="0" width="156" height="20"/>
 				<textElement>
-					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{detail_text}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="156" y="0" width="42" height="20"/>
 				<textElement textAlignment="Center">
-					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{unit}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="198" y="0" width="71" height="20"/>
 				<textElement textAlignment="Center">
-					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="269" y="0" width="71" height="20"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{unit_price}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="340" y="0" width="71" height="20"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{amount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="411" y="0" width="71" height="20"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{vat_amount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="484" y="0" width="71" height="20"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{detail_amount}]]></textFieldExpression>
 			</textField>
@@ -598,7 +522,6 @@ from `invoices`
 			<staticText>
 				<reportElement style="total" positionType="FixRelativeToBottom" x="0" y="3" width="131" height="50"/>
 				<textElement textAlignment="Left">
-					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Semnătura şi ştampila furnizorului]]></text>
 			</staticText>
@@ -617,7 +540,6 @@ from `invoices`
 			<staticText>
 				<reportElement style="total" positionType="FixRelativeToBottom" x="290" y="3" width="131" height="50"/>
 				<textElement textAlignment="Left">
-					<font fontName="Arial"/>
 				</textElement>
 				<text><![CDATA[Semnătura şi ştampila beneficiarului]]></text>
 			</staticText>
