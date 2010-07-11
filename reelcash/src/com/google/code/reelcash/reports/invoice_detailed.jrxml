@@ -536,27 +536,27 @@ from `invoices`
 	</detail>
 	<pageFooter>
 		<band height="132">
-			<staticText>
-				<reportElement style="total" positionType="FixRelativeToBottom" x="0" y="3" width="131" height="50"/>
-				<textElement textAlignment="Left"/>
-				<text><![CDATA[Semnătura şi ştampila furnizorului]]></text>
-			</staticText>
 			<rectangle>
-				<reportElement positionType="FixRelativeToBottom" x="131" y="3" width="120" height="120"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="277" height="120"/>
 				<graphicElement>
-					<pen lineWidth="2.0"/>
+					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement positionType="FixRelativeToBottom" x="421" y="3" width="120" height="120"/>
+				<reportElement positionType="FixRelativeToBottom" x="277" y="3" width="278" height="120"/>
 				<graphicElement>
-					<pen lineWidth="2.0"/>
+					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement style="total" positionType="FixRelativeToBottom" x="290" y="3" width="131" height="50"/>
+				<reportElement style="total" positionType="FixRelativeToBottom" x="287" y="15" width="241" height="50"/>
 				<textElement textAlignment="Left"/>
 				<text><![CDATA[Semnătura şi ştampila beneficiarului]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="total" positionType="FixRelativeToBottom" x="10" y="15" width="202" height="50"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Semnătura şi ştampila furnizorului]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
