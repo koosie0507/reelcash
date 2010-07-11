@@ -95,6 +95,6 @@ insert into units(code, `name`) values ('kg', 'kilogram');
 insert into units(code, `name`) values ('l', 'litru');
 insert into units(code, `name`) values ('m', 'metru');
 insert into units(code, `name`) values ('ora', 'ora de munca');
-insert into vat_types(code, `name`, percent) values('19%', 'TVA pentru uz intern', 0.19);
+insert into vat_types(code, `name`, percent) values('24%', 'TVA pentru uz intern', 0.24);
 insert into vat_types(code, `name`, percent) values('Scutit', 'Scutire de TVA', 0.0);
 insert into vat_types(code, `name`, percent) values('9%', 'TVA de 9%', 0.09);

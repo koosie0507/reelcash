@@ -9,6 +9,7 @@ import com.google.code.reelcash.data.layout.fields.FieldList;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.data.sql.QueryMediator;
+import com.google.code.reelcash.data.taxes.VatMediator;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +24,11 @@ public class InvoiceMediator extends QueryMediator {
 
     private static InvoiceMediator instance;
     private Integer invoiceDocTypeId;
+    /**
+     * Represents a constant which is the default percent of VAT if no
+     * default can be found in the database.
+     */
+    public static final BigDecimal DEFAULT_VAT_PERCENT = BigDecimal.valueOf(0.24);
 
     private InvoiceMediator() {
         super(ReelcashDataSource.getInstance());
@@ -34,8 +40,9 @@ public class InvoiceMediator extends QueryMediator {
      * @return an instance of the current class.
      */
     public static InvoiceMediator getInstance() {
-        if (null == instance)
+        if (null == instance) {
             instance = new InvoiceMediator();
+        }
         return instance;
     }
 
@@ -49,13 +56,14 @@ public class InvoiceMediator extends QueryMediator {
         try {
             beginTransaction();
             invoiceDocTypeId = (Integer) executeScalar(sql1, DocumentType.INVOICE.getName());
-            if (null == invoiceDocTypeId)
-                // we don't have the invoice type in the DB
-                if (0 < execute(sql2, DocumentType.INVOICE.getName(), DocumentType.INVOICE.getLocalizedDescription()))
+            if (null == invoiceDocTypeId) // we don't have the invoice type in the DB
+            {
+                if (0 < execute(sql2, DocumentType.INVOICE.getName(), DocumentType.INVOICE.getLocalizedDescription())) {
                     invoiceDocTypeId = (Integer) executeScalar(sql3);
+                }
+            }
             commit();
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             rollback();
             throw new ReelcashException(ex);
         }
@@ -84,11 +92,11 @@ public class InvoiceMediator extends QueryMediator {
         Integer invoiceId = null;
         try {
             beginTransaction();
-            if (0 < execute(sql, documentId, currencyId, issuerRep, recipientRep, exchangeRate, 0, 0, 0, 0, 0))
+            if (0 < execute(sql, documentId, currencyId, issuerRep, recipientRep, exchangeRate, 0, 0, 0, 0, 0)) {
                 invoiceId = (Integer) executeScalar("select last_insert_rowid();");
+            }
             commit();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             rollback();
             throw new ReelcashException(e);
         }
@@ -107,7 +115,10 @@ public class InvoiceMediator extends QueryMediator {
         try {
             beginTransaction();
             if (null == goodId) {
-                BigDecimal vatPercent = BigDecimal.valueOf(0.19);
+                DataRow defaultVatType = VatMediator.getInstance().getDefaultVatType();
+                BigDecimal vatPercent = (null == defaultVatType)
+                        ? DEFAULT_VAT_PERCENT
+                        : (BigDecimal) defaultVatType.getValue("percent");
                 BigDecimal amount = quantity.multiply(unitPrice);
                 BigDecimal vatAmount = amount.multiply(vatPercent);
 
@@ -118,12 +129,13 @@ public class InvoiceMediator extends QueryMediator {
                 invoiceDetail.setValue(11, vatPercent);
                 invoiceDetail.setValue(12, vatAmount);
                 invoiceDetail.setValue(13, amount.add(vatAmount));
-                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail))
+                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail)) {
                     invoiceDetail.setValue(0, executeScalar("select last_insert_rowid();"));
-            }
-            else {
-                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail))
+                }
+            } else {
+                if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail)) {
                     invoiceDetail.setValue(0, executeScalar("select last_insert_rowid();"));
+                }
                 Object ret = executeScalar("select vt.percent from vat_types vt inner join goods g on vt.id=g.vat_type_id where g.id=?", goodId);
                 BigDecimal vatPercent = BigDecimal.valueOf(((Number) ret).doubleValue());
                 BigDecimal basicPrice = quantity.multiply(unitPrice);
@@ -165,8 +177,30 @@ public class InvoiceMediator extends QueryMediator {
             }
             commit();
             return invoiceDetail;
+        } catch (SQLException e) {
+            rollback();
+            throw new ReelcashException(e);
         }
-        catch (SQLException e) {
+    }
+
+    public void updateInvoiceDetail(DataRow detail, BigDecimal newQuantity, BigDecimal newUnitPrice) {
+        try {
+            detail.setValue("quantity", newQuantity);
+            detail.setValue("unit_price", newUnitPrice);
+            BigDecimal taxAmount = (BigDecimal) detail.getValue("tax_amount");
+            BigDecimal exciseAmount = (BigDecimal) detail.getValue("excise_amount");
+            BigDecimal vatPercent = (BigDecimal) detail.getValue("vat_percent");
+            BigDecimal amount = newQuantity.multiply(newUnitPrice);
+            detail.setValue("amount", amount);
+            amount = amount.add(taxAmount);
+            amount = amount.add(exciseAmount);
+            BigDecimal vatAmount = amount.multiply(vatPercent);
+            detail.setValue("price", vatAmount.add(amount));
+
+            beginTransaction();
+            updateRow(InvoiceDetailNode.getInstance(), detail);
+            commit();
+        } catch (SQLException e) {
             rollback();
             throw new ReelcashException(e);
         }
@@ -181,8 +215,7 @@ public class InvoiceMediator extends QueryMediator {
             execute("delete from invoice_details where invoice_id = ?;", invoiceId);
             execute("delete from invoices where id = ?;", invoiceId);
             commit();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             rollback();
             throw new ReelcashException(e);
         }
@@ -201,11 +234,11 @@ public class InvoiceMediator extends QueryMediator {
             list.add(new DateField("d.create_date", KeyRole.NONE, true));
 
             DataRow[] row = fetch(list, sql, invoiceId);
-            if (1 > row.length)
+            if (1 > row.length) {
                 throw new ReelcashException(DocumentResources.getString("invoice_information_not_found")); // NOI18N
+            }
             return row[0];
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ReelcashException(e);
         }
     }
@@ -215,8 +248,7 @@ public class InvoiceMediator extends QueryMediator {
         try {
             Object val = executeScalar(sql, invoiceId);
             return (Integer) (null == val ? 1 : val);
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new ReelcashException(e);
         }
     }
@@ -228,8 +260,7 @@ public class InvoiceMediator extends QueryMediator {
                 ret.add(row);
             }
             return ret;
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             throw new ReelcashException(ex);
         }
     }
@@ -241,17 +272,39 @@ public class InvoiceMediator extends QueryMediator {
                 ret.add(row);
             }
             return ret;
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             throw new ReelcashException(ex);
+        }
+    }
+
+    /**
+     * Returns the state of the invoice (emitted, new, etc).
+     * @param invoiceId the ID of the invoice
+     * @return a document state
+     * @exception ReelcashException is thrown if an invoice with the specified
+     * ID could not be found or a database error has occured.
+     */
+    public DocumentState getState(Integer invoiceId) {
+        try {
+            DataRow[] doc = fetch(DocumentNode.getInstance().getFieldList(),
+                    "select documents.* from documents inner join invoices on documents.id = invoices.document_id where invoices.id=?",
+                    invoiceId);
+            if (1 > doc.length) {
+                throw new ReelcashException();
+            }
+
+            return DocumentMediator.getInstance().getState(
+                    (Integer) doc[0].getValue("state_id"));
+
+        } catch (SQLException e) {
+            throw new ReelcashException(e);
         }
     }
 
     public DataRow[] readInvoiceDetails(Integer invoiceId) {
         try {
             return fetch(InvoiceDetailNode.getInstance().getFieldList(), "select * from invoice_details where invoice_id=?", invoiceId);
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             throw new ReelcashException(ex);
         }
     }
@@ -277,8 +330,7 @@ public class InvoiceMediator extends QueryMediator {
             list.add(new StringField("recipient_name", KeyRole.NONE, true));
 
             return fetch(list, selectListInvoices);
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             throw new ReelcashException(ex);
         }
     }

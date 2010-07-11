@@ -71,7 +71,8 @@ from `invoices`
     left join `fiscal_identification` fissuer1 on fissuer1.business_id = b1.business_id and fissuer1.`name` = 'ORC'
     left join `fiscal_identification` fissuer2 on fissuer2.business_id = b1.business_id and fissuer2.`name` = 'CIF'
     left join `fiscal_identification` frecipient1 on frecipient1.business_id = b2.business_id and frecipient1.`name` = 'ORC'
-    left join `fiscal_identification` frecipient2 on frecipient2.business_id = b2.business_id and frecipient2.`name` = 'CIF']]>
+    left join `fiscal_identification` frecipient2 on frecipient2.business_id = b2.business_id and frecipient2.`name` = 'CIF'
+ where `invoices`.`id` = $P{INVOICE_ID}]]>
 	</queryString>
 	<field name="invoice_number" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -223,34 +224,42 @@ from `invoices`
 			<band height="234">
 				<textField>
 					<reportElement style="default" x="371" y="156" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_bank}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="105" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "orc_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="156" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "bank_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="141" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_account}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="33" width="202" height="23"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_name}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="156" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "bank_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="120" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_fiscal_id}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="120" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "cif_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -262,6 +271,7 @@ from `invoices`
 				</textField>
 				<textField>
 					<reportElement style="default" x="330" y="56" width="192" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_address} + ", " + $F{recipient_postal}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -273,10 +283,12 @@ from `invoices`
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="105" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_serial}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="371" y="120" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_fiscal_id}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -288,50 +300,62 @@ from `invoices`
 				</textField>
 				<textField>
 					<reportElement style="default" x="20" y="86" width="192" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_country}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="120" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "cif_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="320" y="141" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "account_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="330" y="71" width="192" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_city} + ", jud. " + $F{recipient_county}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="371" y="141" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_account}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="330" y="86" width="192" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_country}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="20" y="71" width="192" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_city} + ", jud. " + $F{issuer_county}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="61" y="156" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_bank}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="141" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "account_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="20" y="56" width="192" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{issuer_address} + ", " + $F{issuer_postal}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="10" y="105" width="51" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_RESOURCE_BUNDLE}.getString( "orc_text" )]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement style="default" x="371" y="105" width="151" height="15"/>
+					<textElement/>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{recipient_serial}]]></textFieldExpression>
 				</textField>
 				<staticText>
@@ -475,44 +499,37 @@ from `invoices`
 		<band height="21" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="156" height="20"/>
-				<textElement>
-				</textElement>
+				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{detail_text}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="156" y="0" width="42" height="20"/>
-				<textElement textAlignment="Center">
-				</textElement>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{unit}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="198" y="0" width="71" height="20"/>
-				<textElement textAlignment="Center">
-				</textElement>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="269" y="0" width="71" height="20"/>
-				<textElement textAlignment="Right">
-				</textElement>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{unit_price}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="340" y="0" width="71" height="20"/>
-				<textElement textAlignment="Right">
-				</textElement>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{amount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="411" y="0" width="71" height="20"/>
-				<textElement textAlignment="Right">
-				</textElement>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{vat_amount}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00">
 				<reportElement x="484" y="0" width="71" height="20"/>
-				<textElement textAlignment="Right">
-				</textElement>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{detail_amount}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -521,8 +538,7 @@ from `invoices`
 		<band height="132">
 			<staticText>
 				<reportElement style="total" positionType="FixRelativeToBottom" x="0" y="3" width="131" height="50"/>
-				<textElement textAlignment="Left">
-				</textElement>
+				<textElement textAlignment="Left"/>
 				<text><![CDATA[Semnătura şi ştampila furnizorului]]></text>
 			</staticText>
 			<rectangle>
@@ -539,8 +555,7 @@ from `invoices`
 			</rectangle>
 			<staticText>
 				<reportElement style="total" positionType="FixRelativeToBottom" x="290" y="3" width="131" height="50"/>
-				<textElement textAlignment="Left">
-				</textElement>
+				<textElement textAlignment="Left"/>
 				<text><![CDATA[Semnătura şi ştampila beneficiarului]]></text>
 			</staticText>
 		</band>

@@ -1,17 +1,14 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * JInvoiceDetailsPanel.java
  *
  * Created on May 2, 2010, 1:25:40 PM
  */
 package com.google.code.reelcash.swing.invoices;
 
+import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataOperationMode;
 import com.google.code.reelcash.data.DataRow;
+import com.google.code.reelcash.data.documents.DocumentState;
 import com.google.code.reelcash.data.documents.InvoiceDetailNode;
 import com.google.code.reelcash.data.documents.InvoiceMediator;
 import com.google.code.reelcash.data.goods.GoodNode;
@@ -25,8 +22,6 @@ import com.google.code.reelcash.util.MsgBox;
 import java.awt.CardLayout;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.SpinnerNumberModel;
@@ -133,7 +128,7 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
             ((DataRowComboModel) getGoodsModel()).fill(
                     InvoiceMediator.getInstance().fetchAll(GoodNode.getInstance()));
             if (1 > ((DataRowComboModel) getGoodsModel()).getSize()) {
-                goodsCombo.setVisible(false);
+                goodsCombo.setEnabled(false);
             }
         } catch (SQLException e) {
             MsgBox.exception(e);
@@ -143,6 +138,9 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
     private void loadUnits() {
         try {
             ((DataRowComboModel) getUnitsModel()).fill(InvoiceMediator.getInstance().fetchAll(UnitNode.getInstance()));
+            if (1 > ((DataRowComboModel) getUnitsModel()).getSize()) {
+                throw new ReelcashException();
+            }
         } catch (SQLException e) {
             MsgBox.exception(e);
         }
@@ -203,6 +201,15 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
         invoiceId = value;
         putMasterInfo();
         loadDetails();
+        DocumentState state = InvoiceMediator.getInstance().getState(invoiceId);
+        switch (state) {
+            case ISSUED:
+            case RECEIVED:
+                createDetailButton.setEnabled(false);
+                editDetailButton.setEnabled(false);
+                deleteDetailButton.setEnabled(false);
+                break;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -654,12 +661,7 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
                     break;
                 case UPDATE:
                     DataRow detailRow = ((DataRowTableModel) getDetailsModel()).getRow(detailsTable.getSelectedRow());
-                    detailRow.setValue("good_id", goodId);
-                    detailRow.setValue("detail_text", desc);
-                    detailRow.setValue("unit_id", unitId);
-                    detailRow.setValue("quantity", qty);
-                    detailRow.setValue("unit_price", unitPrice);
-                    InvoiceMediator.getInstance().updateRow(InvoiceDetailNode.getInstance(), detailRow);
+                    InvoiceMediator.getInstance().updateInvoiceDetail(detailRow, qty, unitPrice);
                     break;
             }
 
