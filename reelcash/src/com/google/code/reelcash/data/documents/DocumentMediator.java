@@ -59,11 +59,33 @@ public class DocumentMediator extends QueryMediator {
     }
 
     public DocumentState getState(Integer stateId) {
-        for(Entry<DocumentState, Integer> entry: stateIds.entrySet()) {
-            if(stateId.equals(entry.getValue()))
+        for (Entry<DocumentState, Integer> entry : stateIds.entrySet()) {
+            if (stateId.equals(entry.getValue())) {
                 return entry.getKey();
+            }
         }
 
         throw new ReelcashException(DocumentResources.getString("unknown_state_id"));
+    }
+
+    /**
+     * Sets the state of a document to the given value.
+     *
+     * @param documentId the ID of the modified document.
+     * @param state the new state of the document.
+     */
+    public void setState(Integer documentId, DocumentState state) {
+        if (!stateIds.containsKey(state)) {
+            throw new ReelcashException(DocumentResources.getString("unknown_state"));
+        }
+        try {
+            beginTransaction();
+            execute("update documents set state_id = ? where id = ?",
+                    stateIds.get(state), documentId);
+            commit();
+        } catch (SQLException e) {
+            rollback();
+            throw new ReelcashException(e);
+        }
     }
 }

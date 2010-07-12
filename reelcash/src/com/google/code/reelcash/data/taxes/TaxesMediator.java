@@ -7,15 +7,15 @@ import com.google.code.reelcash.data.sql.QueryMediator;
 import java.sql.SQLException;
 
 /**
- * Provides custom operations for value added tax.
+ * Provides custom operations for taxes/excises.
  * @author cusi
  */
-public class VatMediator extends QueryMediator {
+public class TaxesMediator extends QueryMediator {
 
     private static final Object lockObj = new Object();
-    private static VatMediator instance;
+    private static TaxesMediator instance;
 
-    private VatMediator() {
+    private TaxesMediator() {
         super(ReelcashDataSource.getInstance());
     }
 
@@ -24,10 +24,10 @@ public class VatMediator extends QueryMediator {
      * 
      * @return the singleton instance of this class.
      */
-    public static VatMediator getInstance() {
+    public static TaxesMediator getInstance() {
         synchronized (lockObj) {
             if (null == instance) {
-                instance = new VatMediator();
+                instance = new TaxesMediator();
             }
         }
         return instance;
@@ -61,7 +61,7 @@ public class VatMediator extends QueryMediator {
      * @param vatId the ID of the VAT type.
      * @param isDefault whether the VAT type will be default or not.
      */
-    public void markDefault(Integer vatId, Boolean isDefault) {
+    public void setVatIsDefault(Integer vatId, Boolean isDefault) {
         try {
             Integer defCount = (Integer) executeScalar("select count(id) from vat_types where is_default=1;");
             if (isDefault.booleanValue() && 0 < defCount) {
@@ -69,6 +69,28 @@ public class VatMediator extends QueryMediator {
             }
 
             execute("update vat_types set is_default=? where id=?;", isDefault, vatId);
+        } catch (SQLException e) {
+            throw new ReelcashException(e);
+        }
+    }
+
+    /**
+     * Searches for the taxes which apply to a given good.
+     *
+     * @param goodId the good
+     * @return an array of data rows conforming to the TaxTypeNode's field list.
+     */
+    public DataRow[] getAppliedTaxesForGood(Integer goodId) {
+        try {
+            return fetch(TaxTypeNode.getInstance().getFieldList(), "select tt.* from tax_types tt inner join good_taxes gt on gt.tax_type_id=tt.id where gt.good_id=?", goodId);
+        } catch (SQLException e) {
+            throw new ReelcashException(e);
+        }
+    }
+
+    public DataRow[] getAppliedExcisesForGood(Integer goodId) {
+        try {
+            return fetch(ExciseTypeNode.getInstance().getFieldList(), "select et.* from excise_types et inner join good_excises ge on ge.excise_type_id = et.id where ge.good_id=?", goodId);
         } catch (SQLException e) {
             throw new ReelcashException(e);
         }

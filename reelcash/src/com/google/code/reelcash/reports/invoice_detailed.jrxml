@@ -49,13 +49,13 @@
     coalesce(`goods`.`name`, `invoice_details`.`detail_text`) as detail_text,
     `units`.`code` as unit,
     `invoice_details`.`quantity` as quantity,
-    `invoice_details`.`unit_price` as unit_price,
+    `invoice_details`.`unit_price` * coalesce(`exchange_rates`.`value`, 1) as unit_price,
     `invoice_details`.`vat_percent` as vat_percent,
-    `invoice_details`.`tax_amount` as tax_amount,
-    `invoice_details`.`excise_amount` as excise_amount,
-    `invoice_details`.`amount` as amount,
-    `invoice_details`.`vat_amount` as vat_amount,
-    `invoice_details`.`price` as detail_amount,
+    `invoice_details`.`tax_amount` * coalesce(`exchange_rates`.`value`, 1) as tax_amount,
+    `invoice_details`.`excise_amount` * coalesce(`exchange_rates`.`value`, 1) as excise_amount,
+    `invoice_details`.`amount` * coalesce(`exchange_rates`.`value`, 1) as amount,
+    `invoice_details`.`vat_amount` * coalesce(`exchange_rates`.`value`, 1) as vat_amount,
+    `invoice_details`.`price` * coalesce(`exchange_rates`.`value`, 1) as detail_amount,
     `currencies`.`code` as currency,
     coalesce(`exchange_rates`.`value`, 1) as exchange_rate,
     case `currencies`.`code` when 'RON' then '-' else '1 '||`currencies`.`code`||' = '|| cast(coalesce(`exchange_rates`.`value`, 1.00) as text) || ' RON' end as exchange_rate_text
@@ -457,6 +457,13 @@ from `invoices`
 					</textElement>
 					<text><![CDATA[Total:]]></text>
 				</staticText>
+				<textField>
+					<reportElement x="0" y="0" width="555" height="19"/>
+					<textElement>
+						<font isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{exchange_rate_text}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -537,13 +544,13 @@ from `invoices`
 	<pageFooter>
 		<band height="132">
 			<rectangle>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="277" height="120"/>
+				<reportElement positionType="FixRelativeToBottom" x="1" y="21" width="277" height="110"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement positionType="FixRelativeToBottom" x="277" y="3" width="278" height="120"/>
+				<reportElement positionType="FixRelativeToBottom" x="277" y="21" width="278" height="110"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>

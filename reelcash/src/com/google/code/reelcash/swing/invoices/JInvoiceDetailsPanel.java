@@ -5,6 +5,7 @@
  */
 package com.google.code.reelcash.swing.invoices;
 
+import com.google.code.reelcash.Log;
 import com.google.code.reelcash.ReelcashException;
 import com.google.code.reelcash.data.DataOperationMode;
 import com.google.code.reelcash.data.DataRow;
@@ -67,12 +68,20 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
     }
 
     private void putMasterInfo() {
-        DataRow row = InvoiceMediator.getInstance().getInvoiceInformation(invoiceId);
-        numberText.setText(row.getValue(0).toString());
-        dateIssuedText.setText(row.getValue(1).toString());
-        dateDueText.setText(row.getValue(2).toString());
-        issuerText.setText(row.getValue(3).toString());
-        recipientText.setText(row.getValue(4).toString());
+        try {
+            DataRow row = InvoiceMediator.getInstance().getInvoiceInformation(invoiceId);
+            numberText.setText(row.getValue(0).toString());
+            dateIssuedText.setText(row.getValue(1).toString());
+            dateDueText.setText(row.getValue(2).toString());
+            issuerText.setText(row.getValue(3).toString());
+            recipientText.setText(row.getValue(4).toString());
+        } catch (ReelcashException e) {
+            numberText.setText(e.getMessage());
+            dateIssuedText.setText("");
+            dateDueText.setText("");
+            issuerText.setText("");
+            recipientText.setText("");
+        }
     }
 
     private void clearDetailPanelData() {
@@ -116,9 +125,14 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
     }
 
     private void loadDetails() {
-        detailsModel.clearQuietly();
-        for (DataRow row : InvoiceMediator.getInstance().readInvoiceDetails(invoiceId)) {
-            detailsModel.add(row);
+        DataRow[] details = InvoiceMediator.getInstance().readInvoiceDetails(invoiceId);
+        if (1 > details.length) {
+            detailsModel.clear();
+        } else {
+            detailsModel.clearQuietly();
+            for (DataRow row : details) {
+                detailsModel.add(row);
+            }
         }
         operationMode = DataOperationMode.READ;
     }
@@ -144,6 +158,12 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
         } catch (SQLException e) {
             MsgBox.exception(e);
         }
+    }
+
+    private void setButtonsEnabled(boolean value) {
+        createDetailButton.setEnabled(value);
+        editDetailButton.setEnabled(value);
+        deleteDetailButton.setEnabled(value);
     }
 
     public TableCellRenderer getGoodCellRenderer() {
@@ -201,14 +221,20 @@ public class JInvoiceDetailsPanel extends javax.swing.JPanel {
         invoiceId = value;
         putMasterInfo();
         loadDetails();
-        DocumentState state = InvoiceMediator.getInstance().getState(invoiceId);
-        switch (state) {
-            case ISSUED:
-            case RECEIVED:
-                createDetailButton.setEnabled(false);
-                editDetailButton.setEnabled(false);
-                deleteDetailButton.setEnabled(false);
-                break;
+        try {
+            DocumentState state = InvoiceMediator.getInstance().getState(invoiceId);
+            switch (state) {
+                case ISSUED:
+                case RECEIVED:
+                    setButtonsEnabled(false);
+                    break;
+                default:
+                    setButtonsEnabled(true);
+                    break;
+            }
+        } catch (ReelcashException e) {
+            setButtonsEnabled(false);
+            Log.write().throwing(getClass().getName(), "setInvoiceId", e);
         }
     }
 

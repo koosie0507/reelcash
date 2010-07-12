@@ -9,7 +9,9 @@ import com.google.code.reelcash.data.layout.fields.FieldList;
 import com.google.code.reelcash.data.layout.fields.IntegerField;
 import com.google.code.reelcash.data.layout.fields.StringField;
 import com.google.code.reelcash.data.sql.QueryMediator;
-import com.google.code.reelcash.data.taxes.VatMediator;
+import com.google.code.reelcash.data.taxes.ExciseTypeNode;
+import com.google.code.reelcash.data.taxes.TaxTypeNode;
+import com.google.code.reelcash.data.taxes.TaxesMediator;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -115,7 +117,7 @@ public class InvoiceMediator extends QueryMediator {
         try {
             beginTransaction();
             if (null == goodId) {
-                DataRow defaultVatType = VatMediator.getInstance().getDefaultVatType();
+                DataRow defaultVatType = TaxesMediator.getInstance().getDefaultVatType();
                 BigDecimal vatPercent = (null == defaultVatType)
                         ? DEFAULT_VAT_PERCENT
                         : (BigDecimal) defaultVatType.getValue("percent");
@@ -135,45 +137,56 @@ public class InvoiceMediator extends QueryMediator {
             } else {
                 if (createRow(InvoiceDetailNode.getInstance().getName(), invoiceDetail)) {
                     invoiceDetail.setValue(0, executeScalar("select last_insert_rowid();"));
+                    Number ret = (Number) executeScalar("select vt.percent from vat_types vt inner join goods g on vt.id=g.vat_type_id where g.id=?", goodId);
+                    BigDecimal vatPercent = BigDecimal.valueOf(ret.doubleValue());
+                    BigDecimal basicPrice = quantity.multiply(unitPrice);
+
+                    // compute applied taxes
+                    DataRow[] taxes = TaxesMediator.getInstance().getAppliedTaxesForGood(goodId);
+                    BigDecimal taxAmount = BigDecimal.ZERO;
+                    for (DataRow tax : taxes) {
+                        boolean isPercent = ((Boolean) tax.getValue(TaxTypeNode.IS_PERCENT_FIELD)).booleanValue();
+                        BigDecimal taxValue = (BigDecimal) tax.getValue(TaxTypeNode.VALUE_FIELD);
+
+                        if (isPercent) {
+                            taxValue = taxValue.multiply(basicPrice);
+                        }
+
+                        taxAmount = taxAmount.add(taxValue);
+                        execute("insert into invoice_detail_taxes(invoice_detail_id, tax_code, amount) values(?, ?, ?);",
+                                invoiceDetail.getValue(0), tax.getValue(TaxTypeNode.CODE_FIELD), taxValue);
+                    }
+
+                    // compute applied excises
+                    BigDecimal exciseAmount = BigDecimal.ZERO;
+                    DataRow[] excises = TaxesMediator.getInstance().getAppliedExcisesForGood(goodId);
+                    for (DataRow excise : excises) {
+                        boolean isPercent = ((Boolean) excise.getValue(ExciseTypeNode.IS_PERCENT_FIELD)).booleanValue();
+                        BigDecimal exciseValue = (BigDecimal) excise.getValue(ExciseTypeNode.VALUE_FIELD);
+                        if (isPercent) {
+                            exciseValue = exciseValue.multiply(basicPrice);
+                        }
+
+                        exciseAmount = exciseAmount.add(exciseValue);
+                        execute("insert into invoice_detail_excises(invoice_detail_id, excise_code, amount) values(?, ?, ?);",
+                                invoiceDetail.getValue(0), excise.getValue(ExciseTypeNode.CODE_FIELD), exciseValue);
+                    }
+
+                    // compute totals on detail
+                    invoiceDetail.setValue(8,taxAmount);
+                    invoiceDetail.setValue(9, exciseAmount);
+                    BigDecimal amount = basicPrice.add(taxAmount).add(exciseAmount);
+                    invoiceDetail.setValue(10, amount);
+                    invoiceDetail.setValue(11, vatPercent);
+                    BigDecimal vatAmount = amount.multiply(vatPercent);
+                    invoiceDetail.setValue(12, vatAmount);
+                    invoiceDetail.setValue(13, amount.add(vatAmount));
+
+                    // persist the data row
+                    updateRow(InvoiceDetailNode.getInstance(), invoiceDetail);
+
+                    // invoice totals are updated with triggers
                 }
-                Object ret = executeScalar("select vt.percent from vat_types vt inner join goods g on vt.id=g.vat_type_id where g.id=?", goodId);
-                BigDecimal vatPercent = BigDecimal.valueOf(((Number) ret).doubleValue());
-                BigDecimal basicPrice = quantity.multiply(unitPrice);
-
-                // compute applied taxes
-                DataRow[] taxes = fetch("select tt.code, tt.is_percent, tt.value from tax_types tt inner join good_taxes gt on gt.tax_type_id=tt.id where gt.good_id=?", goodId);
-                for (DataRow tax : taxes) {
-                    BigDecimal taxValue = (0 == ((Number) tax.getValue(1)).intValue())
-                            ? BigDecimal.valueOf(((Number) tax.getValue(2)).doubleValue())
-                            : BigDecimal.valueOf(((Number) tax.getValue(2)).doubleValue()).multiply(basicPrice);
-
-                    execute("insert into invoice_detail_taxes(invoice_detail_id, tax_code, amount) values(?, ?, ?);",
-                            invoiceDetail.getValue(0), tax.getValue(0), taxValue);
-                }
-
-                // compute applied excises
-                DataRow[] excises = fetch("select et.code, et.is_percent, et.value from excise_types et inner join good_excises ge on ge.excise_type_id = et.id where ge.good_id=?", goodId);
-                for (DataRow excise : excises) {
-                    BigDecimal exciseValue = (0 == ((Number) excise.getValue(1)).intValue())
-                            ? BigDecimal.valueOf(((Number) excise.getValue(2)).doubleValue())
-                            : BigDecimal.valueOf(((Number) excise.getValue(2)).doubleValue()).multiply(basicPrice);
-                    execute("insert into invoice_detail_excises(invoice_detail_id, excise_code, amount) values(?, ?, ?);",
-                            invoiceDetail.getValue(0), excise.getValue(0), exciseValue);
-                }
-
-                // compute totals on detail
-                Number buf = (Number) executeScalar("select sum(amount) from invoice_detail_taxes where invoice_detail_id=?;", invoiceDetail.getValue(0));
-                BigDecimal taxAmount = BigDecimal.valueOf((null == buf) ? 0 : buf.doubleValue());
-                buf = (Number) executeScalar("select sum(amount) from invoice_detail_excises where invoice_detail_id=?;", invoiceDetail.getValue(0));
-                BigDecimal exciseAmount = BigDecimal.valueOf(null == buf ? 0 : buf.doubleValue());
-                execute("update invoice_details set tax_amount=?, excise_amount=? where id=?;",
-                        taxAmount, exciseAmount, invoiceDetail.getValue(0));
-                execute("update invoice_details set amount=tax_amount+excise_amount+(unit_price*quantity), vat_percent=? where id=?;",
-                        vatPercent, invoiceDetail.getValue(0));
-                execute("update invoice_details set vat_amount=vat_percent*amount, price=amount*(1+vat_percent) where id=?",
-                        invoiceDetail.getValue(0));
-
-                // compute invoice totals
             }
             commit();
             return invoiceDetail;
