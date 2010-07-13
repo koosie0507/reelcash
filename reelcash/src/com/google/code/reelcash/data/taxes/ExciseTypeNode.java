@@ -16,21 +16,27 @@ public class ExciseTypeNode extends FlatLayoutNode {
     private static final String TABLE_NAME = "excise_types";
     private static final Object SYNC_ROOT = new Object();
     private static ExciseTypeNode instance;
+    public static final String ID_FIELD = "id";
+    public static final String CODE_FIELD = "code";
+    public static final String NAME_FIELD = "name";
+    public static final String IS_PERCENT_FIELD = "is_percent";
+    public static final String VALUE_FIELD = "value";
 
     private ExciseTypeNode() {
         super(TABLE_NAME);
 
-        getFieldList().add(new IntegerField("id", KeyRole.PRIMARY, true));
-        getFieldList().add(new StringField("code", KeyRole.UNIQUE, true));
-        getFieldList().add(new StringField("name", KeyRole.NONE, false));
-        getFieldList().add(new BooleanField("is_percent", KeyRole.NONE, false));
-        getFieldList().add(new BigDecimalField("value", KeyRole.NONE, true, 9, 2));
+        getFieldList().add(new IntegerField(ID_FIELD, KeyRole.PRIMARY, true));
+        getFieldList().add(new StringField(CODE_FIELD, KeyRole.UNIQUE, true));
+        getFieldList().add(new StringField(NAME_FIELD, KeyRole.NONE, false));
+        getFieldList().add(new BooleanField(IS_PERCENT_FIELD, KeyRole.NONE, false));
+        getFieldList().add(new BigDecimalField(VALUE_FIELD, KeyRole.NONE, true, 9, 2));
     }
 
     public static ExciseTypeNode getInstance() {
         synchronized (SYNC_ROOT) {
-            if (null == instance)
+            if (null == instance) {
                 instance = new ExciseTypeNode();
+            }
         }
         return instance;
     }

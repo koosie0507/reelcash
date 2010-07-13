@@ -140,7 +140,7 @@ public final class ReportingUtils {
     public static JasperPrint fillInvoice(JasperReport report, int invoiceId, DataSource dataSource) {
         try {
             HashMap map = new HashMap();
-            map.put("INVOICEID", invoiceId);
+            map.put("INVOICE_ID", invoiceId);
             map.put("SUBREPORT_DIR", reportsDir);
             File f = new File(getReportPath("invoice_detailed.jasper"));
             return JasperFillManager.fillReport(f.getPath(), map, dataSource.getConnection());
