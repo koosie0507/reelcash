@@ -38,6 +38,7 @@ public class VatTypesPanel extends JRegistryPanel {
             addFieldDisplayInfo(node.getCodeField());
             addFieldDisplayInfo(node.getNameField());
             addFieldDisplayInfo(node.getPercentField());
+            addFieldDisplayInfo(node.getIsDefaultField());
         }
 
         @Override

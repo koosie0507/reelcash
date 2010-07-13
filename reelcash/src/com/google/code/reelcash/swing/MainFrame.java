@@ -2,9 +2,7 @@ package com.google.code.reelcash.swing;
 
 import com.google.code.reelcash.actions.ExitAction;
 import com.google.code.reelcash.swing.invoices.JInvoicesPanel;
-import com.google.code.reelcash.util.ScreenUtils;
-import java.awt.BorderLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 
 /**
  *
@@ -27,8 +25,9 @@ public class MainFrame extends javax.swing.JFrame {
      * @return
      */
     public static MainFrame getInstance() {
-        if (null == instance)
+        if (null == instance) {
             instance = new MainFrame();
+        }
         return instance;
     }
 
@@ -43,73 +42,51 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainMenu = new javax.swing.JMenuBar();
         appMenu = new javax.swing.JMenu();
-        registryItem = new javax.swing.JMenuItem();
-        regQuitSeparator = new javax.swing.JPopupMenu.Separator();
+        registriesItem = new javax.swing.JMenuItem();
+        regToQuitSep = new javax.swing.JPopupMenu.Separator();
         quitItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        usersGuideItem = new javax.swing.JMenuItem();
-        aboutItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("com/google/code/reelcash/swing/resources"); // NOI18N
         setTitle(bundle.getString("MainFrame_title")); // NOI18N
         setName("mainFrame"); // NOI18N
 
-        appMenu.setText("File");
+        appMenu.setText(Resources.getString("MainFrame_appMenu_text")); // NOI18N
 
-        registryItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
-        registryItem.setMnemonic('r');
-        registryItem.setText(Resources.getString("registryItem_text")); // NOI18N
-        registryItem.addActionListener(new java.awt.event.ActionListener() {
+        registriesItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, java.awt.event.InputEvent.CTRL_MASK));
+        registriesItem.setMnemonic('r');
+        registriesItem.setText(Resources.getString("MainFrame_registriesItem_text")); // NOI18N
+        registriesItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                registryItemActionPerformed(evt);
+                onEditRegistriesRequested(evt);
             }
         });
-        appMenu.add(registryItem);
-        registryItem.getAccessibleContext().setAccessibleName("Edit registries");
-
-        appMenu.add(regQuitSeparator);
+        appMenu.add(registriesItem);
+        appMenu.add(regToQuitSep);
 
         quitItem.setAction(new ExitAction(0));
-        quitItem.setMnemonic('q');
-        quitItem.setText(Resources.getString("quitItem_text")); // NOI18N
-        quitItem.setToolTipText(Resources.getString("quitItem_tooltip")); // NOI18N
+        quitItem.setText(Resources.getString("MainFrame_quitItem_text")); // NOI18N
         appMenu.add(quitItem);
 
         mainMenu.add(appMenu);
-
-        helpMenu.setText("Edit");
-
-        usersGuideItem.setText("jMenuItem1");
-        helpMenu.add(usersGuideItem);
-
-        aboutItem.setText("jMenuItem1");
-        helpMenu.add(aboutItem);
-
-        mainMenu.add(helpMenu);
 
         setJMenuBar(mainMenu);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void registryItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registryItemActionPerformed
-        JFrame registryFrame = new JFrame("Registry");
-        registryFrame.setLayout(new BorderLayout());
-        registryFrame.add(JRegistriesPanel.getInstance(), BorderLayout.CENTER);
-        ScreenUtils.computeMinimumSize(registryFrame);
-        ScreenUtils.centerWindowOnScreen(registryFrame);
-        registryFrame.setVisible(true);
-    }//GEN-LAST:event_registryItemActionPerformed
-
+    private void onEditRegistriesRequested(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onEditRegistriesRequested
+        JDialog dialog = new JDialog(this, Resources.getString("MainFrame_title"), true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.add(JRegistriesPanel.getInstance());
+        dialog.pack();
+        dialog.setVisible(true);
+    }//GEN-LAST:event_onEditRegistriesRequested
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutItem;
     private javax.swing.JMenu appMenu;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem quitItem;
-    private javax.swing.JPopupMenu.Separator regQuitSeparator;
-    private javax.swing.JMenuItem registryItem;
-    private javax.swing.JMenuItem usersGuideItem;
+    private javax.swing.JPopupMenu.Separator regToQuitSep;
+    private javax.swing.JMenuItem registriesItem;
     // End of variables declaration//GEN-END:variables
 }

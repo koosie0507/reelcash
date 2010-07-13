@@ -9,54 +9,30 @@
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="registryItem">
+            <MenuItem class="javax.swing.JMenuItem" name="registriesItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+R"/>
+                  <KeyStroke key="Ctrl+F10"/>
                 </Property>
                 <Property name="mnemonic" type="int" value="114"/>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="com/google/code/reelcash/swing/resources.properties" key="registryItem_text" replaceFormat="Resources.getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="com/google/code/reelcash/swing/resources.properties" key="MainFrame_registriesItem_text" replaceFormat="Resources.getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
-              <AccessibilityProperties>
-                <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Edit registries"/>
-              </AccessibilityProperties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="registryItemActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="onEditRegistriesRequested"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JPopupMenu$Separator" name="regQuitSeparator">
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="regToQuitSep">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="quitItem">
               <Properties>
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="new ExitAction(0)" type="code"/>
                 </Property>
-                <Property name="mnemonic" type="int" value="113"/>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="com/google/code/reelcash/swing/resources.properties" key="quitItem_text" replaceFormat="Resources.getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="com/google/code/reelcash/swing/resources.properties" key="MainFrame_quitItem_text" replaceFormat="Resources.getString(&quot;{key}&quot;)"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="com/google/code/reelcash/swing/resources.properties" key="quitItem_tooltip" replaceFormat="Resources.getString(&quot;{key}&quot;)"/>
-                </Property>
-              </Properties>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="helpMenu">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="usersGuideItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="jMenuItem1"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="aboutItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="jMenuItem1"/>
               </Properties>
             </MenuItem>
           </SubComponents>

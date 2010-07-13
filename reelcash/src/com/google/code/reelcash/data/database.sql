@@ -362,6 +362,7 @@ create table if not exists `vat_types` (
     `code` text not null,
     `name` text,
     `percent` decimal(3,2) not null,
+    `is_default` bit not null default(0),
     constraint uq_code unique(`code`)
 );
 

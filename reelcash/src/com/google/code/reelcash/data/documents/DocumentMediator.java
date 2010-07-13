@@ -19,9 +19,9 @@ public class DocumentMediator extends QueryMediator {
     private DocumentMediator() {
         super(ReelcashDataSource.getInstance());
         stateIds = new HashMap<DocumentState, Integer>(3);
-        stateIds.put(DocumentState.NEW, null);
-        stateIds.put(DocumentState.ISSUED, null);
-        stateIds.put(DocumentState.RECEIVED, null);
+        stateIds.put(DocumentState.NEW, new Integer(1));
+        stateIds.put(DocumentState.ISSUED, new Integer(2));
+        stateIds.put(DocumentState.RECEIVED, new Integer(3));
     }
 
     public static DocumentMediator getInstance() {
@@ -56,5 +56,36 @@ public class DocumentMediator extends QueryMediator {
 
     public Integer getStateId(DocumentState state) {
         return stateIds.get(state);
+    }
+
+    public DocumentState getState(Integer stateId) {
+        for (Entry<DocumentState, Integer> entry : stateIds.entrySet()) {
+            if (stateId.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+
+        throw new ReelcashException(DocumentResources.getString("unknown_state_id"));
+    }
+
+    /**
+     * Sets the state of a document to the given value.
+     *
+     * @param documentId the ID of the modified document.
+     * @param state the new state of the document.
+     */
+    public void setState(Integer documentId, DocumentState state) {
+        if (!stateIds.containsKey(state)) {
+            throw new ReelcashException(DocumentResources.getString("unknown_state"));
+        }
+        try {
+            beginTransaction();
+            execute("update documents set state_id = ? where id = ?",
+                    stateIds.get(state), documentId);
+            commit();
+        } catch (SQLException e) {
+            rollback();
+            throw new ReelcashException(e);
+        }
     }
 }
