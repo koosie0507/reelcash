@@ -223,6 +223,7 @@ public class JInvoiceWizard extends javax.swing.JDialog {
                         documentId = (Integer) mediator.executeScalar("select last_insert_rowid();");
                     }
                     mediator.commit();
+                    invoiceParamsPage.setDocumentId(documentId);
                     prevPageButton.setEnabled(false);
                 } catch (SQLException e) {
                     mediator.rollback();

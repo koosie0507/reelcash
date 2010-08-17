@@ -557,7 +557,7 @@ select
 from `businesses`
     inner join `locations` on `locations`.`id` = `businesses`.`location_id`
     inner join `cities` on `cities`.`id` = `locations`.`city_id`
-    inner join `counties` on `counties`.`id` = `cities`.`id`
+    inner join `counties` on `counties`.`id` = `cities`.`county_id`
     inner join `regions` on `regions`.`id` = `counties`.`region_id`
     inner join `countries` on `countries`.`id` = `regions`.`country_id`
     inner join `bank_accounts` on `bank_accounts`.`id` = `businesses`.`bank_account_id`
