@@ -4,6 +4,7 @@
  */
 package com.google.code.reelcash.data.sql;
 
+import com.google.code.reelcash.Log;
 import com.google.code.reelcash.data.DataRow;
 import com.google.code.reelcash.data.KeyRole;
 import com.google.code.reelcash.data.layout.DataLayoutNode;
@@ -386,6 +387,7 @@ public class QueryMediator {
      */
     public DataRow[] fetch(String sql, Object... params) throws SQLException {
         PreparedStatement select = getConnection().prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        Log.write().entering(getClass().getName(), "fetch", sql);
         ResultSet rs = null;
         ArrayList<DataRow> rows = new ArrayList<DataRow>();
         try {
@@ -416,6 +418,7 @@ public class QueryMediator {
         DataRow[] array = new DataRow[rows.size()];
         rows.toArray(array);
         rows = null;
+        Log.write().exiting(getClass().getName(), "fetch", sql);
         return array;
     }
 
