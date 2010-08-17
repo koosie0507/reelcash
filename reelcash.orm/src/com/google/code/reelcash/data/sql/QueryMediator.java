@@ -392,7 +392,10 @@ public class QueryMediator {
         ArrayList<DataRow> rows = new ArrayList<DataRow>();
         try {
             for (int i = params.length; i > 0; i--) {
-                select.setObject(i, params[i - 1]);
+                if(params[i-1] instanceof java.sql.Date) {
+                    select.setString(i, params[i-1].toString());
+                }
+                else select.setObject(i, params[i - 1]);
             }
             rs = select.executeQuery();
             ResultSetMetaData meta = rs.getMetaData();
