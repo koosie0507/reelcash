@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2010-08-18T20:31:09</date>
+  <millis>1282152669246</millis>
+  <sequence>0</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.model.DataRowComboModel</class>
+  <method>remove</method>
+  <thread>10</thread>
+  <message>blana mare</message>
+</record>
+<record>
+  <date>2010-08-18T20:31:25</date>
+  <millis>1282152685178</millis>
+  <sequence>1</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>select exchange_rates.id, currencies.code, exchange_rates.value from exchange_rates inner join currencies on currencies.id = exchange_rates.currency_id where (currency_id=?) and (bank_id=?) and ((? between start_date and end_date) or permanent=1)</message>
+</record>
+<record>
+  <date>2010-08-18T20:31:25</date>
+  <millis>1282152685185</millis>
+  <sequence>2</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>4</message>
+</record>
+<record>
+  <date>2010-08-18T20:31:25</date>
+  <millis>1282152685191</millis>
+  <sequence>3</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>1</message>
+</record>
+<record>
+  <date>2010-08-18T20:31:25</date>
+  <millis>1282152685191</millis>
+  <sequence>4</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>2010-07-19</message>
+</record>
+<record>
+  <date>2010-08-18T20:34:07</date>
+  <millis>1282152847464</millis>
+  <sequence>5</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.model.DataRowComboModel</class>
+  <method>remove</method>
+  <thread>10</thread>
+  <message>blana mare</message>
+</record>
+<record>
+  <date>2010-08-18T20:34:21</date>
+  <millis>1282152861296</millis>
+  <sequence>6</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>select exchange_rates.id, currencies.code, exchange_rates.value from exchange_rates inner join currencies on currencies.id = exchange_rates.currency_id where (currency_id=?) and (bank_id=?) and ((? between start_date and end_date) or permanent=1)</message>
+</record>
+<record>
+  <date>2010-08-18T20:34:21</date>
+  <millis>1282152861303</millis>
+  <sequence>7</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>4</message>
+</record>
+<record>
+  <date>2010-08-18T20:34:21</date>
+  <millis>1282152861304</millis>
+  <sequence>8</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>1</message>
+</record>
+<record>
+  <date>2010-08-18T20:34:21</date>
+  <millis>1282152861304</millis>
+  <sequence>9</sequence>
+  <logger>com.google.code.reelcash</logger>
+  <level>WARNING</level>
+  <class>com.google.code.reelcash.swing.invoices.JInvoiceParamsPanel</class>
+  <method>computeExchangeRate</method>
+  <thread>10</thread>
+  <message>2010-07-19</message>
+</record>
+</log>
