@@ -203,7 +203,7 @@ public class JInvoiceWizard extends javax.swing.JDialog {
     private void nextPageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextPageButtonActionPerformed
         if (currentPageIndex >= pages.length - 1) // save the invoice ...
         {
-            
+            setVisible(false);
             return;
         }
         if ("document".equals(pages[currentPageIndex]) && null == documentId) {
