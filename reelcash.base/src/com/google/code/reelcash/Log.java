@@ -25,8 +25,8 @@ public final class Log {
         try {
             DateFormat format = new SimpleDateFormat("yyyyMMdd");
             java.util.Date now = new java.util.Date(java.util.Calendar.getInstance().getTimeInMillis());
-            fh = new FileHandler(String.format("%s%sreelcash_%s.log",
-                    SysUtils.getHome(), SysUtils.getFileSeparator(), format.format(now)));
+            fh = new FileHandler(String.format("%sreelcash_%s.log",
+                    SysUtils.getAppHome(), format.format(now)));
         }
         catch (IOException e) {
             fh = null;
