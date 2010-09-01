@@ -16,7 +16,7 @@ import javax.swing.event.ListDataListener;
  * @author cusi
  */
 public class DataRowComboModel implements ComboBoxModel {
-
+    private static final Object SYNC_ROOT = new Object();
     private final ArrayList<DataRow> data;
     private final ArrayList<ListDataListener> listeners;
     private int valueMemberIndex;
@@ -138,9 +138,11 @@ public class DataRowComboModel implements ComboBoxModel {
     }
 
     public void remove(DataRow row) {
-        if(!data.remove(row)) {
-            Log.write().warning("blana mare");
+        // this method returns false only if the value is not found
+        synchronized(SYNC_ROOT) {
+            data.remove(row);
         }
+        // which is okay, because someone might have removed it on another thread
     }
 
     public void remove(int idx) {

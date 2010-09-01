@@ -4,6 +4,7 @@
  */
 package com.google.code.reelcash;
 
+import com.google.code.reelcash.util.SysUtils;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,7 +25,8 @@ public final class Log {
         try {
             DateFormat format = new SimpleDateFormat("yyyyMMdd");
             java.util.Date now = new java.util.Date(java.util.Calendar.getInstance().getTimeInMillis());
-            fh = new FileHandler(String.format("reelcash_%s.log", format.format(now)));
+            fh = new FileHandler(String.format("%s%sreelcash_%s.log",
+                    SysUtils.getHome(), SysUtils.getFileSeparator(), format.format(now)));
         }
         catch (IOException e) {
             fh = null;
