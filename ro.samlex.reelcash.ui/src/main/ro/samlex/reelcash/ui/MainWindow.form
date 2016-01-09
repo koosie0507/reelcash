@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ro.samlex.reelcash.ui.MainWindow">
+  <grid id="27dc6" binding="contentPane" layout-manager="CardLayout" hgap="0" vgap="0" show="1e823">
+    <constraints>
+      <xy x="20" y="20" width="640" height="521"/>
+    </constraints>
+    <properties>
+      <minimumSize width="640" height="480"/>
+      <preferredSize width="640" height="480"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="1e823" binding="pnlFirstTimeWelcome" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <card name="FirstTimeUsage"/>
+        </constraints>
+        <properties>
+          <minimumSize width="640" height="480"/>
+        </properties>
+        <border type="empty" title="Welcome to the Reelcash invoicing application!" title-justification="1" title-position="2">
+          <font size="22" style="1"/>
+        </border>
+        <children>
+          <grid id="87021" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints border-constraint="South"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="6698a" class="javax.swing.JButton" binding="btnAddCompanyData">
+                <constraints/>
+                <properties>
+                  <actionCommand value="EnterData"/>
+                  <label value="Enter Data"/>
+                  <text value="Enter Data"/>
+                  <toolTipText value="Enter your company data"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <component id="a5434" class="javax.swing.JTextPane" default-binding="true">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <autoscrolls value="false"/>
+              <editable value="false"/>
+              <enabled value="true"/>
+              <focusCycleRoot value="false"/>
+              <focusable value="false"/>
+              <margin top="32" left="32" bottom="32" right="32"/>
+              <requestFocusEnabled value="false"/>
+              <text value="In order to start using the application you will have to supply your company's information.&#10;&#10;By doing so you will be able to invoice others without entering your information again."/>
+              <verifyInputWhenFocusTarget value="false"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="dcba8" binding="pnlEnterCompanyData" layout-manager="GridBagLayout">
+        <constraints>
+          <card name="EnterCompanyData"/>
+        </constraints>
+        <properties/>
+        <border type="empty" title="Enter Company Data" title-justification="1" title-position="2">
+          <font size="22" style="1"/>
+          <title-color color="-4473925"/>
+        </border>
+        <children>
+          <component id="19651" class="javax.swing.JTextField" binding="txtName">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <toolTipText value="What's your company called (legally)"/>
+            </properties>
+          </component>
+          <component id="bfbb9" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="19651"/>
+              <text value="Company &amp;name:"/>
+            </properties>
+          </component>
+          <component id="827f8" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="eb7b2"/>
+              <text value="Street &amp;address:"/>
+            </properties>
+          </component>
+          <component id="b15bf" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="7b5bf"/>
+              <text value="&amp;Location:"/>
+            </properties>
+          </component>
+          <component id="7b5bf" class="javax.swing.JTextField" binding="txtSettlementName">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <preferredSize width="160" height="23"/>
+              <toolTipText value="City, town, village or settlement where your company is headquartered"/>
+            </properties>
+          </component>
+          <component id="5d917" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="2842f"/>
+              <text value="&amp;Country:"/>
+            </properties>
+          </component>
+          <component id="2842f" class="javax.swing.JTextField" binding="txtCountry">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <minimumSize width="120" height="23"/>
+              <preferredSize width="120" height="23"/>
+              <toolTipText value="Country where the company is registered"/>
+            </properties>
+          </component>
+          <component id="65493" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="4c0e2"/>
+              <text value="Postal C&amp;ode:"/>
+            </properties>
+          </component>
+          <component id="4c0e2" class="javax.swing.JTextField" binding="txtPostalCode">
+            <constraints>
+              <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <preferredSize width="80" height="23"/>
+              <toolTipText value="Postal code (if any)"/>
+            </properties>
+          </component>
+          <component id="2de57" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="53c25"/>
+              <text value="&amp;Region:"/>
+            </properties>
+          </component>
+          <component id="53c25" class="javax.swing.JTextField" binding="txtRegion">
+            <constraints>
+              <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <preferredSize width="120" height="23"/>
+              <toolTipText value="Region (such as the county or district)"/>
+            </properties>
+          </component>
+          <component id="eb7b2" class="javax.swing.JTextField" binding="txtAddress">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <toolTipText value="Street address where the company is headquartered"/>
+            </properties>
+          </component>
+          <component id="16613" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="2fb98"/>
+              <text value="&amp;Fiscal identification:"/>
+            </properties>
+          </component>
+          <component id="2fb98" class="javax.swing.JTextField" binding="txtFiscalNumber">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <preferredSize width="100" height="23"/>
+              <toolTipText value="Postal code (if any)"/>
+            </properties>
+          </component>
+          <component id="19a10" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="97b5e"/>
+              <text value="Comme&amp;rcial identification:"/>
+            </properties>
+          </component>
+          <component id="97b5e" class="javax.swing.JTextField" binding="txtCommercialNumber">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <preferredSize width="100" height="23"/>
+              <toolTipText value="Postal code (if any)"/>
+            </properties>
+          </component>
+          <component id="a256" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="7b7f5"/>
+              <text value="&amp;Bank:"/>
+            </properties>
+          </component>
+          <component id="7b7f5" class="javax.swing.JTextField" binding="txtBankName">
+            <constraints>
+              <grid row="6" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <toolTipText value="Street address where the company is headquartered"/>
+            </properties>
+          </component>
+          <component id="32166" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="4"/>
+              <horizontalTextPosition value="4"/>
+              <labelFor value="283f6"/>
+              <text value="Acco&amp;unt Number:"/>
+            </properties>
+          </component>
+          <component id="283f6" class="javax.swing.JTextField" binding="txtBankAccount">
+            <constraints>
+              <grid row="7" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="8" left="4" bottom="4" right="8" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <toolTipText value="Street address where the company is headquartered"/>
+            </properties>
+          </component>
+          <grid id="be7c0" layout-manager="FlowLayout" hgap="8" vgap="5" flow-align="2">
+            <constraints>
+              <grid row="8" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag top="16" left="16" bottom="16" right="16" weightx="0.0" weighty="1.0"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="ce659" class="javax.swing.JButton" binding="btnSaveCompanyInformation">
+                <constraints/>
+                <properties>
+                  <actionCommand value="Save"/>
+                  <text value="&amp;Save"/>
+                  <toolTipText value="Save the company information for later use"/>
+                </properties>
+              </component>
+              <component id="38b01" class="javax.swing.JButton" binding="exitButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <label value="Exit"/>
+                  <text value="E&amp;xit"/>
+                  <toolTipText value="Exit the application"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

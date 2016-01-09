@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/reelcash/reelcash.iml" filepath="$PROJECT_DIR$/reelcash/reelcash.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ro.samlex.reelcash/reelcash.base.iml" filepath="$PROJECT_DIR$/ro.samlex.reelcash/reelcash.base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ro.samlex.reelcash/ro.samlex.reelcash.iml" filepath="$PROJECT_DIR$/ro.samlex.reelcash/ro.samlex.reelcash.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ro.samlex.reelcash.ui/ro.samlex.reelcash.ui.iml" filepath="$PROJECT_DIR$/ro.samlex.reelcash.ui/ro.samlex.reelcash.ui.iml" />
     </modules>
   </component>
 </project>
