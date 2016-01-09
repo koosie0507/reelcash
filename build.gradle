@@ -11,10 +11,6 @@ subprojects {
         mavenCentral()
     }
 
-    dependencies {
-        testCompile 'junit:junit:4+'
-    }
-
     jar {
         manifest.attributes provider: 'gradle'
     }
