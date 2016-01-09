@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="CommonsDigester">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/reelcash/lib/CommonsDigester/commons-digester-2.0-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/reelcash/lib/CommonsDigester/commons-digester-2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/reelcash/lib/CommonsDigester/commons-digester-2.0-sources.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

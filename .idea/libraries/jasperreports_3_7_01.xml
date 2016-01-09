@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jasperreports-3.7.01">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/reelcash/lib/JasperReports/jasperreports-3.7.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
