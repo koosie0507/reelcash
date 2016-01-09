@@ -1,0 +1,21 @@
+group = 'ro.samlex'
+
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    sourceCompatibility = 1.7
+    version = '0.9-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile 'junit:junit:4+'
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+}

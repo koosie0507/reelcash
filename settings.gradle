@@ -1,0 +1,3 @@
+rootProject.name = 'reelcash'
+
+include "data-access", "ui"
