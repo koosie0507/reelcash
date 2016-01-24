@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import ro.samlex.reelcash.SysUtils;
 
 public class InvoiceStreamFactory extends StreamFactory {
-    private static final String DIR_PATH;
+    public static final String DIR_PATH;
     
     static {
         DIR_PATH = SysUtils.createPath(

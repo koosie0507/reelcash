@@ -1,7 +1,6 @@
 package ro.samlex.reelcash.ui.components;
 
 import javax.swing.table.TableModel;
-import org.joda.time.LocalDate;
 import ro.samlex.reelcash.Application;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
@@ -14,7 +13,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
     public Invoice createInvoice() {
         final Invoice result = new Invoice();
         result.setNumber((Integer)numberSpinner.getModel().getValue());
-        result.setDate(LocalDate.fromDateFields((java.util.Date)dateSpinner.getModel().getValue()));
+        result.setDate((java.util.Date)dateSpinner.getModel().getValue());
         result.setEmitter(Application.getInstance().getCompany());
         result.setRecipient(invoicedContactPanel.createParty());
         TableModel model = invoiceDetailsTable.getModel();

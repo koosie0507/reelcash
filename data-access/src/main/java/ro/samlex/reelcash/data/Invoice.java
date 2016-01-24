@@ -1,20 +1,20 @@
 package ro.samlex.reelcash.data;
 
 import com.google.gson.Gson;
-import org.joda.time.LocalDate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class Invoice {
     private UUID uuid = UUID.randomUUID();
     private Integer number;
-    private LocalDate date;
+    private Date date;
     private Party recipient;
     private Party emitter;
     private List<InvoiceItem> invoicedItems = new ArrayList<>();
@@ -71,11 +71,11 @@ public class Invoice {
         }
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
