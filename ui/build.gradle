@@ -1,3 +1,7 @@
+apply plugin: 'application'
+
 dependencies {
     compile project(':data-access')
 }
+
+mainClassName = "ro.samlex.reelcash.Application"

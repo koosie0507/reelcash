@@ -1,0 +1,83 @@
+package ro.samlex.reelcash.data;
+
+import com.google.gson.Gson;
+import org.joda.time.LocalDate;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+public class Invoice {
+    private UUID uuid = UUID.randomUUID();
+    private Party recipient;
+    private Party emitter;
+    private LocalDate date;
+    private List<InvoiceItem> invoicedItems = new ArrayList<>();
+    
+    public Party getEmitter() {
+        return emitter;
+    }
+
+    public Party getRecipient() {
+        return recipient;
+    }
+
+    public List<InvoiceItem> getInvoicedItems() {
+        return invoicedItems;
+    }
+
+    public void setEmitter(Party value) {
+        if (value == null) {
+            throw new NullPointerException("Invoice.setEmitter: new emitter is null");
+        }
+        this.emitter = value;
+    }
+
+    public void setRecipient(Party value) {
+        if (value == null) {
+            throw new NullPointerException("Invoice.setRecipient: new recipient is null");
+        }
+        recipient = value;
+    }
+    
+    public void load(InputStream is) throws IOException {
+        if (is == null) throw new NullPointerException("Invoice.load: null input stream");
+        Gson gson = new Gson();
+        try (InputStreamReader isr = new InputStreamReader(is)) {
+            Invoice loaded = gson.fromJson(isr, Invoice.class);
+            uuid = loaded.uuid;
+            date = loaded.date;
+            recipient = loaded.recipient;
+            emitter = loaded.emitter;
+            invoicedItems = loaded.invoicedItems;
+        }
+    }
+
+    public void save(OutputStream os) throws IOException {
+        if(os == null) throw new NullPointerException("Invoice.save: null output stream");
+        if(this.emitter == null) throw new IllegalStateException("Invoice.save: null emitter");
+        if(this.recipient == null) throw new IllegalStateException("Invoice.save: null recipient");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        try (OutputStreamWriter writer = new OutputStreamWriter(os)) {
+            writer.write(json);
+        }
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+}

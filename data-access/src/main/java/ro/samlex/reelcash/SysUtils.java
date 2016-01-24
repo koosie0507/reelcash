@@ -1,5 +1,6 @@
 package ro.samlex.reelcash;
 
+import java.io.File;
 import java.nio.file.FileSystems;
 
 /**
@@ -8,6 +9,7 @@ import java.nio.file.FileSystems;
  * @author cusi
  */
 public class SysUtils {
+
     private static String userSettingsPath;
 
     /**
@@ -34,6 +36,22 @@ public class SysUtils {
         return userSettingsPath;
     }
 
+    public static String getDbFolderPath() {
+        return createPath(getUserSettingsPath(), "db");
+    }
+
+    public static void mkdirs(String path) {
+        File f = new File(path);
+        if (f.exists()) {
+            return;
+        }
+        f.mkdirs();
+    }
+
+    public static String createPath(String base, String... additionalParts) {
+        return FileSystems.getDefault().getPath(base, additionalParts).toAbsolutePath().toString();
+    }
+
     private static void setDefaultSettingsPath() {
         userSettingsPath = FileSystems
                 .getDefault()
@@ -43,23 +61,19 @@ public class SysUtils {
     }
 
     private static boolean setLinuxSettingsPath(String osName) {
-        if (!osName.startsWith("Linux")) return false;
-        userSettingsPath = FileSystems
-                .getDefault()
-                .getPath(getUserHome(), ".local", "share", Reelcash.APPLICATION_NAME)
-                .toAbsolutePath()
-                .toString();
+        if (!osName.startsWith("Linux")) {
+            return false;
+        }
+        userSettingsPath = createPath(getUserHome(), ".local", "share", Reelcash.APPLICATION_NAME);
         return true;
     }
 
     private static boolean setWindowsSettingsPath(String osName) {
-        if (!osName.startsWith("Windows")) return false;
+        if (!osName.startsWith("Windows")) {
+            return false;
+        }
         String appDataPath = System.getenv("APPDATA");
-        userSettingsPath = FileSystems
-                .getDefault()
-                .getPath(appDataPath, Reelcash.APPLICATION_NAME)
-                .toAbsolutePath()
-                .toString();
+        userSettingsPath = createPath(appDataPath, Reelcash.APPLICATION_NAME);
         return true;
     }
 
