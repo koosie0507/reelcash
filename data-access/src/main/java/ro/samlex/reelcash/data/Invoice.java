@@ -13,9 +13,10 @@ import java.util.UUID;
 
 public class Invoice {
     private UUID uuid = UUID.randomUUID();
+    private Integer number;
+    private LocalDate date;
     private Party recipient;
     private Party emitter;
-    private LocalDate date;
     private List<InvoiceItem> invoicedItems = new ArrayList<>();
     
     public Party getEmitter() {
@@ -50,6 +51,7 @@ public class Invoice {
         try (InputStreamReader isr = new InputStreamReader(is)) {
             Invoice loaded = gson.fromJson(isr, Invoice.class);
             uuid = loaded.uuid;
+            number = loaded.number;
             date = loaded.date;
             recipient = loaded.recipient;
             emitter = loaded.emitter;
@@ -79,5 +81,13 @@ public class Invoice {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }
