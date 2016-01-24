@@ -3,6 +3,8 @@ package ro.samlex.reelcash.ui;
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.swing.table.TableModel;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import ro.samlex.reelcash.Application;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
@@ -71,6 +73,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void saveInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveInvoiceButtonActionPerformed
         Invoice invoice = new Invoice();
         try {
+            invoice.setDate(new LocalDate(DateTimeZone.forOffsetHours(2)));
             invoice.setEmitter(Application.getInstance().getCompany());
             invoice.setRecipient(invoicedContactPanel.createParty());
             final TableModel tableModel = invoiceDetailsTable.getModel();
@@ -82,7 +85,7 @@ public class MainWindow extends javax.swing.JFrame {
                 item.setVat((Double) tableModel.getValueAt(i, 3));
                 invoice.getInvoicedItems().add(item);
             }
-            try (OutputStream os = new InvoiceStreamFactory("invoice-1").createOutputStream()) {
+            try (OutputStream os = new InvoiceStreamFactory(invoice.getUuid().toString()).createOutputStream()) {
                 invoice.save(os);
             } catch (IOException e) {
                 ApplicationMessages.showError(this, e.getMessage());
