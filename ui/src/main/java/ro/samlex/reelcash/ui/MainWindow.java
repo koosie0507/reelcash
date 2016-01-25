@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -28,7 +29,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
             for (File invoiceFile : f.listFiles()) {
                 String fileName = invoiceFile.getName();
-                fileName = fileName.substring(0, fileName.length()-5);
+                fileName = fileName.substring(0, fileName.length() - 5);
                 try (InputStream is = new InvoiceStreamFactory(fileName).createInputStream()) {
                     Invoice invoiceOnDisk = new Invoice();
                     invoiceOnDisk.load(is);
@@ -51,14 +52,19 @@ public class MainWindow extends javax.swing.JFrame {
 
             @Override
             public void intervalRemoved(ListDataEvent e) {
-                if(listModel.size()<1) switchCard("welcome");
+                if (listModel.size() < 1) {
+                    switchCard("welcome");
+                }
             }
 
             @Override
             public void contentsChanged(ListDataEvent e) {
-                if(listModel.size()>0) switchCard("list");
-                else switchCard("welcome");
-            }            
+                if (listModel.size() > 0) {
+                    switchCard("list");
+                } else {
+                    switchCard("welcome");
+                }
+            }
         });
         SwingUtilities.invokeLater(new LoadInvoicesRunnable());
     }
@@ -71,10 +77,11 @@ public class MainWindow extends javax.swing.JFrame {
         instructionsTextArea = new javax.swing.JTextArea();
         addInvoiceButton = new javax.swing.JButton();
         invoiceListPanel = new javax.swing.JPanel();
+        invoiceActionsToolbar = new javax.swing.JToolBar();
+        newInvoiceButton = new javax.swing.JButton();
+        modifyInvoiceButton = new javax.swing.JButton();
         invoiceListScrollPane = new javax.swing.JScrollPane();
         invoiceList = new javax.swing.JList<>();
-        actionsPanel = new javax.swing.JPanel();
-        newInvoiceButton = new javax.swing.JButton();
         modifyInvoicePanel = new javax.swing.JPanel();
         invoicePanel = new ro.samlex.reelcash.ui.components.JInvoicePanel();
         invoiceActionsPanel = new javax.swing.JPanel();
@@ -107,26 +114,49 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(instructionsPanel, "welcome");
 
-        invoiceListPanel.setLayout(new javax.swing.BoxLayout(invoiceListPanel, javax.swing.BoxLayout.Y_AXIS));
+        invoiceListPanel.setLayout(new java.awt.BorderLayout());
 
-        invoiceList.setModel(listModel);
-        invoiceList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        invoiceList.setCellRenderer(new ro.samlex.reelcash.ui.renderers.list.InvoiceRenderer());
-        invoiceListScrollPane.setViewportView(invoiceList);
+        invoiceActionsToolbar.setRollover(true);
 
-        invoiceListPanel.add(invoiceListScrollPane);
-
+        newInvoiceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/new.png"))); // NOI18N
         newInvoiceButton.setMnemonic('n');
-        newInvoiceButton.setText("New Invoice");
+        newInvoiceButton.setText("New");
         newInvoiceButton.setToolTipText("");
+        newInvoiceButton.setFocusable(false);
+        newInvoiceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         newInvoiceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newInvoiceButtonActionPerformed(evt);
             }
         });
-        actionsPanel.add(newInvoiceButton);
+        invoiceActionsToolbar.add(newInvoiceButton);
 
-        invoiceListPanel.add(actionsPanel);
+        modifyInvoiceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/edit.png"))); // NOI18N
+        modifyInvoiceButton.setMnemonic('e');
+        modifyInvoiceButton.setText("Edit");
+        modifyInvoiceButton.setEnabled(false);
+        modifyInvoiceButton.setFocusable(false);
+        modifyInvoiceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        modifyInvoiceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyInvoiceButtonActionPerformed(evt);
+            }
+        });
+        invoiceActionsToolbar.add(modifyInvoiceButton);
+
+        invoiceListPanel.add(invoiceActionsToolbar, java.awt.BorderLayout.NORTH);
+
+        invoiceList.setModel(listModel);
+        invoiceList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        invoiceList.setCellRenderer(new ro.samlex.reelcash.ui.renderers.list.InvoiceRenderer());
+        invoiceList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                invoiceListValueChanged(evt);
+            }
+        });
+        invoiceListScrollPane.setViewportView(invoiceList);
+
+        invoiceListPanel.add(invoiceListScrollPane, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(invoiceListPanel, "list");
 
@@ -145,6 +175,11 @@ public class MainWindow extends javax.swing.JFrame {
         cancelButton.setMnemonic('c');
         cancelButton.setText("Cancel");
         cancelButton.setToolTipText("");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
         invoiceActionsPanel.add(cancelButton);
 
         modifyInvoicePanel.add(invoiceActionsPanel);
@@ -167,13 +202,17 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
 
+    private void showInvoiceList() {
+        switchCard("list");
+    }
+
     private void saveInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveInvoiceButtonActionPerformed
         try {
-            Invoice invoice = invoicePanel.createInvoice();
+            Invoice invoice = invoicePanel.getModel();
             try (OutputStream os = new InvoiceStreamFactory(invoice.getUuid().toString()).createOutputStream()) {
                 invoice.save(os);
                 put(invoice);
-                switchCard("list");
+                showInvoiceList();
             } catch (IOException e) {
                 ApplicationMessages.showError(this, "Couldn't save invoice: " + e.getMessage());
             }
@@ -185,25 +224,46 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_saveInvoiceButtonActionPerformed
 
     private void addInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addInvoiceButtonActionPerformed
-        switchCard("invoice");
+        showInvoice();
     }//GEN-LAST:event_addInvoiceButtonActionPerformed
 
     private void newInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newInvoiceButtonActionPerformed
-        switchCard("invoice");
+        showInvoice();
     }//GEN-LAST:event_newInvoiceButtonActionPerformed
+
+    private void showInvoice() {
+        switchCard("invoice");
+    }
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        invoicePanel.clearData();
+        showInvoiceList();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void invoiceListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_invoiceListValueChanged
+        JList list = (JList) evt.getSource();
+        int selectedIndex = list.getSelectedIndex();
+        modifyInvoiceButton.setEnabled(selectedIndex >= 0);
+    }//GEN-LAST:event_invoiceListValueChanged
+
+    private void modifyInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyInvoiceButtonActionPerformed
+        showInvoice();
+        invoicePanel.setModel((Invoice)listModel.elementAt(invoiceList.getSelectedIndex()));
+    }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel actionsPanel;
     private javax.swing.JButton addInvoiceButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel instructionsPanel;
     private javax.swing.JTextArea instructionsTextArea;
     private javax.swing.JPanel invoiceActionsPanel;
+    private javax.swing.JToolBar invoiceActionsToolbar;
     private javax.swing.JList<String> invoiceList;
     private javax.swing.JPanel invoiceListPanel;
     private javax.swing.JScrollPane invoiceListScrollPane;
     private ro.samlex.reelcash.ui.components.JInvoicePanel invoicePanel;
+    private javax.swing.JButton modifyInvoiceButton;
     private javax.swing.JPanel modifyInvoicePanel;
     private javax.swing.JButton newInvoiceButton;
     private javax.swing.JButton saveInvoiceButton;

@@ -5,6 +5,7 @@
  */
 package ro.samlex.reelcash.ui.components;
 
+import javax.swing.JTextField;
 import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.data.StreetAddress;
 
@@ -20,9 +21,9 @@ public class JContactPanel extends javax.swing.JPanel {
     public JContactPanel() {
         initComponents();
     }
-    
+
     public Party createParty() {
-        Party p =new Party();
+        Party p = new Party();
         p.setName(nameText.getText());
         p.setBankingInformation(bankText.getText(), ibanText.getText());
         p.setLegalInformation(vatidText.getText(), registrationText.getText());
@@ -33,7 +34,7 @@ public class JContactPanel extends javax.swing.JPanel {
                         regionText.getText(),
                         codeText.getText(),
                         countryText.getText()));
-        
+
         return p;
     }
 
@@ -287,4 +288,31 @@ public class JContactPanel extends javax.swing.JPanel {
     private javax.swing.JTextField townText;
     private javax.swing.JTextField vatidText;
     // End of variables declaration//GEN-END:variables
+
+    private void clearFields(javax.swing.JTextField... fields) {
+        for (JTextField field : fields) {
+            field.setText("");
+        }
+    }
+
+    public void clearData() {
+        clearFields(addressText, bankText, codeText, countryText,
+                ibanText, nameText, regionText, registrationText,
+                townText, vatidText);
+    }
+
+    public void setModel(Party recipient) {
+        if(recipient == null) return;
+            
+        addressText.setText(recipient.getAddress().getStreet());
+        bankText.setText(recipient.getBankingInformation().getBank());
+        codeText.setText(recipient.getAddress().getPostalCode());
+        countryText.setText(recipient.getAddress().getCountry());
+        ibanText.setText(recipient.getBankingInformation().getAccountNumber());
+        nameText.setText(recipient.getName());
+        regionText.setText(recipient.getAddress().getRegion());
+        registrationText.setText(recipient.getLegalInformation().getRegistrationNumber());
+        townText.setText(recipient.getAddress().getTown());
+        vatidText.setText(recipient.getLegalInformation().getFiscalIdentification());
+    }
 }

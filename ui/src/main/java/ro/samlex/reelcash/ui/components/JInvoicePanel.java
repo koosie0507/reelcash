@@ -1,34 +1,55 @@
 package ro.samlex.reelcash.ui.components;
 
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import ro.samlex.reelcash.Application;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
 
 public class JInvoicePanel extends javax.swing.JPanel {
+
+    private Invoice model;
+
     public JInvoicePanel() {
         initComponents();
     }
-    
-    public Invoice createInvoice() {
-        final Invoice result = new Invoice();
-        result.setNumber((Integer)numberSpinner.getModel().getValue());
-        result.setDate((java.util.Date)dateSpinner.getModel().getValue());
-        result.setEmitter(Application.getInstance().getCompany());
+
+    public Invoice getModel() {
+        if (model == null) {
+            model = new Invoice();
+            model.setEmitter(Application.getInstance().getCompany());
+        }
+        updateModelInstance(model);
+        return model;
+    }
+
+    public void setModel(Invoice model) {
+        if (model == null) {
+            clearData();
+        } else {
+            updateUiFromModel(model);
+        }
+        this.model = model;
+    }
+
+    private Invoice updateModelInstance(Invoice result) {
+        result.setNumber((Integer) numberSpinner.getModel().getValue());
+        result.setDate((java.util.Date) dateSpinner.getModel().getValue());
         result.setRecipient(invoicedContactPanel.createParty());
-        TableModel model = invoiceDetailsTable.getModel();
-        for(int i=0;i<model.getRowCount();i++) {
-            result.getInvoicedItems().add(createInvoiceItem(model, i));
+        result.getInvoicedItems().clear();
+        TableModel tableModel = invoiceDetailsTable.getModel();
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            result.getInvoicedItems().add(createInvoiceItem(tableModel, i));
         }
         return result;
     }
-    
+
     private InvoiceItem createInvoiceItem(TableModel model, int index) {
         final InvoiceItem item = new InvoiceItem();
-        item.setName((String)model.getValueAt(index, 0));
-        item.setQuantity((Integer)model.getValueAt(index, 1));
-        item.setUnitPrice((Double)model.getValueAt(index, 2));
-        item.setVat((Double)model.getValueAt(index, 3));
+        item.setName((String) model.getValueAt(index, 0));
+        item.setQuantity((Integer) model.getValueAt(index, 1));
+        item.setUnitPrice((Double) model.getValueAt(index, 2));
+        item.setVat((Double) model.getValueAt(index, 3));
         return item;
     }
 
@@ -48,6 +69,9 @@ public class JInvoicePanel extends javax.swing.JPanel {
         dateSpinner = new javax.swing.JSpinner();
         invoicedContactPanel = new ro.samlex.reelcash.ui.components.JContactPanel();
         invoicedItemsPanel = new javax.swing.JPanel();
+        invoicedItemsActions = new javax.swing.JToolBar();
+        addItemButton = new javax.swing.JButton();
+        removeItemButton = new javax.swing.JButton();
         invoicedItemsTableScroller = new javax.swing.JScrollPane();
         invoiceDetailsTable = new javax.swing.JTable();
 
@@ -71,6 +95,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
         headerPanel.add(lblDate);
 
         dateSpinner.setModel(new javax.swing.SpinnerDateModel());
+        dateSpinner.setEditor(new javax.swing.JSpinner.DateEditor(dateSpinner, "dd-MM-yyyy"));
         dateSpinner.setMaximumSize(new java.awt.Dimension(240, 23));
         dateSpinner.setMinimumSize(new java.awt.Dimension(120, 23));
         dateSpinner.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -82,7 +107,43 @@ public class JInvoicePanel extends javax.swing.JPanel {
         add(invoicedContactPanel);
 
         invoicedItemsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(16, 8, 8, 8), "Invoiced items", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 14))); // NOI18N
-        invoicedItemsPanel.setLayout(new javax.swing.BoxLayout(invoicedItemsPanel, javax.swing.BoxLayout.Y_AXIS));
+        invoicedItemsPanel.setLayout(new java.awt.BorderLayout());
+
+        invoicedItemsActions.setFloatable(false);
+        invoicedItemsActions.setAlignmentX(0.0F);
+        invoicedItemsActions.setAlignmentY(0.5F);
+
+        addItemButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/plus.png"))); // NOI18N
+        addItemButton.setMnemonic('a');
+        addItemButton.setFocusable(false);
+        addItemButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        addItemButton.setMaximumSize(new java.awt.Dimension(32, 32));
+        addItemButton.setMinimumSize(new java.awt.Dimension(32, 32));
+        addItemButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        addItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addItemButtonActionPerformed(evt);
+            }
+        });
+        invoicedItemsActions.add(addItemButton);
+        addItemButton.getAccessibleContext().setAccessibleDescription("");
+
+        removeItemButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/minus.png"))); // NOI18N
+        removeItemButton.setMnemonic('r');
+        removeItemButton.setFocusable(false);
+        removeItemButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        removeItemButton.setMaximumSize(new java.awt.Dimension(32, 32));
+        removeItemButton.setMinimumSize(new java.awt.Dimension(32, 32));
+        removeItemButton.setPreferredSize(new java.awt.Dimension(32, 32));
+        removeItemButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        removeItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeItemButtonActionPerformed(evt);
+            }
+        });
+        invoicedItemsActions.add(removeItemButton);
+
+        invoicedItemsPanel.add(invoicedItemsActions, java.awt.BorderLayout.NORTH);
 
         invoiceDetailsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -102,21 +163,63 @@ public class JInvoicePanel extends javax.swing.JPanel {
         });
         invoicedItemsTableScroller.setViewportView(invoiceDetailsTable);
 
-        invoicedItemsPanel.add(invoicedItemsTableScroller);
+        invoicedItemsPanel.add(invoicedItemsTableScroller, java.awt.BorderLayout.CENTER);
 
         add(invoicedItemsPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemButtonActionPerformed
+        DefaultTableModel tableModel = (DefaultTableModel) invoiceDetailsTable.getModel();
+        tableModel.addRow(new Object[] { null, 1, null, 0.24 });
+        invoiceDetailsTable.changeSelection(tableModel.getRowCount()-1, 0, true, false);
+    }//GEN-LAST:event_addItemButtonActionPerformed
+
+    private void removeItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeItemButtonActionPerformed
+        int selectedIndex = invoiceDetailsTable.getSelectedRow();
+        if(selectedIndex<0) return;
+        DefaultTableModel tableModel = (DefaultTableModel) invoiceDetailsTable.getModel();
+        tableModel.removeRow(selectedIndex);
+    }//GEN-LAST:event_removeItemButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addItemButton;
     private javax.swing.JSpinner dateSpinner;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JTable invoiceDetailsTable;
     private ro.samlex.reelcash.ui.components.JContactPanel invoicedContactPanel;
+    private javax.swing.JToolBar invoicedItemsActions;
     private javax.swing.JPanel invoicedItemsPanel;
     private javax.swing.JScrollPane invoicedItemsTableScroller;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblNumber;
     private javax.swing.JSpinner numberSpinner;
+    private javax.swing.JButton removeItemButton;
     // End of variables declaration//GEN-END:variables
+
+    public void clearData() {
+        int i = invoiceDetailsTable.getModel().getRowCount() - 1;
+        while (i >= 0) {
+            ((DefaultTableModel) invoiceDetailsTable.getModel()).removeRow(i--);
+        }
+        invoicedContactPanel.clearData();
+        dateSpinner.setValue(new java.util.Date());
+        numberSpinner.setValue(1);
+    }
+
+    private void updateUiFromModel(Invoice model) {
+        invoicedContactPanel.setModel(model.getRecipient());
+        dateSpinner.setValue(model.getDate());
+        numberSpinner.setValue(model.getNumber());
+        DefaultTableModel tableModel = (DefaultTableModel) invoiceDetailsTable.getModel();
+        tableModel.setRowCount(0);
+        for (InvoiceItem item : model.getInvoicedItems()) {
+            tableModel.addRow(new Object[]{
+                item.getName(),
+                Double.valueOf(item.getQuantity()).intValue(),
+                item.getUnitPrice(),
+                item.getVAT()
+            });
+        }
+    }
 }
