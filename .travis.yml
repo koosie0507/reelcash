@@ -1,5 +1,10 @@
 language: java
 
+script: gradle distZip
+
+after_script:
+        - test -f ./build/distributions/*.zip
+
 addons:
         artifacts: true
         s3_region: "us-west-1" # defaults to "us-east-1"
