@@ -6,9 +6,8 @@ after_script:
         - test -f ./build/distributions/*.zip
 
 addons:
-        artifacts: true
-        s3_region: "eu-central-1"
         artifacts:
+                s3_region: "eu-central-1"
                 paths:
                         - $( ls -1 ui/build/distributions/*.zip )
 
