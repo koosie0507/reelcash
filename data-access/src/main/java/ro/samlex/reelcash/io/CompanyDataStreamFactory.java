@@ -1,5 +1,6 @@
 package ro.samlex.reelcash.io;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,6 +13,9 @@ public class CompanyDataStreamFactory extends StreamFactory {
     private static final String FILE_PATH;
     
     static {
+        File f = new File(SysUtils.getDbFolderPath());
+        if (!f.isDirectory()) f.mkdirs();
+        
         FILE_PATH = SysUtils.createPath(
                 SysUtils.getDbFolderPath(),
                 Reelcash.COMPANY_DATA_FILE_NAME);

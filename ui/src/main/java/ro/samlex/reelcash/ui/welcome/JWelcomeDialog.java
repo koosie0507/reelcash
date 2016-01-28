@@ -89,7 +89,7 @@ public class JWelcomeDialog extends javax.swing.JDialog {
         try (OutputStream os = new CompanyDataStreamFactory().createOutputStream()) {
             Party p = contactPanel.createParty();
             p.save(os);
-            this.setVisible(false);
+                this.setVisible(false);
             Application.showMainFrame();
         }
         catch(NullPointerException e) {

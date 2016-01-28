@@ -1,13 +1,13 @@
 language: java
 
-script: gradle distZip
+script: ./gradlew distZip
 
 after_script:
         - test -f ./build/distributions/*.zip
 
 addons:
+        s3_region: "eu-central-1"
         artifacts:
-                s3_region: "eu-central-1"
                 paths:
                         - $( ls -1 ui/build/distributions/*.zip )
 
