@@ -1,8 +1,7 @@
 language: java
 script: "./gradlew distZip"
 addons:
-        artifacts: true
-        s3_region: "eu-central-1"
-        paths:
-                - "$( ls -1 ./ui/build/distributions/*.zip )"
+        artifacts:
+                paths:
+                        - "$( ls -1 ./ui/build/distributions/*.zip )"
 
