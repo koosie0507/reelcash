@@ -1,13 +1,14 @@
 language: java
-
-script: ./gradlew distZip
-
+script: "./gradlew distZip"
 after_script:
-        - test -f ./build/distributions/*.zip
-
-addons:
-        s3_region: "eu-central-1"
-        artifacts:
-                paths:
-                        - $( ls -1 ui/build/distributions/*.zip )
-
+- test -f ./build/distributions/*.zip
+deploy:
+  provider: s3
+  access_key_id: AKIAIFPCGUFQW6GDPKHA
+  secret_access_key:
+    secure: je/JTZnP+Bppc7ttYUHX4itqOpfVqJvezwmZTYCNl2B4q5DUfEZvzF5spS5AgUEHZ2kzxfQ1iePzLjSekVI8i+pi5JkE6BcKSdA4AWPTk5/YPgQfwJO+iddRXW3jowCeitctP8lt1k4h66sMefNKGvSMckFWNmZKseSfyiljFM+/cKDpy6UK0hy0kC+4c846dxFgDelkNR3hmE/+I63Xb3rfTfqZTGYFO+F19pzbLXRvzSckAiJ9pAXXxD7WEUzgojWNfejOPWZ2t89uSmh0bO7ds+4PjtSHVsfap9lws+laI4JL/zGM2SKZgbtCl8m7Lkp7VqoXhaxLBJoSbHQsnBmJ4x861BK7aDpWUO/q8HoI6n7y6FZlrZ1D7YFVE14rtaGse9h/N4x5zE05gcO6mDxU8c5Ni73+VXs5fmYNEp7+0Uh7pSSFYlF8q9anmoVnbddWQZpWLp+av1K5LVE8qMdqcV8/T+D+9uGp2g8C59cL5vi+gIrivL3IdBfEKXnAW/7lYJMq/V4EpG9R/gjkUVVuCuki4m7llanqoK3Kv0SQp/AaaCrXCMTWXRsn4PquNrAn49wXRXUWR/iIIJASd4m1DCGHsHdNWXKUkwzSCb5vywzZCrlLTm9voutHTI9F9Vgfxs0D55EAi6rH5bCfko/SYNgpoj3RtVsIixfyzps=
+  bucket: reelcash
+  local-dir: "./ui/build/distributions/"
+  region: eu-central-1
+  on:
+    repo: koosie0507/reelcash
