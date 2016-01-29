@@ -1,6 +1,7 @@
 # Reelcash
 
 [![Build Status](https://travis-ci.org/koosie0507/reelcash.svg?branch=master)](https://travis-ci.org/koosie0507/reelcash)
+[![Coverage Status](https://coveralls.io/repos/github/koosie0507/reelcash/badge.svg?branch=master)](https://coveralls.io/github/koosie0507/reelcash?branch=master)
 
 ## What it is
 It's a simple invoicing application destined for personal use.
