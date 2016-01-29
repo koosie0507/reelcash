@@ -1,6 +1,6 @@
 # Reelcash
 
-[![Build Status](https://travis-ci.org/koosie0507/reelcash.svg?branch=master)](https://travis-ci.org/koosie0507/reelcash)
+[![Circle CI](https://circleci.com/gh/koosie0507/reelcash.svg?style=svg)](https://circleci.com/gh/koosie0507/reelcash)
 [![codecov.io](https://codecov.io/github/koosie0507/reelcash/coverage.svg?branch=master)](https://codecov.io/github/koosie0507/reelcash?branch=master)
 
 ## What it is
