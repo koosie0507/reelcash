@@ -6,7 +6,7 @@ jdk:
 before_script:
   - pip install --user codecov
 
-script: "./gradlew distZip"
+script: "./gradlew test distZip"
 
 after_success:
 - codecov
