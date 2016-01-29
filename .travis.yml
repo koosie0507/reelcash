@@ -3,10 +3,13 @@ language: java
 jdk:
 - oraclejdk8
 
+before_script:
+  - pip install --user codecov
+
 script: "./gradlew distZip"
 
 after_success:
-- ./gradlew jacocoTestReport coveralls
+- codecov
 
 addons:
         artifacts:

@@ -1,10 +1,11 @@
 plugins {
     id "jacoco"
-    id "com.github.kt3k.coveralls" version "2.6.0"
 }
+
 jacocoTestReport {
     reports {
         xml.enabled = true
+        html.enabled = true
     }
 }
 
@@ -13,3 +14,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+test {
+    finalizedBy jacocoTestReport
+}
