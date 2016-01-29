@@ -1,0 +1,18 @@
+machine:
+    java: oraclejdk8
+    
+general:
+    artifacts:
+        - ui/build/distributions
+
+dependencies:
+    pre:
+        - pip install --user codecov
+
+test:
+    post:
+        - gradle jacocoTestReport
+        - codecov
+
+        
+    
