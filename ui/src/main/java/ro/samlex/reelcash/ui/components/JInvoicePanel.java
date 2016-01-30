@@ -205,6 +205,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
         invoicedContactPanel.clearData();
         dateSpinner.setValue(new java.util.Date());
         numberSpinner.setValue(1);
+        model = null;
     }
 
     private void updateUiFromModel(Invoice model) {

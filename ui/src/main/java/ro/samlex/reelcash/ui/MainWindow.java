@@ -224,10 +224,12 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_saveInvoiceButtonActionPerformed
 
     private void addInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addInvoiceButtonActionPerformed
+        invoicePanel.setModel(null);
         showInvoice();
     }//GEN-LAST:event_addInvoiceButtonActionPerformed
 
     private void newInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newInvoiceButtonActionPerformed
+        invoicePanel.setModel(null);
         showInvoice();
     }//GEN-LAST:event_newInvoiceButtonActionPerformed
 
