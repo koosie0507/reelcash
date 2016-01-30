@@ -3,6 +3,10 @@ machine:
         version: oraclejdk8
 
 general:
+    branches:
+        ignore:
+            - gh-pages
+
     artifacts:
         - ui/build/distributions
 
