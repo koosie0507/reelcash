@@ -1,7 +1,7 @@
 machine:
     java: 
         version: oraclejdk8
-    
+
 general:
     artifacts:
         - ui/build/distributions
@@ -14,8 +14,10 @@ test:
     post:
         - codecov
         - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-        - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;        
+        - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
         - ./gradlew distZip
-
-        
-    
+deployment:
+  master:
+    branch: master
+    commands:
+      - aws s3 cp $CIRCLE_ARTIFACTS/home/ubuntu/reelcash/ui/build/distributions s3://reelcash/ --recursive --exclude "*" --include "*.zip" --region "eu-central-1"
