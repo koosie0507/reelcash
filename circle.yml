@@ -15,9 +15,9 @@ test:
         - codecov
         - mkdir -p $CIRCLE_TEST_REPORTS/junit/
         - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-        - ./gradlew distZip
 deployment:
-  master:
-    branch: master
-    commands:
-      - aws s3 cp ui/build/distributions s3://reelcash/ --recursive --exclude "*" --include "*.zip" --region "eu-central-1"
+    master:
+        branch: master
+        commands:
+            - ./gradlew distZip
+            - aws s3 cp ui/build/distributions s3://reelcash/ --recursive --exclude "*" --include "*.zip" --region "eu-central-1"
