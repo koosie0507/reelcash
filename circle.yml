@@ -20,4 +20,4 @@ deployment:
   master:
     branch: master
     commands:
-      - aws s3 cp $CIRCLE_ARTIFACTS/home/ubuntu/reelcash/ui/build/distributions s3://reelcash/ --recursive --exclude "*" --include "*.zip" --region "eu-central-1"
+      - aws s3 cp ui/build/distributions s3://reelcash/ --recursive --exclude "*" --include "*.zip" --region "eu-central-1"
