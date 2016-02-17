@@ -5,19 +5,19 @@ import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ro.samlex.reelcash.commands.Command;
 import ro.samlex.reelcash.data.Invoice;
+import ro.samlex.reelcash.io.InputSource;
 
 public final class InvoiceListViewModel extends SelectorViewModel<Invoice> {
 
     private final LoadInvoicesCommand loadInvoicesCommand;
 
-    public InvoiceListViewModel(Iterator<Reader> inputSource) {
-        this.loadInvoicesCommand = new LoadInvoicesCommand(inputSource);
+    public InvoiceListViewModel(Iterable<InputSource> inputSources) {
+        this.loadInvoicesCommand = new LoadInvoicesCommand(inputSources);
     }
 
     public Command getLoadInvoicesCommand() {
@@ -26,10 +26,10 @@ public final class InvoiceListViewModel extends SelectorViewModel<Invoice> {
 
     private final class LoadInvoicesCommand implements Command {
 
-        private final Iterator<Reader> inputSource;
+        private final Iterable<InputSource> inputSources;
 
-        LoadInvoicesCommand(Iterator<Reader> inputSource) {
-            this.inputSource = inputSource;
+        LoadInvoicesCommand(Iterable<InputSource> inputSources) {
+            this.inputSources = inputSources;
         }
 
         @Override
@@ -40,14 +40,13 @@ public final class InvoiceListViewModel extends SelectorViewModel<Invoice> {
         @Override
         public void execute() {
             List<Invoice> invoices = new ArrayList<>();
-            while (inputSource.hasNext()) {
+            for (InputSource i : this.inputSources) {
                 int idx = invoices.size();
-                try (Reader reader = (Reader) inputSource.next()) {
+                try (Reader reader = i.newReader()) {
                     Invoice item = new Gson().fromJson(reader, Invoice.class);
                     invoices.add(idx, item);
                 } catch (IOException ex) {
                     Logger.getLogger(InvoiceListViewModel.class.getName()).log(Level.SEVERE, "Could not read from input source", ex);
-                    invoices.remove(idx);
                 } catch (JsonSyntaxException ex) {
                     Logger.getLogger(InvoiceListViewModel.class.getName()).log(Level.WARNING, "Invalid JSON in input source", ex);
                 }
