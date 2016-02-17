@@ -11,6 +11,7 @@ jacocoTestReport {
 
 dependencies {
     compile 'com.google.code.gson:gson:2.5'
+    compile 'org.jdesktop:beansbinding:1.2.1'
     testCompile 'junit:junit:4.12'
 }
 
