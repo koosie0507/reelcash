@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ro.samlex.reelcash.PropertyChangeObservable;
 import ro.samlex.reelcash.commands.Command;
 import ro.samlex.reelcash.data.Invoice;
 
@@ -40,7 +39,7 @@ public final class InvoiceListViewModel extends SelectorViewModel<Invoice> {
 
         @Override
         public void execute() {
-            List<Invoice> invoices = new ArrayList<Invoice>();
+            List<Invoice> invoices = new ArrayList<>();
             while (inputSource.hasNext()) {
                 int idx = invoices.size();
                 try (Reader reader = (Reader) inputSource.next()) {
