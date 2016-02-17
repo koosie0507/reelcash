@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Invoice {
@@ -90,4 +91,33 @@ public class Invoice {
     public void setNumber(int number) {
         this.number = number;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Invoice other = (Invoice) obj;
+        if (!Objects.equals(this.number, other.number)) {
+            return false;
+        }
+        if (!Objects.equals(this.date, other.date)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

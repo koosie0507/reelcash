@@ -52,9 +52,7 @@ public class SelectorViewModel<T> extends PropertyChangeObservable {
 
         @Override
         public void listElementReplaced(ObservableList list, int index, Object oldValue) {
-            if (index >= 0 && index < list.size()) {
-                setSelectedItem((T) list.get(index));
-            }
+            setSelectedItem((T) list.get(index));
         }
 
         @Override

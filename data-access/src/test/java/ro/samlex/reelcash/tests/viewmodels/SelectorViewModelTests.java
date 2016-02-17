@@ -2,7 +2,6 @@ package ro.samlex.reelcash.tests.viewmodels;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
-import java.util.Collections;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import ro.samlex.reelcash.tests.PropertyChangeListenerStub;
