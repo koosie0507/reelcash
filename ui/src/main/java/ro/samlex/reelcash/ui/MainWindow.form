@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Component class="ro.samlex.reelcash.viewmodels.InvoiceListViewModel" name="dataContext">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ro.samlex.reelcash.viewmodels.InvoiceListViewModel(this.invoiceFolderSource)"/>
+      </AuxValues>
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
@@ -128,14 +135,16 @@
           <SubComponents>
             <Component class="javax.swing.JList" name="invoiceList">
               <Properties>
-                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="listModel" type="code"/>
-                </Property>
                 <Property name="selectionMode" type="int" value="0"/>
-                <Property name="cellRenderer" type="javax.swing.ListCellRenderer" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new ro.samlex.reelcash.ui.renderers.list.InvoiceRenderer()" type="code"/>
-                </Property>
               </Properties>
+              <BindingProperties>
+                <BindingProperty name="elements" source="dataContext" sourcePath="${items}" target="invoiceList" targetPath="elements" updateStrategy="0" immediately="false">
+                  <BindingParameter name="DISPLAY" value="${number} / ${date} -&gt; [${recipient.name}]"/>
+                </BindingProperty>
+                <BindingProperty name="selectedElement" source="dataContext" sourcePath="${selectedItem}" target="invoiceList" targetPath="selectedElement" updateStrategy="0" immediately="false">
+                  <BindingParameter name="IGNORE_ADJUSTING" value="N"/>
+                </BindingProperty>
+              </BindingProperties>
               <Events>
                 <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="invoiceListValueChanged"/>
               </Events>

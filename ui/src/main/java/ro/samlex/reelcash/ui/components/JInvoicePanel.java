@@ -203,7 +203,6 @@ public class JInvoicePanel extends javax.swing.JPanel {
         while (i >= 0) {
             ((DefaultTableModel) invoiceDetailsTable.getModel()).removeRow(i--);
         }
-        invoicedContactPanel.clearData();
         dateSpinner.setValue(new java.util.Date());
         numberSpinner.setValue(1);
         model = null;

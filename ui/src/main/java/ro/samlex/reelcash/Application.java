@@ -2,7 +2,6 @@ package ro.samlex.reelcash;
 
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -11,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import ro.samlex.reelcash.data.Party;
-import ro.samlex.reelcash.io.CompanyDataStreamFactory;
 import ro.samlex.reelcash.io.FileInputSource;
 import ro.samlex.reelcash.ui.MainWindow;
 import ro.samlex.reelcash.ui.welcome.JWelcomeDialog;

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class InvoiceDataFolderSource implements Iterable<InputSource> {
@@ -24,7 +25,7 @@ public class InvoiceDataFolderSource implements Iterable<InputSource> {
                 fileSources.add(new FileInputSource(filePath));
             }
         } catch (IOException e) {
-            Logger.getLogger(InvoiceDataFolderSource.class.getName()).warning("I/O error on reading folder" + e.getMessage());
+            Logger.getLogger(InvoiceDataFolderSource.class.getName()).log(Level.WARNING, "I/O error on reading folder: {0}", e.getMessage());
         }
         return fileSources.iterator();
     }
