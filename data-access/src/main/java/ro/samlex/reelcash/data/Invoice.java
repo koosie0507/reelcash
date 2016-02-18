@@ -1,11 +1,5 @@
 package ro.samlex.reelcash.data;
 
-import com.google.gson.Gson;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,12 +7,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Invoice {
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
     private Integer number;
     private Date date;
     private Party recipient;
     private Party emitter;
-    private List<InvoiceItem> invoicedItems = new ArrayList<>();
+    private final List<InvoiceItem> invoicedItems = new ArrayList<>();
     
     public Party getEmitter() {
         return emitter;
@@ -34,44 +28,18 @@ public class Invoice {
 
     public void setEmitter(Party value) {
         if (value == null) {
-            throw new NullPointerException("Invoice.setEmitter: new emitter is null");
+            throw new IllegalArgumentException("Invoice.setEmitter: new emitter is null");
         }
         this.emitter = value;
     }
 
     public void setRecipient(Party value) {
         if (value == null) {
-            throw new NullPointerException("Invoice.setRecipient: new recipient is null");
+            throw new IllegalArgumentException("Invoice.setRecipient: new recipient is null");
         }
         recipient = value;
     }
     
-    public void load(InputStream is) throws IOException {
-        if (is == null) throw new NullPointerException("Invoice.load: null input stream");
-        Gson gson = new Gson();
-        try (InputStreamReader isr = new InputStreamReader(is)) {
-            Invoice loaded = gson.fromJson(isr, Invoice.class);
-            uuid = loaded.uuid;
-            number = loaded.number;
-            date = loaded.date;
-            recipient = loaded.recipient;
-            emitter = loaded.emitter;
-            invoicedItems = loaded.invoicedItems;
-        }
-    }
-
-    public void save(OutputStream os) throws IOException {
-        if(os == null) throw new NullPointerException("Invoice.save: null output stream");
-        if(this.emitter == null) throw new IllegalStateException("Invoice.save: null emitter");
-        if(this.recipient == null) throw new IllegalStateException("Invoice.save: null recipient");
-        
-        Gson gson = new Gson();
-        String json = gson.toJson(this);
-        try (OutputStreamWriter writer = new OutputStreamWriter(os)) {
-            writer.write(json);
-        }
-    }
-
     public Date getDate() {
         return date;
     }
@@ -113,10 +81,7 @@ public class Invoice {
         if (!Objects.equals(this.number, other.number)) {
             return false;
         }
-        if (!Objects.equals(this.date, other.date)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.date, other.date);
     }
     
     

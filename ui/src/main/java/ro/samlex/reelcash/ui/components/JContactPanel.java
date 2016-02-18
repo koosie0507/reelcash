@@ -305,16 +305,4 @@ public class JContactPanel extends javax.swing.JPanel {
     private javax.swing.JTextField vatidText;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
-    private void clearFields(javax.swing.JTextField... fields) {
-        for (JTextField field : fields) {
-            field.setText("");
-        }
-    }
-
-    public void clearData() {
-        clearFields(addressText, bankText, codeText, countryText,
-                ibanText, nameText, regionText, registrationText,
-                townText, vatidText);
-    }
 }

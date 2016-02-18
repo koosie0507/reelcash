@@ -1,78 +1,48 @@
 package ro.samlex.reelcash.ui;
 
+import com.google.gson.Gson;
 import java.awt.CardLayout;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
+import java.io.Writer;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.List;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.observablecollections.ObservableListListener;
+import ro.samlex.reelcash.Reelcash;
+import ro.samlex.reelcash.SysUtils;
 import ro.samlex.reelcash.data.Invoice;
-import ro.samlex.reelcash.io.InvoiceStreamFactory;
+import ro.samlex.reelcash.io.FileOutputSink;
+import ro.samlex.reelcash.io.InvoiceDataFolderSource;
 
 public class MainWindow extends javax.swing.JFrame {
 
-    private final DefaultListModel listModel = new DefaultListModel();
-
-    private class LoadInvoicesRunnable implements Runnable {
-
-        @Override
-        public void run() {
-            File f = new File(InvoiceStreamFactory.DIR_PATH);
-            if (!f.exists() || !f.isDirectory()) {
-                return;
-            }
-            for (File invoiceFile : f.listFiles()) {
-                String fileName = invoiceFile.getName();
-                fileName = fileName.substring(0, fileName.length() - 5);
-                try (InputStream is = new InvoiceStreamFactory(fileName).createInputStream()) {
-                    Invoice invoiceOnDisk = new Invoice();
-                    invoiceOnDisk.load(is);
-                    listModel.addElement(invoiceOnDisk);
-                } catch (IOException ex) {
-                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-    }
+    private final InvoiceDataFolderSource invoiceFolderSource;
+    private final Path invoiceFolderPath;
 
     public MainWindow() {
+        invoiceFolderPath = FileSystems.getDefault().getPath(
+                SysUtils.getDbFolderPath(),
+                Reelcash.INVOICES_DATA_FOLDER_NAME);
+        this.invoiceFolderSource = new InvoiceDataFolderSource(invoiceFolderPath);
         initComponents();
-        listModel.addListDataListener(new ListDataListener() {
+        this.dataContext.getItems().addObservableListListener(new InvoiceListChangeListener());
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void intervalAdded(ListDataEvent e) {
-                switchCard("list");
-            }
-
-            @Override
-            public void intervalRemoved(ListDataEvent e) {
-                if (listModel.size() < 1) {
-                    switchCard("welcome");
-                }
-            }
-
-            @Override
-            public void contentsChanged(ListDataEvent e) {
-                if (listModel.size() > 0) {
-                    switchCard("list");
-                } else {
-                    switchCard("welcome");
-                }
+            public void run() {
+                dataContext.getLoadInvoicesCommand().execute();
             }
         });
-        SwingUtilities.invokeLater(new LoadInvoicesRunnable());
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        dataContext = new ro.samlex.reelcash.viewmodels.InvoiceListViewModel(this.invoiceFolderSource);
         instructionsPanel = new javax.swing.JPanel();
         instructionsTextArea = new javax.swing.JTextArea();
         addInvoiceButton = new javax.swing.JButton();
@@ -146,9 +116,15 @@ public class MainWindow extends javax.swing.JFrame {
 
         invoiceListPanel.add(invoiceActionsToolbar, java.awt.BorderLayout.NORTH);
 
-        invoiceList.setModel(listModel);
         invoiceList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        invoiceList.setCellRenderer(new ro.samlex.reelcash.ui.renderers.list.InvoiceRenderer());
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${items}");
+        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, eLProperty, invoiceList);
+        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create("${number} / ${date} -> [${recipient.name}]"));
+        bindingGroup.addBinding(jListBinding);
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${selectedItem}"), invoiceList, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
+        bindingGroup.addBinding(binding);
+
         invoiceList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 invoiceListValueChanged(evt);
@@ -186,19 +162,22 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(modifyInvoicePanel, "invoice");
 
+        bindingGroup.bind();
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void switchCard(String name) {
-        ((CardLayout) getContentPane().getLayout()).show(getContentPane(), name);
+        final CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
+        cardLayout.show(getContentPane(), name);
     }
 
     private void put(Invoice invoice) {
-        int index = listModel.indexOf(invoice);
+        int index = dataContext.getItems().indexOf(invoice);
         if (index < 0) {
-            listModel.addElement(invoice);
+            dataContext.getItems().add(invoice);
         } else {
-            listModel.setElementAt(invoice, index);
+            dataContext.getItems().set(index, invoice);
         }
     }
 
@@ -209,8 +188,11 @@ public class MainWindow extends javax.swing.JFrame {
     private void saveInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveInvoiceButtonActionPerformed
         try {
             Invoice invoice = invoicePanel.getModel();
-            try (OutputStream os = new InvoiceStreamFactory(invoice.getUuid().toString()).createOutputStream()) {
-                invoice.save(os);
+            Path invoiceFilePath = FileSystems.getDefault().getPath(
+                    invoiceFolderPath.toString(), invoice.getUuid() + ".json");
+
+            try (Writer w = new FileOutputSink(invoiceFilePath).newWriter()) {
+                w.write(new Gson().toJson(invoice));
                 put(invoice);
                 showInvoiceList();
             } catch (IOException e) {
@@ -250,13 +232,14 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void modifyInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyInvoiceButtonActionPerformed
         showInvoice();
-        invoicePanel.setModel((Invoice) listModel.elementAt(invoiceList.getSelectedIndex()));
+        invoicePanel.setModel(dataContext.getSelectedItem());
     }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addInvoiceButton;
     private javax.swing.JButton cancelButton;
+    private ro.samlex.reelcash.viewmodels.InvoiceListViewModel dataContext;
     private javax.swing.JPanel instructionsPanel;
     private javax.swing.JTextArea instructionsTextArea;
     private javax.swing.JPanel invoiceActionsPanel;
@@ -269,5 +252,29 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel modifyInvoicePanel;
     private javax.swing.JButton newInvoiceButton;
     private javax.swing.JButton saveInvoiceButton;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    private final class InvoiceListChangeListener implements ObservableListListener {
+
+        @Override
+        public void listElementsAdded(ObservableList ol, int i, int i1) {
+            showInvoiceList();
+        }
+
+        @Override
+        public void listElementsRemoved(ObservableList ol, int i, List list) {
+            if (ol.isEmpty()) {
+                switchCard("welcome");
+            }
+        }
+
+        @Override
+        public void listElementReplaced(ObservableList ol, int i, Object o) {
+        }
+
+        @Override
+        public void listElementPropertyChanged(ObservableList ol, int i) {
+        }
+    }
 }
