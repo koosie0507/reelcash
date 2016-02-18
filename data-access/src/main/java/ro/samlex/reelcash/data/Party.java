@@ -1,11 +1,9 @@
 package ro.samlex.reelcash.data;
 
-import com.google.gson.Gson;
+import ro.samlex.reelcash.PropertyChangeObservable;
 
-import java.io.*;
-import java.util.ArrayList;
+public class Party extends PropertyChangeObservable {
 
-public class Party implements Serializable {
     private String name;
     private StreetAddress address;
     private BankInformation bankingInformation;
@@ -18,27 +16,32 @@ public class Party implements Serializable {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String value) {
-        if(value == null)
+        if (value == null) {
             throw new NullPointerException();
+        }
         name = value;
     }
 
-    public StreetAddress getAddress( ){
+    public StreetAddress getAddress() {
         return this.address;
     }
-    
+
     public void setAddress(StreetAddress address) {
+        Object old = this.address;
         this.address = address;
+        firePropertyChanged("address", old, this.address);
     }
-    
+
     public BankInformation getBankingInformation() {
         return bankingInformation;
     }
 
     public void setBankingInformation(String bankName, String accountNumber) {
+        Object old = this.bankingInformation;
         this.bankingInformation = new BankInformation(bankName, accountNumber);
+        firePropertyChanged("bankingInformation", old, this.bankingInformation);
     }
 
     public LegalInformation getLegalInformation() {
@@ -46,25 +49,8 @@ public class Party implements Serializable {
     }
 
     public void setLegalInformation(String fiscalId, String registrationNumber) {
+        Object old = this.legalInformation;
         this.legalInformation = new LegalInformation(fiscalId, registrationNumber);
-    }
-
-    public void save(OutputStream os) throws java.io.IOException {
-        Gson gson = new Gson();
-        String json = gson.toJson(this);
-        try (OutputStreamWriter writer = new OutputStreamWriter(os)) {
-            writer.write(json);
-        }
-    }
-    
-    public void load(InputStream is) throws java.io.IOException {
-        Gson gson = new Gson();
-        try (InputStreamReader reader = new InputStreamReader(is)) {
-            Party p = gson.fromJson(reader, Party.class);
-            this.name = p.name;
-            this.address = p.address;
-            this.bankingInformation = p.bankingInformation;
-            this.legalInformation = p.legalInformation;            
-        }
+        firePropertyChanged("legalInformation", old, this.legalInformation);
     }
 }

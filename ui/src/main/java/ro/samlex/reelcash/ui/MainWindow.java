@@ -250,7 +250,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void modifyInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyInvoiceButtonActionPerformed
         showInvoice();
-        invoicePanel.setModel((Invoice)listModel.elementAt(invoiceList.getSelectedIndex()));
+        invoicePanel.setModel((Invoice) listModel.elementAt(invoiceList.getSelectedIndex()));
     }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
 
 

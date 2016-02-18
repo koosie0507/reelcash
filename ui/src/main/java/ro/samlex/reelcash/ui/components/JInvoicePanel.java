@@ -35,7 +35,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
     private Invoice updateModelInstance(Invoice result) {
         result.setNumber((Integer) numberSpinner.getModel().getValue());
         result.setDate((java.util.Date) dateSpinner.getModel().getValue());
-        result.setRecipient(invoicedContactPanel.createParty());
+        result.setRecipient(invoicedContactPanel.getModel());
         result.getInvoicedItems().clear();
         TableModel tableModel = invoiceDetailsTable.getModel();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
