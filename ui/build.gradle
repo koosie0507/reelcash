@@ -5,3 +5,6 @@ dependencies {
 }
 
 mainClassName = "ro.samlex.reelcash.Application"
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'ro.samlex.reelcash.Application'
+}

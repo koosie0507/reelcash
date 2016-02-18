@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="ro.samlex.reelcash.data.Party" name="model">
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="focusable" type="boolean" value="false"/>
     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -50,6 +54,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${name}" target="nameText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="nameBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="0" gridWidth="0" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -78,6 +88,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${address.street}" target="addressText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="streetBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="1" gridWidth="0" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -106,6 +122,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${address.town}" target="townText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="townBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="2" gridWidth="2" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -134,6 +156,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${address.region}" target="regionText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="regionBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="2" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -162,6 +190,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${address.postalCode}" target="codeText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="postalCodeBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="2" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -190,6 +224,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${address.country}" target="countryText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="countryBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="3" gridWidth="0" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -218,6 +258,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${bankingInformation.accountNumber}" target="ibanText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="accountNumberBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="3" gridY="4" gridWidth="0" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -246,6 +292,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${bankingInformation.bank}" target="bankText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="bankBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="4" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -274,6 +326,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${legalInformation.fiscalIdentification}" target="vatidText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="fiscalIdBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="-1" gridY="5" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -302,6 +360,12 @@
           <Dimension value="[240, 23]"/>
         </Property>
       </Properties>
+      <BindingProperties>
+        <BindingProperty name="text" source="model" sourcePath="${legalInformation.registrationNumber}" target="registrationText" targetPath="text" updateStrategy="0" immediately="false">
+          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="name" type="java.lang.String" value="registrationNumberBinding"/>
+        </BindingProperty>
+      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="3" gridY="5" gridWidth="0" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="4" insetsLeft="4" insetsBottom="4" insetsRight="8" anchor="17" weightX="0.0" weightY="0.0"/>

@@ -1,18 +1,26 @@
 package ro.samlex.reelcash;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.io.CompanyDataStreamFactory;
+import ro.samlex.reelcash.io.FileInputSource;
 import ro.samlex.reelcash.ui.MainWindow;
 import ro.samlex.reelcash.ui.welcome.JWelcomeDialog;
 
 public class Application {
 
     private static final Application APPLICATION_INSTANCE;
+    private final Path dbFolderPath;
+    private Party company;
 
     public static void showMainFrame() {
         MainWindow window = new MainWindow();
@@ -29,10 +37,9 @@ public class Application {
         welcomeDialog.setLocationRelativeTo(null);
         welcomeDialog.setVisible(true);
     }
-    private final Party company;
 
     private Application() {
-        company = new Party();
+        dbFolderPath = FileSystems.getDefault().getPath(SysUtils.getDbFolderPath());
     }
 
     static {
@@ -50,17 +57,25 @@ public class Application {
         }
         showWelcomeDialog();
     }
-    
+
     public Party getCompany() {
         return company;
     }
-    
+
     private boolean loadCompanyData() {
-        try (InputStream is = new CompanyDataStreamFactory().createInputStream()) {
-            company.load(is);
+        try {
+            if (!Files.exists(dbFolderPath)) {
+                Files.createDirectories(dbFolderPath);
+            }
+            Path companyDataFilePath = FileSystems.getDefault().getPath(
+                    SysUtils.getDbFolderPath(), Reelcash.COMPANY_DATA_FILE_NAME);
+            if (!Files.exists(companyDataFilePath)) {
+                return false;
+            }
+            try (final Reader companyDataReader = new FileInputSource(companyDataFilePath).newReader()) {
+                company = new Gson().fromJson(companyDataReader, Party.class);
+            }
             return true;
-        } catch (NullPointerException ex) {
-            return false;
         } catch (IOException ex) {
             Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);
         }
