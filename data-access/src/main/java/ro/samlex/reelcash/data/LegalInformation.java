@@ -1,25 +1,36 @@
 package ro.samlex.reelcash.data;
 
-import java.io.Serializable;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
+import ro.samlex.reelcash.PropertyChangeObservable;
 
-public class LegalInformation implements Serializable {
-    private final String fiscalIdentification;
-    private final String registrationNumber;
+public class LegalInformation extends PropertyChangeObservable {
 
-    public LegalInformation(String fiscalIdentification, String registrationNumber) {
-        if (fiscalIdentification == null || fiscalIdentification.isEmpty())
-            throw new NullPointerException("LegalInformation: VAT ID is null");
-        if (registrationNumber == null || registrationNumber.isEmpty())
-            throw new NullPointerException("LegalInformation: registration number is null");
-        this.fiscalIdentification = fiscalIdentification;
-        this.registrationNumber = registrationNumber;
+    private String fiscalId;
+    private String registration;
+
+    @Getter
+    public String getFiscalId() {
+        return fiscalId;
     }
 
-    public String getRegistrationNumber() {
-        return registrationNumber;
+    @Setter
+    public void setFiscalId(String id) {
+        String old = this.fiscalId;
+        this.fiscalId = id;
+        firePropertyChanged("fiscalId", old, this.fiscalId);
     }
 
-    public String getFiscalIdentification() {
-        return fiscalIdentification;
+    @Getter
+    public String getRegistration() {
+        return registration;
     }
+
+    @Setter
+    public void setRegistration(String registration) {
+        String old = this.fiscalId;
+        this.registration = registration;
+        firePropertyChanged("registration", old, this.registration);
+    }
+
 }

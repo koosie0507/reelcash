@@ -5,6 +5,7 @@ import javax.swing.table.TableModel;
 import ro.samlex.reelcash.Application;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
+import ro.samlex.reelcash.data.Party;
 
 public class JInvoicePanel extends javax.swing.JPanel {
 
@@ -35,7 +36,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
     private Invoice updateModelInstance(Invoice result) {
         result.setNumber((Integer) numberSpinner.getModel().getValue());
         result.setDate((java.util.Date) dateSpinner.getModel().getValue());
-        result.setRecipient(invoicedContactPanel.getModel());
+        result.setRecipient(new Party());
         result.getInvoicedItems().clear();
         TableModel tableModel = invoiceDetailsTable.getModel();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
@@ -209,7 +210,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
     }
 
     private void updateUiFromModel(Invoice model) {
-        invoicedContactPanel.setModel(model.getRecipient());
+        //invoicedContactPanel.setModel(model.getRecipient());
         dateSpinner.setValue(model.getDate());
         numberSpinner.setValue(model.getNumber());
         DefaultTableModel tableModel = (DefaultTableModel) invoiceDetailsTable.getModel();

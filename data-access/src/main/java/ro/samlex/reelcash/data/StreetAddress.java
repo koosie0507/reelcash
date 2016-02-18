@@ -1,60 +1,74 @@
 package ro.samlex.reelcash.data;
 
-import java.io.Serializable;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
+import ro.samlex.reelcash.PropertyChangeObservable;
 
-public class StreetAddress implements Serializable {
+public class StreetAddress extends PropertyChangeObservable {
+
     private String town;
     private String street;
     private String region;
     private String postalCode;
     private String country;
-    private String formattedAddress;
 
-    public StreetAddress() {
-        this.street = this.town = this.region = this.postalCode = this.country = this.formattedAddress = "";
-    }
-    
-    private void validateNotNull(Object nullable, String message) {
-        if(nullable == null)
-            throw new NullPointerException(message);
-    }
-    
-    public StreetAddress(String street, String town, String region, String postalCode, String country) {
-        validateNotNull(street, "StreetAddress: street is null");
-        validateNotNull(town, "StreetAddress: town is null");
-        validateNotNull(region, "StreetAddress: region is null");
-        validateNotNull(postalCode, "StreetAddress: postalCode is null");
-        validateNotNull(country, "StreetAddress: country is null");
-        this.street = street;
+    @Setter
+    public void setTown(String town) {
+        String old = this.town;
         this.town = town;
-        this.region = region;
-        this.postalCode = postalCode;
-        this.country = country;
-        this.formattedAddress = street + ", " + town + ", " + region + ", " + postalCode + ", " + country;
+        firePropertyChanged("town", old, this.town);
     }
 
+    @Setter
+    public void setStreet(String street) {
+        String old = this.street;
+        this.street = street;
+        firePropertyChanged("street", old, this.street);
+    }
+
+    @Setter
+    public void setRegion(String region) {
+        String old = this.region;
+        this.region = region;
+        firePropertyChanged("region", old, this.region);
+    }
+
+    @Setter
+    public void setPostalCode(String postalCode) {
+        String old = this.postalCode;
+        this.postalCode = postalCode;
+        firePropertyChanged("postalCode", old, this.postalCode);
+    }
+
+    @Setter
+    public void setCountry(String country) {
+        String old = this.country;
+        this.country = country;
+        firePropertyChanged("country", old, this.country);
+    }
+
+    @Getter
     public String getStreet() {
         return street;
     }
 
+    @Getter
     public String getTown() {
         return town;
     }
 
+    @Getter
     public String getRegion() {
         return region;
     }
 
+    @Getter
     public String getPostalCode() {
         return postalCode;
     }
 
+    @Getter
     public String getCountry() {
         return country;
-    }
-
-    @Override
-    public String toString() {
-        return this.formattedAddress;
     }
 }

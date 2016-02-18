@@ -3,6 +3,9 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
     <Component class="ro.samlex.reelcash.data.Party" name="model">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+      </AuxValues>
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -91,7 +94,6 @@
       <BindingProperties>
         <BindingProperty name="text" source="model" sourcePath="${address.street}" target="addressText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="streetBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -125,7 +127,6 @@
       <BindingProperties>
         <BindingProperty name="text" source="model" sourcePath="${address.town}" target="townText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="townBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -159,7 +160,6 @@
       <BindingProperties>
         <BindingProperty name="text" source="model" sourcePath="${address.region}" target="regionText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="regionBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -193,7 +193,6 @@
       <BindingProperties>
         <BindingProperty name="text" source="model" sourcePath="${address.postalCode}" target="codeText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="postalCodeBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -227,7 +226,6 @@
       <BindingProperties>
         <BindingProperty name="text" source="model" sourcePath="${address.country}" target="countryText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="countryBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -259,9 +257,8 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="model" sourcePath="${bankingInformation.accountNumber}" target="ibanText" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="model" sourcePath="${bankAccount.accountNumber}" target="ibanText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="accountNumberBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -293,9 +290,8 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="model" sourcePath="${bankingInformation.bank}" target="bankText" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="model" sourcePath="${bankAccount.bank}" target="bankText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="bankBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -327,9 +323,8 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="model" sourcePath="${legalInformation.fiscalIdentification}" target="vatidText" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="model" sourcePath="${legalInformation.fiscalId}" target="vatidText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="fiscalIdBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
@@ -361,9 +356,8 @@
         </Property>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="model" sourcePath="${legalInformation.registrationNumber}" target="registrationText" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="model" sourcePath="${legalInformation.registration}" target="registrationText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-          <Property name="name" type="java.lang.String" value="registrationNumberBinding"/>
         </BindingProperty>
       </BindingProperties>
       <Constraints>

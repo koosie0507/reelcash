@@ -1,56 +1,94 @@
 package ro.samlex.reelcash.data;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
 import ro.samlex.reelcash.PropertyChangeObservable;
 
 public class Party extends PropertyChangeObservable {
 
     private String name;
-    private StreetAddress address;
-    private BankInformation bankingInformation;
-    private LegalInformation legalInformation;
+    private final StreetAddress address;
+    private final BankAccount bankingInformation;
+    private final LegalInformation legalInformation;
 
     public Party() {
-        name = "";
+        address = new StreetAddress();
+        bankingInformation = new BankAccount();
+        legalInformation = new LegalInformation();
     }
 
+    @Getter
     public String getName() {
         return name;
     }
 
+    @Setter
     public void setName(String value) {
-        if (value == null) {
-            throw new NullPointerException();
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException();
         }
+        String oldValue = name;
         name = value;
+        firePropertyChanged("name", oldValue, name);
     }
 
+    @Getter
     public StreetAddress getAddress() {
         return this.address;
     }
 
-    public void setAddress(StreetAddress address) {
-        Object old = this.address;
-        this.address = address;
-        firePropertyChanged("address", old, this.address);
-    }
-
-    public BankInformation getBankingInformation() {
+    @Getter
+    public BankAccount getBankAccount() {
         return bankingInformation;
     }
 
-    public void setBankingInformation(String bankName, String accountNumber) {
-        Object old = this.bankingInformation;
-        this.bankingInformation = new BankInformation(bankName, accountNumber);
-        firePropertyChanged("bankingInformation", old, this.bankingInformation);
-    }
-
+    @Getter
     public LegalInformation getLegalInformation() {
         return legalInformation;
     }
 
-    public void setLegalInformation(String fiscalId, String registrationNumber) {
-        Object old = this.legalInformation;
-        this.legalInformation = new LegalInformation(fiscalId, registrationNumber);
-        firePropertyChanged("legalInformation", old, this.legalInformation);
+    public Party street(String street) {
+        this.address.setStreet(street);
+        return this;
+    }
+
+    public Party town(String town) {
+        this.address.setTown(town);
+        return this;
+    }
+
+    public Party postalCode(String postalCode) {
+        this.address.setPostalCode(postalCode);
+        return this;
+    }
+
+    public Party country(String country) {
+        this.address.setCountry(country);
+        return this;
+    }
+
+    public Party region(String region) {
+        this.address.setRegion(region);
+        return this;
+    }
+
+    public Party bank(String bank) {
+        this.bankingInformation.setBank(bank);
+        return this;
+    }
+
+    public Party accountNumber(String accountNumber) {
+        this.bankingInformation.setAccountNumber(accountNumber);
+        return this;
+    }
+
+    public Party fiscalId(String id) {
+        this.legalInformation.setFiscalId(id);
+        return this;
+    }
+
+    public Party registration(String registration) {
+        this.legalInformation.setRegistration(registration);
+        return this;
     }
 }
