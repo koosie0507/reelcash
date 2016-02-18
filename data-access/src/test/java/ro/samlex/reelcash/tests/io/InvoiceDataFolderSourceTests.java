@@ -10,8 +10,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import org.junit.*;
+import static org.junit.Assert.fail;
 import ro.samlex.reelcash.io.InputSource;
 import ro.samlex.reelcash.io.InvoiceDataFolderSource;
 
@@ -126,8 +128,7 @@ public class InvoiceDataFolderSourceTests {
             }
         }
 
-        String[] actual = new String[2];
-        Assert.assertArrayEquals(expected, text.toArray(actual));
+        Assert.assertArrayEquals(expected, text.toArray(new String[0]));
     }
 
     @Test
@@ -153,5 +154,21 @@ public class InvoiceDataFolderSourceTests {
         String[] actual = new String[1];
         String[] expected = {"text 1"};
         Assert.assertArrayEquals(expected, text.toArray(actual));
+    }
+
+    @Test
+    public void givenInvoiceFolderIterator_onFolderWhichHasDissappeared_anEmptySequenceWillBeIterated() {
+        InvoiceDataFolderSource sut = null;
+        try {
+            Path dirPath = Files.createTempDirectory(tempDirPath, "test21");
+            Path filePath = Files.createTempFile(dirPath, "invoice", ".json");
+            sut = new InvoiceDataFolderSource(dirPath);
+            Files.delete(filePath);
+            Files.delete(dirPath);
+        } catch (IOException e) {
+            fail("Unable to create test setup: " + e.getMessage());
+        }
+
+        Assert.assertFalse(sut.iterator().hasNext());
     }
 }
