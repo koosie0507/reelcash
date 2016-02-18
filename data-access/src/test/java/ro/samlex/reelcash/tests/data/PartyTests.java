@@ -1,76 +1,93 @@
 package ro.samlex.reelcash.tests.data;
 
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import ro.samlex.reelcash.data.Party;
-import ro.samlex.reelcash.data.StreetAddress;
 
 public class PartyTests {
+
+    private static final String TEST_STRING = "A string that someone else is very unlikely to have thought of";
+
     @Test
-    public void given_party_with_specified_name__the_name_is_stored_in_memory() {
+    public void givenParty_settingNameToAValidValue_partyWillHaveGivenName() {
         Party p = new Party();
         p.setName("a name");
         Assert.assertEquals("a name", p.getName());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void given_party_with_null_name__NullPointerException_is_thrown() {
+    @Test(expected = IllegalArgumentException.class)
+    public void givenParty_settingNameToNull_throwsIllegalArgumentException() {
         Party p = new Party();
         p.setName(null);
     }
 
-    @Test
-    public void given_party_has_street_address__the_address_string_contains_street_address() {
+    @Test(expected = IllegalArgumentException.class)
+    public void givenParty_settingNameToEmptyString_throwsIllegalArgumentException() {
         Party p = new Party();
-        
-        p.setAddress(new StreetAddress("street+number", "city", "region", "code", "country"));
-
-        Assert.assertEquals("street+number, city, region, code, country", p.getAddress().toString());
+        p.setName("");
     }
 
     @Test
-    public void given_valid_banking_information__it_can_be_assigned_to_party() {
-        Party p = new Party();
-        p.setBankingInformation("Bank name", "IBAN");
+    public void givenParty_usingStreet_streetAddressRelfectsValue() {
+        Party p = new Party().street(TEST_STRING);
 
-        Assert.assertEquals("Bank name", p.getBankingInformation().getBank());
-        Assert.assertEquals("IBAN", p.getBankingInformation().getAccountNumber());
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void given_banking_information_without_bank_name__illegal_argument_exception_is_thrown() {
-        Party p = new Party();
-
-        p.setBankingInformation(null, "IBAN");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void given_banking_information_without_bank_account_number__illegal_argument_exception_is_thrown() {
-        Party p = new Party();
-
-        p.setBankingInformation("bank", null);
+        assertEquals(TEST_STRING, p.getAddress().getStreet());
     }
 
     @Test
-    public void given_valid_legal_information__it_can_be_assigned_to_party() {
-        Party p = new Party();
-        p.setLegalInformation("CIF/NIF/CNP", "ORC");
+    public void givenParty_usingTown_streetAddressRelfectsValue() {
+        Party p = new Party().town(TEST_STRING);
 
-        Assert.assertEquals("CIF/NIF/CNP", p.getLegalInformation().getFiscalIdentification());
-        Assert.assertEquals("ORC", p.getLegalInformation().getRegistrationNumber());
+        assertEquals(TEST_STRING, p.getAddress().getTown());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void given_legal_information_without_fiscal_id__illegal_argument_exception_is_thrown() {
-        Party p = new Party();
+    @Test
+    public void givenParty_usingPostalCode_streetAddressRelfectsValue() {
+        Party p = new Party().postalCode(TEST_STRING);
 
-        p.setLegalInformation(null, "ORC");
+        assertEquals(TEST_STRING, p.getAddress().getPostalCode());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void given_legal_information_without_registration_number__illegal_argument_exception_is_thrown() {
-        Party p = new Party();
+    @Test
+    public void givenParty_usingCountry_streetAddressRelfectsValue() {
+        Party p = new Party().country(TEST_STRING);
 
-        p.setLegalInformation("CIF", null);
+        assertEquals(TEST_STRING, p.getAddress().getCountry());
+    }
+
+    @Test
+    public void givenParty_usingRegion_streetAddressRelfectsValue() {
+        Party p = new Party().region(TEST_STRING);
+
+        assertEquals(TEST_STRING, p.getAddress().getRegion());
+    }
+
+    @Test
+    public void givenParty_usingBank_streetAddressRelfectsValue() {
+        Party p = new Party().bank(TEST_STRING);
+
+        assertEquals(TEST_STRING, p.getBankAccount().getBank());
+    }
+
+    @Test
+    public void givenParty_usingAccountNumber_streetAddressRelfectsValue() {
+        Party p = new Party().accountNumber(TEST_STRING);
+
+        assertEquals(TEST_STRING, p.getBankAccount().getAccountNumber());
+    }
+
+    @Test
+    public void givenParty_usingFiscalId_streetAddressRelfectsValue() {
+        Party p = new Party().fiscalId(TEST_STRING);
+
+        assertEquals(TEST_STRING, p.getLegalInformation().getFiscalId());
+    }
+
+    @Test
+    public void givenParty_usingRegistration_streetAddressRelfectsValue() {
+        Party p = new Party().registration(TEST_STRING);
+
+        assertEquals(TEST_STRING, p.getLegalInformation().getRegistration());
     }
 }

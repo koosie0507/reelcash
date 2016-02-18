@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import ro.samlex.reelcash.io.FileOutputSink;
@@ -24,6 +25,17 @@ public class FileOutputSinkTests {
             assertEquals(expected, contentBuilder.toString());
         } catch (IOException ex) {
             fail("Failed to read from test file: " + ex.getMessage());
+        }
+    }
+
+    @After
+    public void deleteTestFile() {
+        try {
+            if (Files.exists(TEST_FILE_PATH)) {
+                Files.delete(TEST_FILE_PATH);
+            }
+        } catch (IOException e) {
+            fail("Unable to clean up test file: " + e.getMessage());
         }
     }
 
