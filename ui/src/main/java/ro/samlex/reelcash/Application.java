@@ -59,6 +59,10 @@ public class Application {
     public Party getCompany() {
         return company;
     }
+    
+    public void setCompany(Party company) {
+        this.company = company;
+    }
 
     private boolean loadCompanyData() {
         try {

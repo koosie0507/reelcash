@@ -55,7 +55,9 @@
             </Property>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="value" source="dataContext" sourcePath="${model.number}" target="numberSpinner" targetPath="value" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="value" source="dataContext" sourcePath="${model.number}" target="numberSpinner" targetPath="value" updateStrategy="0" immediately="false">
+              <Property name="name" type="java.lang.String" value="numberBinding"/>
+            </BindingProperty>
           </BindingProperties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblDate">
@@ -327,12 +329,7 @@
               <Properties>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                   <TableColumnModel selectionModel="0">
-                    <Column maxWidth="250" minWidth="50" prefWidth="120" resizable="true">
-                      <Title/>
-                      <Editor/>
-                      <Renderer/>
-                    </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="50" resizable="false">
+                    <Column maxWidth="400" minWidth="160" prefWidth="240" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
@@ -342,7 +339,7 @@
                       <Editor/>
                       <Renderer/>
                     </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="65" resizable="false">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                       <Title/>
                       <Editor/>
                       <Renderer/>
@@ -359,18 +356,12 @@
                     <BindingParameter name="NAME" value="Item name"/>
                     <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
                   </Subbinding>
-                  <Subbinding sourcePath="${quantity}">
-                    <BindingParameter name="NAME" value="Qty"/>
-                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Double.class"/>
-                    <BindingParameter name="javax.swing.binding.ParameterKeys.EDITABLE" value="false"/>
-                  </Subbinding>
                   <Subbinding sourcePath="${unitPrice}">
                     <BindingParameter name="NAME" value="Price"/>
                     <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Double.class"/>
                   </Subbinding>
-                  <Subbinding sourcePath="${vat}">
-                    <BindingParameter name="NAME" value="VAT"/>
-                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Double.class"/>
+                  <Subbinding sourcePath=" ">
+                    <BindingParameter name="NAME" value=""/>
                     <BindingParameter name="javax.swing.binding.ParameterKeys.EDITABLE" value="false"/>
                   </Subbinding>
                 </BindingProperty>

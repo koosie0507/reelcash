@@ -14,6 +14,7 @@ import ro.samlex.reelcash.io.InputSource;
 public final class InvoiceListViewModel extends SelectorViewModel<Invoice> {
 
     public void loadAll(Iterable<InputSource> inputSources) {
+        getItems().clear();
         List<Invoice> invoices = new ArrayList<>();
         for (InputSource i : inputSources) {
             int idx = invoices.size();

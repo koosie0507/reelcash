@@ -75,6 +75,7 @@ public class JWelcomeDialog extends javax.swing.JDialog {
                 SysUtils.getDbFolderPath(), Reelcash.COMPANY_DATA_FILE_NAME);
         try {
             contactPanel.getDataContext().save(new FileOutputSink(companyDataPath));
+            Application.getInstance().setCompany(contactPanel.getDataContext().getModel());
             this.setVisible(false);
             Application.showMainFrame();
         } catch (IOException ex) {
