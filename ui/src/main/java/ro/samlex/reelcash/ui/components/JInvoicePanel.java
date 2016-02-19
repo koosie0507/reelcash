@@ -1,14 +1,17 @@
 package ro.samlex.reelcash.ui.components;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import jdk.nashorn.internal.objects.annotations.Getter;
-import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
-import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 
 public class JInvoicePanel extends javax.swing.JPanel {
 
+    private final PropertyChangeListener modelChangeListener;
+
     public JInvoicePanel() {
+        this.modelChangeListener = new ModelChangeListener();
         initComponents();
     }
 
@@ -35,6 +38,8 @@ public class JInvoicePanel extends javax.swing.JPanel {
         removeItemButton = new javax.swing.JButton();
         invoicedItemsTableScroller = new javax.swing.JScrollPane();
         invoiceDetailsTable = new javax.swing.JTable();
+
+        this.dataContext.addPropertyChangeListener(this.modelChangeListener);
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
@@ -73,8 +78,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
         add(headerPanel);
 
         invoicedContactPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(16, 8, 8, 8), "Invoiced Party Contact Information", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Dialog", 0, 14))); // NOI18N
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.recipient}"), invoicedContactPanel.getDataContext(), org.jdesktop.beansbinding.BeanProperty.create("model"));
-        bindingGroup.addBinding(binding);
+        invoicedContactPanel.getDataContext().addPropertyChangeListener(this.modelChangeListener);
         add(invoicedContactPanel);
 
         invoicedItemsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(16, 8, 8, 8), "Invoiced items", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 14))); // NOI18N
@@ -185,11 +189,20 @@ public class JInvoicePanel extends javax.swing.JPanel {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    public void clearData() {
-        Invoice i = getDataContext().getModel();
-        i.setDate(new java.util.Date());
-        i.setNumber(1);
-        i.setEmitter(new Party());
-        i.setRecipient(new Party());
+    private class ModelChangeListener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if (!"model".equals(evt.getPropertyName())) {
+                return;
+            }
+            if (evt.getSource() == dataContext) {
+                invoicedContactPanel.getDataContext().setModel(dataContext.getModel().getRecipient());
+
+            } else if (evt.getSource() == invoicedContactPanel.getDataContext()) {
+                dataContext.getModel().setRecipient(invoicedContactPanel.getDataContext().getModel());
+            }
+        }
     }
+
 }

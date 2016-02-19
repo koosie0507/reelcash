@@ -1,11 +1,6 @@
 package ro.samlex.reelcash.tests.data;
 
-import com.google.gson.Gson;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import ro.samlex.reelcash.data.Invoice;

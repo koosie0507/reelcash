@@ -3,6 +3,9 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
     <Component class="ro.samlex.reelcash.viewmodels.InvoiceViewModel" name="dataContext">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="this.dataContext.addPropertyChangeListener(this.modelChangeListener);&#xa;"/>
+      </AuxValues>
     </Component>
   </NonVisualComponents>
   <AuxValues>
@@ -224,6 +227,9 @@
           </Border>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="invoicedContactPanel.getDataContext().addPropertyChangeListener(this.modelChangeListener);&#xa;"/>
+      </AuxValues>
     </Component>
     <Container class="javax.swing.JPanel" name="invoicedItemsPanel">
       <Properties>

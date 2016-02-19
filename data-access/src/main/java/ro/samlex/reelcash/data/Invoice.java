@@ -89,11 +89,6 @@ public class Invoice {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Invoice other = (Invoice) obj;
-        if (!Objects.equals(this.number, other.number)) {
-            return false;
-        }
-        return Objects.equals(this.date, other.date);
+        return Objects.equals(this.uuid, ((Invoice) obj).uuid);
     }
-
 }

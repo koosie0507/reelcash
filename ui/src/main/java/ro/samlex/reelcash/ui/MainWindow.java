@@ -3,15 +3,18 @@ package ro.samlex.reelcash.ui;
 import java.awt.CardLayout;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.observablecollections.ObservableListListener;
+import ro.samlex.reelcash.Application;
 import ro.samlex.reelcash.Reelcash;
 import ro.samlex.reelcash.SysUtils;
 import ro.samlex.reelcash.data.Invoice;
+import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.io.FileOutputSink;
 import ro.samlex.reelcash.io.InvoiceDataFolderSource;
 
@@ -170,21 +173,19 @@ public class MainWindow extends javax.swing.JFrame {
         cardLayout.show(getContentPane(), name);
     }
 
-    private void put(Invoice invoice) {
-        int index = dataContext.getItems().indexOf(invoice);
-        if (index < 0) {
-            dataContext.getItems().add(invoice);
-        } else {
-            dataContext.getItems().set(index, invoice);
-        }
-    }
-
     private void showInvoiceList() {
         switchCard("list");
     }
 
+    private void showInvoice() {
+        switchCard("invoice");
+    }
+
     private void saveInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveInvoiceButtonActionPerformed
         try {
+            if (!Files.exists(invoiceFolderPath)) {
+                Files.createDirectories(invoiceFolderPath);
+            }
             Path invoiceFilePath = FileSystems.getDefault().getPath(
                     invoiceFolderPath.toString(), invoicePanel.getDataContext().getModel().getUuid() + ".json");
 
@@ -201,20 +202,33 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_saveInvoiceButtonActionPerformed
 
+    private void put(Invoice invoice) {
+        int index = dataContext.getItems().indexOf(invoice);
+        if (index < 0) {
+            dataContext.getItems().add(invoice);
+        } else {
+            dataContext.getItems().set(index, invoice);
+        }
+    }
+
+    private Invoice newEmptyInvoice() {
+        Invoice result = new Invoice();
+        result.setEmitter(Application.getInstance().getCompany());
+        result.setRecipient(new Party());
+        return result;
+    }
+    
     private void addInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addInvoiceButtonActionPerformed
+        invoicePanel.getDataContext().setModel(newEmptyInvoice());
         showInvoice();
     }//GEN-LAST:event_addInvoiceButtonActionPerformed
 
     private void newInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newInvoiceButtonActionPerformed
+        invoicePanel.getDataContext().setModel(newEmptyInvoice());
         showInvoice();
     }//GEN-LAST:event_newInvoiceButtonActionPerformed
 
-    private void showInvoice() {
-        switchCard("invoice");
-    }
-
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        invoicePanel.clearData();
         showInvoiceList();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
