@@ -33,7 +33,7 @@ public class MainWindow extends javax.swing.JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                dataContext.getLoadInvoicesCommand().execute();
+                dataContext.loadAll(invoiceFolderSource);
             }
         });
     }
@@ -43,7 +43,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        dataContext = new ro.samlex.reelcash.viewmodels.InvoiceListViewModel(this.invoiceFolderSource);
+        dataContext = new ro.samlex.reelcash.viewmodels.InvoiceListViewModel();
         instructionsPanel = new javax.swing.JPanel();
         instructionsTextArea = new javax.swing.JTextArea();
         addInvoiceButton = new javax.swing.JButton();
