@@ -53,6 +53,19 @@ public class InvoiceListViewModelTests {
         assertTrue(sut.getItems().isEmpty());
     }
 
+    @Test
+    public void givenNewInstance_loadingTwice_keepsDataOnlyFromOneOperation() {
+        String str1 = "{\"uuid\":\"685db19f-c70d-4677-b28c-94d468854ff1\",\"number\":42,\"date\":\"Feb 19, 2016 10:00:00 AM\",\"invoicedItems\":[]}";
+        String str2 = "{\"uuid\":\"685db19f-c70e-4677-b28c-94d468854ff1\",\"number\":43,\"date\":\"Feb 20, 2016 10:00:00 AM\",\"invoicedItems\":[]}";
+        final InvoiceListViewModel sut = new InvoiceListViewModel();
+        sut.loadAll(new StringInputSourceSeries(str1));
+
+        sut.loadAll(new StringInputSourceSeries(str2));
+
+        assertThat(sut.getItems().size(), is(1));
+        assertThat(sut.getItems().get(0).getNumber(), equalTo(43));
+    }
+
     private static class StringInputSourceSeries implements Iterable<InputSource> {
 
         private final String[] data;

@@ -57,7 +57,8 @@ public class InvoiceViewModel extends SelectorViewModel<InvoiceItem> {
 
         @Override
         public void listElementsAdded(ObservableList list, int index, int count) {
-            model.getInvoicedItems().addAll(index, list.subList(index, count));
+            final List subList = list.subList(index, index + count);
+            model.getInvoicedItems().addAll(index, subList);
         }
 
         @Override

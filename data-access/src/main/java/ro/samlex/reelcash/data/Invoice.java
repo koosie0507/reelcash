@@ -6,11 +6,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import ro.samlex.reelcash.PropertyChangeObservable;
 
-public class Invoice {
+public class Invoice extends PropertyChangeObservable {
 
     private final UUID uuid = UUID.randomUUID();
-    private Integer number = 1;
+    private Integer number = new Integer(1);
     private Date date = today();
     private Party recipient;
     private Party emitter;
@@ -68,8 +69,10 @@ public class Invoice {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
+        int old = this.number;
         this.number = number;
+        firePropertyChanged("number", old, this.number);
     }
 
     @Override

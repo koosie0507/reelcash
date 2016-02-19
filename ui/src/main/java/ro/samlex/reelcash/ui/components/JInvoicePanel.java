@@ -56,7 +56,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
         numberSpinner.setMinimumSize(new java.awt.Dimension(45, 23));
         numberSpinner.setPreferredSize(new java.awt.Dimension(60, 23));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.number}"), numberSpinner, org.jdesktop.beansbinding.BeanProperty.create("value"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.number}"), numberSpinner, org.jdesktop.beansbinding.BeanProperty.create("value"), "numberBinding");
         bindingGroup.addBinding(binding);
 
         headerPanel.add(numberSpinner);
@@ -125,31 +125,23 @@ public class JInvoicePanel extends javax.swing.JPanel {
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${name}"));
         columnBinding.setColumnName("Item name");
         columnBinding.setColumnClass(String.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${quantity}"));
-        columnBinding.setColumnName("Qty");
-        columnBinding.setColumnClass(Double.class);
-        columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${unitPrice}"));
         columnBinding.setColumnName("Price");
         columnBinding.setColumnClass(Double.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${vat}"));
-        columnBinding.setColumnName("VAT");
-        columnBinding.setColumnClass(Double.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create(" "));
+        columnBinding.setColumnName("");
         columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         invoicedItemsTableScroller.setViewportView(invoiceDetailsTable);
         if (invoiceDetailsTable.getColumnModel().getColumnCount() > 0) {
-            invoiceDetailsTable.getColumnModel().getColumn(0).setMinWidth(50);
-            invoiceDetailsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
-            invoiceDetailsTable.getColumnModel().getColumn(0).setMaxWidth(250);
-            invoiceDetailsTable.getColumnModel().getColumn(1).setResizable(false);
-            invoiceDetailsTable.getColumnModel().getColumn(1).setPreferredWidth(50);
-            invoiceDetailsTable.getColumnModel().getColumn(2).setMinWidth(50);
-            invoiceDetailsTable.getColumnModel().getColumn(2).setPreferredWidth(65);
-            invoiceDetailsTable.getColumnModel().getColumn(2).setMaxWidth(120);
-            invoiceDetailsTable.getColumnModel().getColumn(3).setResizable(false);
-            invoiceDetailsTable.getColumnModel().getColumn(3).setPreferredWidth(65);
+            invoiceDetailsTable.getColumnModel().getColumn(0).setMinWidth(160);
+            invoiceDetailsTable.getColumnModel().getColumn(0).setPreferredWidth(240);
+            invoiceDetailsTable.getColumnModel().getColumn(0).setMaxWidth(400);
+            invoiceDetailsTable.getColumnModel().getColumn(1).setMinWidth(50);
+            invoiceDetailsTable.getColumnModel().getColumn(1).setPreferredWidth(65);
+            invoiceDetailsTable.getColumnModel().getColumn(1).setMaxWidth(120);
+            invoiceDetailsTable.getColumnModel().getColumn(2).setResizable(false);
         }
 
         invoicedItemsPanel.add(invoicedItemsTableScroller, java.awt.BorderLayout.CENTER);
