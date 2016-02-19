@@ -15,15 +15,6 @@ import ro.samlex.reelcash.viewmodels.SelectorViewModel;
 
 public class InvoiceViewModelTests {
     
-    private static Invoice invoice(int number, Date date, Party emitter, Party recipient) {
-        Invoice result = new Invoice();
-        result.setNumber(number);
-        result.setDate(date);
-        result.setEmitter(emitter);
-        result.setRecipient(recipient);
-        return result;
-    }
-
     private static void setUpViewModel(InvoiceViewModel viewModel) {
         Party emitter = new Party();
         emitter.setName("emitter");
