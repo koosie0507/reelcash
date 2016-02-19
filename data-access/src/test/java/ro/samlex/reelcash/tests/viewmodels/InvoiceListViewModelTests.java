@@ -9,7 +9,6 @@ import java.util.Iterator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-import ro.samlex.reelcash.commands.Command;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.io.InputSource;
 
@@ -20,17 +19,7 @@ public class InvoiceListViewModelTests {
 
     @Test
     public void givenNewInstance_inAnyCase_itIsASelectorViewModel() {
-        assertThat(new InvoiceListViewModel(new StringInputSourceSeries()), instanceOf(SelectorViewModel.class));
-    }
-
-    @Test
-    public void givenNewInstance_inAnyState_loadInvoicesCommandIsOfExpectedType() {
-        assertThat(new InvoiceListViewModel(new StringInputSourceSeries()).getLoadInvoicesCommand(), instanceOf(Command.class));
-    }
-
-    @Test
-    public void givenNewInstance_inInitialState_loadCommandIsExecutable() {
-        assertThat(new InvoiceListViewModel(new StringInputSourceSeries()).getLoadInvoicesCommand().isExecutable(), is(true));
+        assertThat(new InvoiceListViewModel(), instanceOf(SelectorViewModel.class));
     }
 
     @Test
@@ -38,9 +27,9 @@ public class InvoiceListViewModelTests {
         Invoice testData = new Invoice();
         testData.setNumber(42);
         String json = new Gson().toJson(testData);
-        final InvoiceListViewModel sut = new InvoiceListViewModel(new StringInputSourceSeries(json));
+        final InvoiceListViewModel sut = new InvoiceListViewModel();
 
-        sut.getLoadInvoicesCommand().execute();
+        sut.loadAll(new StringInputSourceSeries(json));
 
         assertThat(sut.getItems().size(), is(1));
         assertThat(sut.getItems(), everyItem(equalTo(testData)));
@@ -48,18 +37,18 @@ public class InvoiceListViewModelTests {
 
     @Test
     public void givenNewInstance_afterExecutingLoadCommandWhenInputSourceDoesNotContainJson_invoiceListIsEmpty() {
-        final InvoiceListViewModel sut = new InvoiceListViewModel(new StringInputSourceSeries("some-invalid-data"));
+        final InvoiceListViewModel sut = new InvoiceListViewModel();
 
-        sut.getLoadInvoicesCommand().execute();
+        sut.loadAll(new StringInputSourceSeries("some-invalid-data"));
 
         assertTrue(sut.getItems().isEmpty());
     }
 
     @Test
     public void givenNewInstance_whenIOExceptionOccurs_invoiceIsEmpty() {
-        final InvoiceListViewModel sut = new InvoiceListViewModel(Arrays.asList((InputSource)new IOExceptionReaderSource()));
+        final InvoiceListViewModel sut = new InvoiceListViewModel();
 
-        sut.getLoadInvoicesCommand().execute();
+        sut.loadAll(Arrays.asList((InputSource)new IOExceptionReaderSource()));
 
         assertTrue(sut.getItems().isEmpty());
     }
