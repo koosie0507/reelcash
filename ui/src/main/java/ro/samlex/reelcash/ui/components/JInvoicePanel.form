@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="ro.samlex.reelcash.viewmodels.InvoiceViewModel" name="dataContext">
+    </Component>
+  </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -47,6 +51,9 @@
               <Dimension value="[60, 23]"/>
             </Property>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="value" source="dataContext" sourcePath="${model.number}" target="numberSpinner" targetPath="value" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblDate">
           <Properties>
@@ -68,6 +75,9 @@
               <Dimension value="[150, 23]"/>
             </Property>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="value" source="dataContext" sourcePath="${model.date}" target="dateSpinner" targetPath="value" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
         </Component>
       </SubComponents>
       <LayoutCode>
@@ -309,21 +319,56 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="invoiceDetailsTable">
               <Properties>
-                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="4" rowCount="1">
-                    <Column editable="true" title="Name" type="java.lang.String">
-                      <Data value=""/>
+                <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                  <TableColumnModel selectionModel="0">
+                    <Column maxWidth="250" minWidth="50" prefWidth="120" resizable="true">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
                     </Column>
-                    <Column editable="true" title="Quantity" type="java.lang.Integer">
-                      <Data value="1"/>
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="50" resizable="false">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
                     </Column>
-                    <Column editable="true" title="Unit Price" type="java.lang.Double"/>
-                    <Column editable="true" title="VAT" type="java.lang.Double">
-                      <Data value="0.24"/>
+                    <Column maxWidth="120" minWidth="50" prefWidth="65" resizable="true">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
                     </Column>
-                  </Table>
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="65" resizable="false">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
+                    </Column>
+                  </TableColumnModel>
+                </Property>
+                <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                  <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                 </Property>
               </Properties>
+              <BindingProperties>
+                <BindingProperty name="elements" source="dataContext" sourcePath="${items}" target="invoiceDetailsTable" targetPath="elements" updateStrategy="0" immediately="true">
+                  <Subbinding sourcePath="${name}">
+                    <BindingParameter name="NAME" value="Item name"/>
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
+                  </Subbinding>
+                  <Subbinding sourcePath="${quantity}">
+                    <BindingParameter name="NAME" value="Qty"/>
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Double.class"/>
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.EDITABLE" value="false"/>
+                  </Subbinding>
+                  <Subbinding sourcePath="${unitPrice}">
+                    <BindingParameter name="NAME" value="Price"/>
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Double.class"/>
+                  </Subbinding>
+                  <Subbinding sourcePath="${vat}">
+                    <BindingParameter name="NAME" value="VAT"/>
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Double.class"/>
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.EDITABLE" value="false"/>
+                  </Subbinding>
+                </BindingProperty>
+              </BindingProperties>
             </Component>
           </SubComponents>
         </Container>

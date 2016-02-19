@@ -1,11 +1,10 @@
 package ro.samlex.reelcash.tests.viewmodels;
 
+import ro.samlex.reelcash.tests.io.StringListOutputSink;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
 import ro.samlex.reelcash.data.Party;
@@ -32,36 +31,18 @@ public class CompanyInformationViewModelTests {
 
     @Test
     public void givenViewModel_whenSavingDataUsingOutputSink_outputDataIsAsExpected() {
-        CompanyInformationViewModel sut = new CompanyInformationViewModel();
+        final StringListOutputSink outputSink = new StringListOutputSink();
+        final CompanyInformationViewModel sut = new CompanyInformationViewModel();
         sut.setModel(TEST_PARTY);
-        final List<String> writtenValues = new ArrayList<>();
-
+        
         try {
-            sut.save(new OutputSink() {
-                @Override
-                public Writer newWriter() throws IOException {
-                    return new Writer() {
-                        @Override
-                        public void write(char[] chars, int i, int i1) throws IOException {
-                            writtenValues.add(new String(chars, i, i1));
-                        }
-
-                        @Override
-                        public void flush() throws IOException {
-                        }
-
-                        @Override
-                        public void close() throws IOException {
-                        }
-                    };
-                }
-            });
+            sut.save(outputSink);
         } catch (IOException ex) {
             fail("Unable to save company information: " + ex.getMessage());
         }
 
         final String expectedOutput = new Gson().toJson(TEST_PARTY);
-        assertEquals(expectedOutput, writtenValues.get(0));
+        assertEquals(expectedOutput, outputSink.getWrittenValues().get(0));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -74,6 +55,5 @@ public class CompanyInformationViewModelTests {
                 return new StringWriter();
             }
         });
-
     }
 }

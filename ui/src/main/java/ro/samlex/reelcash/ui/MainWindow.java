@@ -1,9 +1,7 @@
 package ro.samlex.reelcash.ui;
 
-import com.google.gson.Gson;
 import java.awt.CardLayout;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
@@ -187,17 +185,15 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void saveInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveInvoiceButtonActionPerformed
         try {
-            Invoice invoice = invoicePanel.getModel();
             Path invoiceFilePath = FileSystems.getDefault().getPath(
-                    invoiceFolderPath.toString(), invoice.getUuid() + ".json");
+                    invoiceFolderPath.toString(), invoicePanel.getDataContext().getModel().getUuid() + ".json");
 
-            try (Writer w = new FileOutputSink(invoiceFilePath).newWriter()) {
-                w.write(new Gson().toJson(invoice));
-                put(invoice);
-                showInvoiceList();
-            } catch (IOException e) {
-                ApplicationMessages.showError(this, "Couldn't save invoice: " + e.getMessage());
-            }
+            invoicePanel.getDataContext().save(new FileOutputSink(invoiceFilePath));
+            put(invoicePanel.getDataContext().getModel());
+            showInvoiceList();
+
+        } catch (IOException e) {
+            ApplicationMessages.showError(this, "Couldn't save invoice: " + e.getMessage());
         } catch (NullPointerException e) {
             ApplicationMessages.showError(this, "Missing information: " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -206,12 +202,10 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_saveInvoiceButtonActionPerformed
 
     private void addInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addInvoiceButtonActionPerformed
-        invoicePanel.setModel(null);
         showInvoice();
     }//GEN-LAST:event_addInvoiceButtonActionPerformed
 
     private void newInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newInvoiceButtonActionPerformed
-        invoicePanel.setModel(null);
         showInvoice();
     }//GEN-LAST:event_newInvoiceButtonActionPerformed
 
@@ -231,8 +225,8 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_invoiceListValueChanged
 
     private void modifyInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyInvoiceButtonActionPerformed
+        invoicePanel.getDataContext().setModel(dataContext.getSelectedItem());
         showInvoice();
-        invoicePanel.setModel(dataContext.getSelectedItem());
     }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
 
 
