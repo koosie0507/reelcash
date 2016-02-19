@@ -1,19 +1,31 @@
 package ro.samlex.reelcash.data;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Invoice {
+
     private final UUID uuid = UUID.randomUUID();
     private Integer number = 1;
-    private Date date = new Date();
+    private Date date = today();
     private Party recipient;
     private Party emitter;
     private final List<InvoiceItem> invoicedItems = new ArrayList<>();
-    
+
+    private static Date today() {
+        final Calendar cal = Calendar.getInstance();
+        cal.clear(Calendar.HOUR_OF_DAY);
+        cal.clear(Calendar.AM_PM);
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+        return cal.getTime();
+    }
+
     public Party getEmitter() {
         return emitter;
     }
@@ -39,7 +51,7 @@ public class Invoice {
         }
         recipient = value;
     }
-    
+
     public Date getDate() {
         return date;
     }
@@ -83,6 +95,5 @@ public class Invoice {
         }
         return Objects.equals(this.date, other.date);
     }
-    
-    
+
 }
