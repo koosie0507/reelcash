@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class Invoice {
     private final UUID uuid = UUID.randomUUID();
-    private Integer number;
-    private Date date;
+    private Integer number = 1;
+    private Date date = new Date();
     private Party recipient;
     private Party emitter;
     private final List<InvoiceItem> invoicedItems = new ArrayList<>();
