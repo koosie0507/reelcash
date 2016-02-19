@@ -1,8 +1,8 @@
 package ro.samlex.reelcash.ui.components;
 
-import javax.swing.JTextField;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import ro.samlex.reelcash.data.Party;
+import ro.samlex.reelcash.viewmodels.SimpleViewModel;
 
 public class JContactPanel extends javax.swing.JPanel {
 
@@ -11,8 +11,8 @@ public class JContactPanel extends javax.swing.JPanel {
     }
 
     @Getter
-    public Party getModel() {
-        return this.model;
+    public SimpleViewModel<Party> getDataContext() {
+        return this.dataContext;
     }
 
     @SuppressWarnings("unchecked")
@@ -60,7 +60,7 @@ public class JContactPanel extends javax.swing.JPanel {
         nameText.setMinimumSize(new java.awt.Dimension(120, 23));
         nameText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${name}"), nameText, org.jdesktop.beansbinding.BeanProperty.create("text"), "nameBinding");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.name}"), nameText, org.jdesktop.beansbinding.BeanProperty.create("text"), "nameBinding");
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -83,7 +83,7 @@ public class JContactPanel extends javax.swing.JPanel {
         addressText.setMinimumSize(new java.awt.Dimension(120, 23));
         addressText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${address.street}"), addressText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.address.street}"), addressText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -106,7 +106,7 @@ public class JContactPanel extends javax.swing.JPanel {
         townText.setMinimumSize(new java.awt.Dimension(120, 23));
         townText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${address.town}"), townText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.address.town}"), townText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -129,7 +129,7 @@ public class JContactPanel extends javax.swing.JPanel {
         regionText.setMinimumSize(new java.awt.Dimension(120, 23));
         regionText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${address.region}"), regionText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.address.region}"), regionText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -150,7 +150,7 @@ public class JContactPanel extends javax.swing.JPanel {
         codeText.setMinimumSize(new java.awt.Dimension(120, 23));
         codeText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${address.postalCode}"), codeText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.address.postalCode}"), codeText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -172,7 +172,7 @@ public class JContactPanel extends javax.swing.JPanel {
         countryText.setMinimumSize(new java.awt.Dimension(120, 23));
         countryText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${address.country}"), countryText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.address.country}"), countryText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -196,7 +196,7 @@ public class JContactPanel extends javax.swing.JPanel {
         ibanText.setMinimumSize(new java.awt.Dimension(120, 23));
         ibanText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${bankAccount.accountNumber}"), ibanText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.bankAccount.accountNumber}"), ibanText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -220,7 +220,7 @@ public class JContactPanel extends javax.swing.JPanel {
         bankText.setMinimumSize(new java.awt.Dimension(120, 23));
         bankText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${bankAccount.bank}"), bankText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.bankAccount.bank}"), bankText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -243,7 +243,7 @@ public class JContactPanel extends javax.swing.JPanel {
         vatidText.setMinimumSize(new java.awt.Dimension(120, 23));
         vatidText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${legalInformation.fiscalId}"), vatidText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.legalInformation.fiscalId}"), vatidText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -265,7 +265,7 @@ public class JContactPanel extends javax.swing.JPanel {
         registrationText.setMinimumSize(new java.awt.Dimension(120, 23));
         registrationText.setPreferredSize(new java.awt.Dimension(240, 23));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, model, org.jdesktop.beansbinding.ELProperty.create("${legalInformation.registration}"), registrationText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.legalInformation.registration}"), registrationText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -297,7 +297,7 @@ public class JContactPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblRegistration;
     private javax.swing.JLabel lblTown;
     private javax.swing.JLabel lblVATID;
-    private final ro.samlex.reelcash.data.Party model = new ro.samlex.reelcash.data.Party();
+    private final ro.samlex.reelcash.viewmodels.SimpleViewModel<Party> dataContext = new ro.samlex.reelcash.viewmodels.SimpleViewModel<>();
     private javax.swing.JTextField nameText;
     private javax.swing.JTextField regionText;
     private javax.swing.JTextField registrationText;

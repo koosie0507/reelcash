@@ -14,15 +14,14 @@ public class JWelcomeDialog extends javax.swing.JDialog {
     public JWelcomeDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.dataContext.setModel(contactPanel.getModel());
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        dataContext = new ro.samlex.reelcash.viewmodels.CompanyInformationViewModel();
         contactPanel = new ro.samlex.reelcash.ui.components.JContactPanel();
+        contactPanel.getDataContext().setModel(new ro.samlex.reelcash.data.Party());
         actionPanel = new javax.swing.JPanel();
         saveButton = new javax.swing.JButton();
         exitButton = new javax.swing.JButton();
@@ -69,13 +68,13 @@ public class JWelcomeDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_exitButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        if (evt.getSource() != this.saveButton || this.dataContext == null) {
+        if (evt.getSource() != this.saveButton || contactPanel.getDataContext() == null) {
             return;
         }
         Path companyDataPath = FileSystems.getDefault().getPath(
                 SysUtils.getDbFolderPath(), Reelcash.COMPANY_DATA_FILE_NAME);
         try {
-            this.dataContext.save(new FileOutputSink(companyDataPath));
+            contactPanel.getDataContext().save(new FileOutputSink(companyDataPath));
             this.setVisible(false);
             Application.showMainFrame();
         } catch (IOException ex) {
@@ -86,7 +85,6 @@ public class JWelcomeDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actionPanel;
     private ro.samlex.reelcash.ui.components.JContactPanel contactPanel;
-    private ro.samlex.reelcash.viewmodels.CompanyInformationViewModel dataContext;
     private javax.swing.JButton exitButton;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables

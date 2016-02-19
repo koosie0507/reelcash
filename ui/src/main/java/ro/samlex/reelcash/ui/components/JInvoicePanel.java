@@ -1,8 +1,6 @@
 package ro.samlex.reelcash.ui.components;
 
-import java.math.BigDecimal;
 import jdk.nashorn.internal.objects.annotations.Getter;
-import ro.samlex.reelcash.Application;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
 import ro.samlex.reelcash.data.Party;
@@ -12,8 +10,6 @@ public class JInvoicePanel extends javax.swing.JPanel {
 
     public JInvoicePanel() {
         initComponents();
-        this.dataContext.getModel().setEmitter(Application.getInstance().getCompany());
-        this.dataContext.getModel().setRecipient(invoicedContactPanel.getModel());
     }
 
     @Getter
@@ -77,6 +73,8 @@ public class JInvoicePanel extends javax.swing.JPanel {
         add(headerPanel);
 
         invoicedContactPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(16, 8, 8, 8), "Invoiced Party Contact Information", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Dialog", 0, 14))); // NOI18N
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.recipient}"), invoicedContactPanel.getDataContext(), org.jdesktop.beansbinding.BeanProperty.create("model"));
+        bindingGroup.addBinding(binding);
         add(invoicedContactPanel);
 
         invoicedItemsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(16, 8, 8, 8), "Invoiced items", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 14))); // NOI18N
