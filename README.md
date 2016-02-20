@@ -12,7 +12,7 @@ It's a simple invoicing application destined for personal use.
 This application requires a personal computer or a mac with at least the following:
 - 1.1 GHz x86 processor
 - 1 GB of RAM
-- 10 MB of free hard disk space
+- 100 MB of free hard disk space
 
 ### Software
 - JRE 1.7 or higher (OpenJDK or Sun)
