@@ -31,6 +31,9 @@ dependencies {
     compile project(':data-access')
     compile ('net.sf.jasperreports:jasperreports:6.2.0') {
         transitive = true
+        exclude module: 'bcmail-jdk14'
+        exclude module: 'bcprov-jdk14'
+        exclude module: 'bctsp-jdk14'
         exclude module: 'jcommon'
         exclude module: 'jfreechart'
         exclude module: 'xml-apis'
