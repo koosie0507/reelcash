@@ -1,12 +1,12 @@
 package ro.samlex.reelcash.ui.components;
 
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import ro.samlex.reelcash.Application;
 import ro.samlex.reelcash.Reelcash;
@@ -23,14 +23,12 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
     private static final Path INVOICE_FOLDER_PATH = FileSystems.getDefault().getPath(
             SysUtils.getDbFolderPath(),
             Reelcash.INVOICES_DATA_FOLDER_NAME);
-    private final ComponentListener componentSwitcher;
+    private boolean isInvoiceEditModeActive;
 
     public JInvoiceListPanel() {
-        this.componentSwitcher = new ComponentSwitcher();
+        isInvoiceEditModeActive = false;
         initComponents();
         showInvoiceList();
-        invoicesScrollPane.addComponentListener(componentSwitcher);
-        invoicePanel.addComponentListener(componentSwitcher);
     }
 
     @SuppressWarnings("unchecked")
@@ -45,6 +43,8 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         modifyInvoiceButton = new javax.swing.JButton();
         modifyInvoiceButton.setVisible(false);
         saveButton = new javax.swing.JButton();
+        printButton = new javax.swing.JButton();
+        hideInvoiceButton = new javax.swing.JButton();
         invoicesScrollPane = new javax.swing.JScrollPane();
         invoicesList = new javax.swing.JList<>();
 
@@ -93,6 +93,33 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         });
         actionsToolbar.add(saveButton);
 
+        printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/print.png"))); // NOI18N
+        printButton.setMnemonic('p');
+        printButton.setText("Print");
+        printButton.setToolTipText("");
+        printButton.setFocusable(false);
+        printButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        printButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        printButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printButtonActionPerformed(evt);
+            }
+        });
+        actionsToolbar.add(printButton);
+
+        hideInvoiceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/close.png"))); // NOI18N
+        hideInvoiceButton.setMnemonic('c');
+        hideInvoiceButton.setText("Close");
+        hideInvoiceButton.setFocusable(false);
+        hideInvoiceButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        hideInvoiceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        hideInvoiceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hideInvoiceButtonActionPerformed(evt);
+            }
+        });
+        actionsToolbar.add(hideInvoiceButton);
+
         add(actionsToolbar, java.awt.BorderLayout.PAGE_START);
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${items}");
@@ -114,19 +141,25 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void adjustComponents() {
+        saveButton.setVisible(isInvoiceEditModeActive);
+        printButton.setVisible(isInvoiceEditModeActive);
+        hideInvoiceButton.setVisible(isInvoiceEditModeActive);
+        modifyInvoiceButton.setVisible(!isInvoiceEditModeActive && invoicesList.getSelectedIndex() >= 0);
+        invoicePanel.setVisible(isInvoiceEditModeActive);
+        invoicesScrollPane.setVisible(!isInvoiceEditModeActive);
+        remove(isInvoiceEditModeActive ? invoicesScrollPane : invoicePanel);
+        add(isInvoiceEditModeActive ? invoicePanel : invoicesScrollPane, BorderLayout.CENTER);
+    }
+
     private void showInvoiceDetails() {
-        remove(invoicesScrollPane);
-        invoicePanel.setVisible(true);
-        saveButton.setVisible(true);
-        modifyInvoiceButton.setVisible(false);
-        add(invoicePanel, java.awt.BorderLayout.CENTER);
+        isInvoiceEditModeActive = true;
+        adjustComponents();
     }
 
     private void showInvoiceList() {
-        remove(invoicePanel);
-        invoicesScrollPane.setVisible(true);
-        saveButton.setVisible(false);
-        add(invoicesScrollPane, java.awt.BorderLayout.CENTER);
+        isInvoiceEditModeActive = false;
+        adjustComponents();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -138,70 +171,72 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
     }
 
     private void newInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newInvoiceButtonActionPerformed
-        if (invoicesScrollPane.isVisible()) {
-            Invoice newInvoice = new Invoice();
-            newInvoice.setEmitter(Application.getInstance().getCompany());
-            newInvoice.setRecipient(new Party());
-            invoicePanel.getDataContext().setModel(newInvoice);
-            invoicesScrollPane.setVisible(false);
+        Invoice newInvoice = new Invoice();
+        newInvoice.setEmitter(Application.getInstance().getCompany());
+        newInvoice.setRecipient(new Party());
+        invoicePanel.getDataContext().setModel(newInvoice);
+        if (!isInvoiceEditModeActive) {
+            showInvoiceDetails();
         }
     }//GEN-LAST:event_newInvoiceButtonActionPerformed
 
     private void modifyInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyInvoiceButtonActionPerformed
-        if (invoicesScrollPane.isVisible()) {
-            invoicePanel.getDataContext().setModel(dataContext.getSelectedItem());
-            invoicesScrollPane.setVisible(false);
+        invoicePanel.getDataContext().setModel(dataContext.getSelectedItem());
+        if (!isInvoiceEditModeActive) {
+            showInvoiceDetails();
         }
     }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        if (invoicePanel.isVisible()) {
-            try {
-                if (!Files.exists(INVOICE_FOLDER_PATH)) {
-                    Files.createDirectories(INVOICE_FOLDER_PATH);
-                }
-                final InvoiceViewModel context = invoicePanel.getDataContext();
-                Path filePath = FileSystems.getDefault().getPath(
-                        INVOICE_FOLDER_PATH.toString(), context.getModel().getUuid() + ".json"
-                );
-                context.save(new FileOutputSink(filePath));
-            } catch (IOException ex) {
-                ApplicationMessages.showError(this, ex.getMessage());
-            } finally {
-                invoicePanel.setVisible(false);
+        try {
+            if (!Files.exists(INVOICE_FOLDER_PATH)) {
+                Files.createDirectories(INVOICE_FOLDER_PATH);
             }
+            final InvoiceViewModel context = invoicePanel.getDataContext();
+            Path filePath = FileSystems.getDefault().getPath(
+                    INVOICE_FOLDER_PATH.toString(), context.getModel().getUuid() + ".json"
+            );
+            context.save(new FileOutputSink(filePath));
+        } catch (IOException ex) {
+            ApplicationMessages.showError(this, ex.getMessage());
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void invoicesListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_invoicesListValueChanged
-        if(invoicesList.getSelectedIndex() >=0 && invoicesScrollPane.isVisible()){
+        if (isInvoiceEditModeActive) {
+            return;
+        }
+        if (invoicesList.getSelectedIndex() >= 0) {
             modifyInvoiceButton.setVisible(true);
         }
     }//GEN-LAST:event_invoicesListValueChanged
+
+    private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
+        JDialog printDialog = new JDialog((Dialog) null, "Preview Invoice", Dialog.ModalityType.APPLICATION_MODAL);
+        JReportPanel reportPanel = new JReportPanel();
+        reportPanel.loadReport(invoicePanel.getDataContext().getModel());
+        printDialog.add(reportPanel);
+        printDialog.pack();
+        printDialog.setLocationRelativeTo(null);
+        printDialog.setVisible(true);
+    }//GEN-LAST:event_printButtonActionPerformed
+
+    private void hideInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hideInvoiceButtonActionPerformed
+        showInvoiceList();
+    }//GEN-LAST:event_hideInvoiceButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar actionsToolbar;
     private ro.samlex.reelcash.viewmodels.InvoiceListViewModel dataContext;
+    private javax.swing.JButton hideInvoiceButton;
     private ro.samlex.reelcash.ui.components.JInvoicePanel invoicePanel;
     private javax.swing.JList<String> invoicesList;
     private javax.swing.JScrollPane invoicesScrollPane;
     private javax.swing.JButton modifyInvoiceButton;
     private javax.swing.JButton newInvoiceButton;
+    private javax.swing.JButton printButton;
     private javax.swing.JButton saveButton;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
-    private final class ComponentSwitcher extends ComponentAdapter {
-
-        @Override
-        public void componentHidden(ComponentEvent e) {
-            if (e.getComponent() == invoicePanel) {
-                showInvoiceList();
-                return;
-            }
-            showInvoiceDetails();
-        }
-
-    }
 }

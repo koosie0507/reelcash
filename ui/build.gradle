@@ -31,15 +31,11 @@ dependencies {
     compile project(':data-access')
     compile ('net.sf.jasperreports:jasperreports:6.2.0') {
         transitive = true
-        exclude module: 'itext'
         exclude module: 'jcommon'
         exclude module: 'jfreechart'
         exclude module: 'xml-apis'
         exclude module: 'ecj'
         exclude module: 'olap4j'
-        exclude module: 'jackson-core'
-        exclude module: 'jackson-databind'
-        exclude module: 'jackson-annotations'
         exclude module: 'lucene-core'
         exclude module: 'lucene-analyzers-common'
         exclude module: 'lucene-queryparser'
@@ -47,6 +43,13 @@ dependencies {
         exclude module: 'core'
     }
 }
+jasperreports {
+    srcDir = file('./src/main/jasperreports')
+    verbose = true
+}
+
+compileAllReports.dependsOn compileJava
+classes.dependsOn compileAllReports
 
 mainClassName = "ro.samlex.reelcash.Application"
 if (!hasProperty('mainClass')) {
