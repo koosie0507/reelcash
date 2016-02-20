@@ -1,7 +1,51 @@
+buildscript {
+    repositories { 
+        maven { url "https://plugins.gradle.org/m2/" } 
+        maven { url "http://jasperreports.sourceforge.net/maven2/" }
+        maven { url "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/" }
+    }
+    dependencies {
+        classpath "com.github.gmazelier:jasperreports-gradle-plugin:0.3.2"
+    }
+}
+
 apply plugin: 'application'
+apply plugin: "com.github.gmazelier.jasperreports"
+
+repositories {
+    maven{url "http://jasperreports.sourceforge.net/maven2/"}
+    maven{url "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"}
+}
+
+task listJars << {
+    configurations.compile.each { File file -> println file.name }
+}
+
+configurations {
+    jasperreports { 
+        transitive = true
+    }
+}
 
 dependencies {
     compile project(':data-access')
+    compile ('net.sf.jasperreports:jasperreports:6.2.0') {
+        transitive = true
+        exclude module: 'itext'
+        exclude module: 'jcommon'
+        exclude module: 'jfreechart'
+        exclude module: 'xml-apis'
+        exclude module: 'ecj'
+        exclude module: 'olap4j'
+        exclude module: 'jackson-core'
+        exclude module: 'jackson-databind'
+        exclude module: 'jackson-annotations'
+        exclude module: 'lucene-core'
+        exclude module: 'lucene-analyzers-common'
+        exclude module: 'lucene-queryparser'
+        exclude module: 'castor-xml'
+        exclude module: 'core'
+    }
 }
 
 mainClassName = "ro.samlex.reelcash.Application"
