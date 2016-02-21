@@ -7,14 +7,14 @@ import java.nio.file.Path;
 
 public final class SysUtils {
 
-    public static String getUserHome() {
-        return System.getProperty("user.home");
+    public static Path getUserHome() {
+        return FileSystems.getDefault().getPath(System.getProperty("user.home"));
     }
 
     public static Path getUserSettingsPath() {
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Linux")) {
-            return createPath(getUserHome(), ".local", "share", Reelcash.APPLICATION_NAME);
+            return createPath(getUserHome().toString(), ".local", "share", Reelcash.APPLICATION_NAME);
         }
         if (osName.startsWith("Windows")) {
             return createPath(System.getenv("APPDATA"), Reelcash.APPLICATION_NAME);
@@ -22,7 +22,7 @@ public final class SysUtils {
 
         return FileSystems
                 .getDefault()
-                .getPath(getUserHome(), "." + Reelcash.APPLICATION_NAME)
+                .getPath(getUserHome().toString(), "." + Reelcash.APPLICATION_NAME)
                 .toAbsolutePath();
     }
 

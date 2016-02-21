@@ -17,15 +17,18 @@ public class SysUtilsTests {
     public void getUserHome_returnsUserHome() {
         String expected = System.getProperty("user.home");
 
-        String actual = SysUtils.getUserHome();
+        String actual = SysUtils.getUserHome().toString();
 
         assertNotNull(actual);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void getUserSettingsPath_onAnyOperatingSystem_returnsPathToADirectory() {
-        assertTrue(Files.isDirectory(SysUtils.getUserSettingsPath()));
+    public void getUserSettingsPath_inAnyCase_returnsPathInUserHome() {
+        Path userHome = SysUtils.getUserHome();
+        Path userSettings = SysUtils.getUserSettingsPath();
+        
+        assertTrue(userSettings.startsWith(userHome));
     }
 
     @Test
@@ -44,7 +47,7 @@ public class SysUtilsTests {
     public void getUserSettingsPath_onLinux_returnsExpectedPath() {
         String os = System.getProperty("os.name");
         final String expected = FileSystems.getDefault()
-                .getPath(SysUtils.getUserHome(), ".local", "share", Reelcash.APPLICATION_NAME)
+                .getPath(SysUtils.getUserHome().toString(), ".local", "share", Reelcash.APPLICATION_NAME)
                 .toAbsolutePath().toString();
         try {
             System.setProperty("os.name", "Linux");
@@ -58,7 +61,7 @@ public class SysUtilsTests {
     public void getUserSettingsPath_onARandomOS_returnsExpectedPath() {
         String os = System.getProperty("os.name");
         final String expected = FileSystems.getDefault()
-                .getPath(SysUtils.getUserHome(), "." + Reelcash.APPLICATION_NAME)
+                .getPath(SysUtils.getUserHome().toString(), "." + Reelcash.APPLICATION_NAME)
                 .toAbsolutePath().toString();
         try {
             System.setProperty("os.name", "AbxbSUHXSBkAKAAK");
