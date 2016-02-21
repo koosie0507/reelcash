@@ -28,7 +28,7 @@ public final class JComponentBindingListener extends AbstractBindingListener imp
 
             @Override
             public boolean hasErrors() {
-                return bindingErrors.isEmpty();
+                return !bindingErrors.isEmpty();
             }
 
         };
