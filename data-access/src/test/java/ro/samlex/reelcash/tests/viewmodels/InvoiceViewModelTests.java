@@ -2,6 +2,7 @@ package ro.samlex.reelcash.tests.viewmodels;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -9,11 +10,20 @@ import static org.hamcrest.CoreMatchers.*;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
 import ro.samlex.reelcash.data.Party;
+import ro.samlex.reelcash.tests.io.IOExceptionOutputSink;
+import ro.samlex.reelcash.tests.io.NullWriterOutputSink;
 import ro.samlex.reelcash.tests.io.StringListOutputSink;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 import ro.samlex.reelcash.viewmodels.SelectorViewModel;
 
 public class InvoiceViewModelTests {
+
+    private static InvoiceItem invoiceItem(String name, String price) {
+        InvoiceItem expected = new InvoiceItem();
+        expected.setName(name);
+        expected.setUnitPrice(new BigDecimal(price));
+        return expected;
+    }
 
     private static void setUpViewModel(InvoiceViewModel viewModel) {
         Party emitter = new Party();
@@ -84,11 +94,37 @@ public class InvoiceViewModelTests {
         assertEquals(expected, outputSink.getWrittenValues().get(0));
     }
 
+    @Test(expected = IOException.class)
+    public void givenViewModel_savingToSinkThatCannotCreateWriter_throwsIOException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new IOExceptionOutputSink().throwOnNewWriter());
+    }
+
+    @Test(expected = IOException.class)
+    public void givenViewModel_savingToSinkThatCannotWriteContent_throwsIOException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new IOExceptionOutputSink().throwOnWrite());
+    }
+
+    @Test(expected = IOException.class)
+    public void givenViewModel_savingToSinkThatCannotCloseWriter_throwsIOException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new IOExceptionOutputSink().throwOnCloseWriter());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void givenViewModel_savingToSinkThatReturnsNullWriter_throwsIllegalArgumentException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new NullWriterOutputSink());
+    }
+
     @Test
     public void givenViewModel_addingItem_itemIsAddedToModel() {
-        InvoiceItem expected = new InvoiceItem();
-        expected.setName("expected");
-        expected.setUnitPrice(3.14159265);
+        InvoiceItem expected = invoiceItem("expected", "3.14159265");
         InvoiceViewModel sut = new InvoiceViewModel();
         sut.setModel(new Invoice());
 
@@ -100,9 +136,7 @@ public class InvoiceViewModelTests {
 
     @Test
     public void givenViewModel_removingItem_itemIsRemovedFromModel() {
-        InvoiceItem unexpected = new InvoiceItem();
-        unexpected.setName("unexpected");
-        unexpected.setUnitPrice(3.14159265);
+        InvoiceItem unexpected = invoiceItem("unexpected", "3.14159265");
         InvoiceViewModel sut = new InvoiceViewModel();
         sut.setModel(new Invoice());
         sut.getItems().add(unexpected);
@@ -114,9 +148,7 @@ public class InvoiceViewModelTests {
 
     @Test
     public void givenViewModel_replacingItem_itemIsReplacedInModel() {
-        InvoiceItem expected = new InvoiceItem();
-        expected.setName("expected");
-        expected.setUnitPrice(3.14159265);
+        InvoiceItem expected = invoiceItem("expected", "3.14159265");
         InvoiceViewModel sut = new InvoiceViewModel();
         sut.setModel(new Invoice());
         sut.getItems().add(new InvoiceItem());
@@ -129,9 +161,7 @@ public class InvoiceViewModelTests {
 
     @Test
     public void givenViewModel_changingItemProperty_itemIsReplacedInModel() {
-        InvoiceItem item = new InvoiceItem();
-        item.setName("not expected");
-        item.setUnitPrice(3.14159265);
+        InvoiceItem item = invoiceItem("not expected", "3.14159265");
         InvoiceViewModel sut = new InvoiceViewModel();
         sut.getItems().add(item);
 
@@ -140,33 +170,39 @@ public class InvoiceViewModelTests {
         assertThat(sut.getModel().getInvoicedItems().size(), is(1));
         assertThat(sut.getModel().getInvoicedItems().get(0).getName(), is("expected"));
     }
-    
+
     @Test
     public void givenViewModel_settingTheModel_itemsAreAddedToViewModel() {
-        InvoiceItem expected = new InvoiceItem();
-        expected.setName("expected");
-        expected.setUnitPrice(3.14159265);
+        InvoiceItem expected = invoiceItem("expected", "3.14159265");
         Invoice model = new Invoice();
         model.getInvoicedItems().add(expected);
         InvoiceViewModel sut = new InvoiceViewModel();
-        
+
         sut.setModel(model);
-        
+
         assertThat(sut.getItems().size(), is(1));
         assertThat(sut.getItems(), everyItem(is(expected)));
     }
 
-    
     @Test
     public void givenViewModel_settingNullModel_itemsAreCleared() {
-        InvoiceItem item = new InvoiceItem();
-        item.setName("expected");
-        item.setUnitPrice(3.14159265);
         InvoiceViewModel sut = new InvoiceViewModel();
-        sut.getModel().getInvoicedItems().add(item);
-        
+        sut.getModel().getInvoicedItems().add(invoiceItem("not-expected", "3.14159265"));
+
         sut.setModel(null);
-        
+
         assertThat(sut.getItems().size(), is(0));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void givenViewModel_savingWhenModelIsNull_throwsIllegalStateException() {
+        InvoiceViewModel sut = new InvoiceViewModel();
+        sut.setModel(null);
+
+        try {
+            sut.save(new StringListOutputSink());
+        } catch (IOException ex) {
+            fail("i/o error on save: " + ex.getMessage());
+        }
     }
 }

@@ -72,14 +72,14 @@ public class JWelcomeDialog extends javax.swing.JDialog {
             return;
         }
         Path companyDataPath = FileSystems.getDefault().getPath(
-                SysUtils.getDbFolderPath(), Reelcash.COMPANY_DATA_FILE_NAME);
+                SysUtils.getDbFolderPath().toString(), Reelcash.COMPANY_DATA_FILE_NAME);
         try {
             contactPanel.getDataContext().save(new FileOutputSink(companyDataPath));
             Application.getInstance().setCompany(contactPanel.getDataContext().getModel());
             this.setVisible(false);
             Application.showMainFrame();
         } catch (IOException ex) {
-            ApplicationMessages.showError(this, "Error when saving company information");
+            ApplicationMessages.showError(this, "Error when saving company information: " + ex.getMessage());
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 

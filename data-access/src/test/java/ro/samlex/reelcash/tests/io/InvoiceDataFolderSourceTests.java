@@ -11,7 +11,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.hasItem;
 import org.junit.*;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import ro.samlex.reelcash.io.InputSource;
 import ro.samlex.reelcash.io.InvoiceDataFolderSource;
@@ -127,7 +130,9 @@ public class InvoiceDataFolderSourceTests {
             }
         }
 
-        Assert.assertArrayEquals(expected, text.toArray(new String[0]));
+        for (String s : expected) {
+            assertThat("Expected output to contain " + s, text, hasItem(s));
+        }
     }
 
     @Test

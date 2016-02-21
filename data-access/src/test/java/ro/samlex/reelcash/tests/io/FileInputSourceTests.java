@@ -55,7 +55,7 @@ public class FileInputSourceTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void givenNewFileInputSource_whenPathIsADirectory_throwsIllegalArgumentException() {
-        new FileInputSource(FileSystems.getDefault().getPath(SysUtils.getUserHome()));
+        new FileInputSource(FileSystems.getDefault().getPath(SysUtils.getUserHome().toString()));
     }
 
     @Test

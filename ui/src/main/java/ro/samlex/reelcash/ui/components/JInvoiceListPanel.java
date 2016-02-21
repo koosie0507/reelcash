@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import ro.samlex.reelcash.Application;
-import ro.samlex.reelcash.Reelcash;
+import static ro.samlex.reelcash.Reelcash.INVOICES_DATA_FOLDER_NAME;
 import ro.samlex.reelcash.SysUtils;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.Party;
@@ -21,8 +21,7 @@ import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 public class JInvoiceListPanel extends javax.swing.JPanel {
 
     private static final Path INVOICE_FOLDER_PATH = FileSystems.getDefault().getPath(
-            SysUtils.getDbFolderPath(),
-            Reelcash.INVOICES_DATA_FOLDER_NAME);
+            SysUtils.getDbFolderPath().toString(), INVOICES_DATA_FOLDER_NAME);
     private boolean isInvoiceEditModeActive;
 
     public JInvoiceListPanel() {
@@ -163,8 +162,7 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                dataContext.loadAll(
-                        new InvoiceDataFolderSource(INVOICE_FOLDER_PATH));
+                dataContext.loadAll(new InvoiceDataFolderSource(INVOICE_FOLDER_PATH));
             }
 
         });
@@ -189,12 +187,10 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
-            if (!Files.exists(INVOICE_FOLDER_PATH)) {
-                Files.createDirectories(INVOICE_FOLDER_PATH);
-            }
             final InvoiceViewModel context = invoicePanel.getDataContext();
             Path filePath = FileSystems.getDefault().getPath(
-                    INVOICE_FOLDER_PATH.toString(), context.getModel().getUuid() + ".json"
+                    SysUtils.ensureDirs(INVOICE_FOLDER_PATH).toString(),
+                    context.getModel().toString() + ".json"
             );
             context.save(new FileOutputSink(filePath));
         } catch (IOException ex) {

@@ -10,10 +10,19 @@ import ro.samlex.reelcash.PropertyChangeObservable;
 import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.io.OutputSink;
 import ro.samlex.reelcash.tests.PropertyChangeListenerStub;
+import ro.samlex.reelcash.tests.PropertyChangeObservableDummy;
+import ro.samlex.reelcash.tests.io.IOExceptionOutputSink;
+import ro.samlex.reelcash.tests.io.NullWriterOutputSink;
 import ro.samlex.reelcash.tests.io.StringListOutputSink;
 import ro.samlex.reelcash.viewmodels.SimpleViewModel;
 
 public class SimpleViewModelTests {
+
+    private static PropertyChangeObservable newModel(String value) {
+        PropertyChangeObservableDummy dummy = new PropertyChangeObservableDummy();
+        dummy.setSomeProperty(value);
+        return dummy;
+    }
 
     @Test
     public void givenViewModel_inAnyCase_itExtendsPropertyChangedObservable() {
@@ -31,7 +40,7 @@ public class SimpleViewModelTests {
         SimpleViewModel sut = new SimpleViewModel();
         sut.addPropertyChangeListener(listener);
 
-        sut.setModel(new Object());
+        sut.setModel(newModel("some value"));
 
         assertEquals(sut, listener.getEvent().getSource());
         assertEquals("model", listener.getEvent().getPropertyName());
@@ -44,12 +53,7 @@ public class SimpleViewModelTests {
         SimpleViewModel sut = new SimpleViewModel();
 
         try {
-            sut.save(new OutputSink() {
-                @Override
-                public Writer newWriter() throws IOException {
-                    return null;
-                }
-            });
+            sut.save(new NullWriterOutputSink());
         } catch (IOException e) {
             fail("Save failed: " + e.getMessage());
         }
@@ -69,10 +73,9 @@ public class SimpleViewModelTests {
     @Test
     public void givenViewModelWithModel_saveOnValidSink_savesExpectedContent() {
         StringListOutputSink sink = new StringListOutputSink();
-        Party p = new Party().street("test street").fiscalId("abc");
-        p.setName("test");
-        SimpleViewModel<Party> sut = new SimpleViewModel<>();
-        sut.setModel(p);
+        final PropertyChangeObservable model = newModel("test value");
+        SimpleViewModel sut = new SimpleViewModel();
+        sut.setModel(model);
 
         try {
             sut.save(sink);
@@ -80,22 +83,39 @@ public class SimpleViewModelTests {
             fail("Save failed: " + e.getMessage());
         }
 
-        String expected = new Gson().toJson(p);
+        String expected = new Gson().toJson(model);
         assertEquals(expected, sink.getWrittenValues().get(0));
     }
 
     @Test(expected = IOException.class)
-    public void givenViewModelWithModel_saveOnSinkWhichThrowsIOException_throwsIOException() throws IOException {
-        Party p = new Party().street("test street").fiscalId("abc");
-        p.setName("test");
-        SimpleViewModel<Party> sut = new SimpleViewModel<>();
-        sut.setModel(p);
+    public void givenViewModelWithModel_saveOnSinkWhichCannotCreateWriter_throwsIOException() throws IOException {
+        SimpleViewModel sut = new SimpleViewModel();
+        sut.setModel(newModel("test value"));
 
-        sut.save(new OutputSink() {
-            @Override
-            public Writer newWriter() throws IOException {
-                throw new IOException();
-            }
-        });
+        sut.save(new IOExceptionOutputSink().throwOnNewWriter());
+    }
+
+    @Test(expected = IOException.class)
+    public void givenViewModelWithModel_saveOnSinkWhichCreatesWriterThatCannotWrite_throwsIOException() throws IOException {
+        SimpleViewModel sut = new SimpleViewModel();
+        sut.setModel(newModel("test value"));
+
+        sut.save(new IOExceptionOutputSink().throwOnNewWriter());
+    }
+
+    @Test(expected = IOException.class)
+    public void givenViewModelWithModel_saveOnSinkWhichCreatesWriterCannotBeClosed_throwsIOException() throws IOException {
+        SimpleViewModel sut = new SimpleViewModel();
+        sut.setModel(newModel("test value"));
+
+        sut.save(new IOExceptionOutputSink().throwOnCloseWriter());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void givenViewModelWithModel_saveOnSinkWhichReturnsNullWriter_throwsIllegalArgumentException() throws IOException {
+        SimpleViewModel sut = new SimpleViewModel();
+        sut.setModel(newModel("test value"));
+
+        sut.save(new NullWriterOutputSink());
     }
 }

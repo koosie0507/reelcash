@@ -17,7 +17,6 @@ import ro.samlex.reelcash.ui.welcome.JWelcomeDialog;
 public class Application {
 
     private static final Application APPLICATION_INSTANCE;
-    private final Path dbFolderPath;
     private Party company;
 
     public static void showMainFrame() {
@@ -34,10 +33,6 @@ public class Application {
         welcomeDialog.setLocationByPlatform(true);
         welcomeDialog.setLocationRelativeTo(null);
         welcomeDialog.setVisible(true);
-    }
-
-    private Application() {
-        dbFolderPath = FileSystems.getDefault().getPath(SysUtils.getDbFolderPath());
     }
 
     static {
@@ -59,18 +54,16 @@ public class Application {
     public Party getCompany() {
         return company;
     }
-    
+
     public void setCompany(Party company) {
         this.company = company;
     }
 
     private boolean loadCompanyData() {
         try {
-            if (!Files.exists(dbFolderPath)) {
-                Files.createDirectories(dbFolderPath);
-            }
             Path companyDataFilePath = FileSystems.getDefault().getPath(
-                    SysUtils.getDbFolderPath(), Reelcash.COMPANY_DATA_FILE_NAME);
+                    SysUtils.ensureDirs(SysUtils.getDbFolderPath()).toString(),
+                    Reelcash.COMPANY_DATA_FILE_NAME);
             if (!Files.exists(companyDataFilePath)) {
                 return false;
             }

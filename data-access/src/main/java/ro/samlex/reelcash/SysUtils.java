@@ -1,88 +1,41 @@
 package ro.samlex.reelcash;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-/**
- * Class providing some patching to some of the jre's screwups.
- *
- * @author cusi
- */
-public class SysUtils {
+public final class SysUtils {
 
-    private static String userSettingsPath;
-
-    /**
-     * Returns the home directory of the current user.
-     *
-     * @return home directory of current user.
-     */
-    public static String getUserHome() {
-        return System.getProperty("user.home");
+    public static Path getUserHome() {
+        return FileSystems.getDefault().getPath(System.getProperty("user.home"));
     }
 
-    /**
-     * Returns the application's folder.
-     *
-     * @return the home folder of the application
-     */
-    public static String getUserSettingsPath() {
-        if (userSettingsPath == null) {
-            String osName = System.getProperty("os.name");
-            if (!setLinuxSettingsPath(osName) && !setWindowsSettingsPath(osName)) {
-                setDefaultSettingsPath();
-            }
+    public static Path getUserSettingsPath() {
+        String osName = System.getProperty("os.name");
+        if (osName.startsWith("Linux")) {
+            return createPath(getUserHome().toString(), ".local", "share", Reelcash.APPLICATION_NAME);
         }
-        return userSettingsPath;
-    }
-
-    public static String getDbFolderPath() {
-        return createPath(getUserSettingsPath(), "db");
-    }
-
-    public static void mkdirs(String path) {
-        File f = new File(path);
-        if (f.exists()) {
-            return;
+        if (osName.startsWith("Windows")) {
+            return createPath(System.getenv("APPDATA"), Reelcash.APPLICATION_NAME);
         }
-        f.mkdirs();
-    }
 
-    public static String createPath(String base, String... additionalParts) {
-        return FileSystems.getDefault().getPath(base, additionalParts).toAbsolutePath().toString();
-    }
-
-    private static void setDefaultSettingsPath() {
-        userSettingsPath = FileSystems
+        return FileSystems
                 .getDefault()
-                .getPath(getUserHome(), ".", "." + Reelcash.APPLICATION_NAME)
-                .toAbsolutePath()
-                .toString();
+                .getPath(getUserHome().toString(), "." + Reelcash.APPLICATION_NAME)
+                .toAbsolutePath();
     }
 
-    private static boolean setLinuxSettingsPath(String osName) {
-        if (!osName.startsWith("Linux")) {
-            return false;
-        }
-        userSettingsPath = createPath(getUserHome(), ".local", "share", Reelcash.APPLICATION_NAME);
-        return true;
+    public static Path getDbFolderPath() {
+        return createPath(getUserSettingsPath().toString(), "db");
     }
 
-    private static boolean setWindowsSettingsPath(String osName) {
-        if (!osName.startsWith("Windows")) {
-            return false;
-        }
-        String appDataPath = System.getenv("APPDATA");
-        userSettingsPath = createPath(appDataPath, Reelcash.APPLICATION_NAME);
-        return true;
+    public static Path ensureDirs(Path directoryPath) throws IOException {
+        Files.createDirectories(directoryPath);
+        return directoryPath.toAbsolutePath();
     }
 
-    /**
-     * Returns the current working directory.
-     *
-     * @return the current user's working directory
-     */
-    public static String getCwd() {
-        return System.getProperty("user.dir");
+    private static Path createPath(String base, String... additionalParts) {
+        return FileSystems.getDefault().getPath(base, additionalParts).toAbsolutePath();
     }
 }

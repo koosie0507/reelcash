@@ -3,11 +3,8 @@ package ro.samlex.reelcash.viewmodels;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import jdk.nashorn.internal.objects.annotations.Setter;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.observablecollections.ObservableListListener;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
 import ro.samlex.reelcash.io.OutputSink;
@@ -15,9 +12,10 @@ import ro.samlex.reelcash.io.OutputSink;
 public class InvoiceViewModel extends SelectorViewModel<InvoiceItem> {
 
     private Invoice model = new Invoice();
-    private final ItemsChangeListener itemsListener = new ItemsChangeListener();
+    private ItemListUpdater itemsListener;
 
     public InvoiceViewModel() {
+        itemsListener = new ItemListUpdater(model.getInvoicedItems());
         getItems().addObservableListListener(itemsListener);
     }
 
@@ -36,45 +34,29 @@ public class InvoiceViewModel extends SelectorViewModel<InvoiceItem> {
 
     private void setupItems() {
         getItems().removeObservableListListener(itemsListener);
+        itemsListener = null;
         getItems().clear();
         if (this.model != null) {
             getItems().addAll(this.model.getInvoicedItems());
+            itemsListener = new ItemListUpdater(this.model.getInvoicedItems());
+            getItems().addObservableListListener(itemsListener);
         }
-        getItems().addObservableListListener(itemsListener);
     }
 
     public void save(OutputSink sink) throws IOException {
         if (sink == null) {
             throw new IllegalArgumentException("null output sink");
         }
+        
+        if (this.model == null) {
+            throw new IllegalStateException("eeeh?!?");
+        }
 
         try (Writer w = sink.newWriter()) {
+            if (w == null) {
+                throw new IllegalArgumentException("null writer");
+            }
             w.write(new Gson().toJson(this.model));
         }
     }
-
-    private class ItemsChangeListener implements ObservableListListener {
-
-        @Override
-        public void listElementsAdded(ObservableList list, int index, int count) {
-            final List subList = list.subList(index, index + count);
-            model.getInvoicedItems().addAll(index, subList);
-        }
-
-        @Override
-        public void listElementsRemoved(ObservableList list, int index, List removed) {
-            model.getInvoicedItems().removeAll(removed);
-        }
-
-        @Override
-        public void listElementReplaced(ObservableList list, int index, Object replaced) {
-            model.getInvoicedItems().set(index, (InvoiceItem) list.get(index));
-        }
-
-        @Override
-        public void listElementPropertyChanged(ObservableList list, int index) {
-            model.getInvoicedItems().set(index, (InvoiceItem) list.get(index));
-        }
-    }
-
 }
