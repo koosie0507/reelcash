@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import ro.samlex.reelcash.data.InvoiceItem;
+import ro.samlex.reelcash.ui.validation.ValidationErrorCollector;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 
 public class JInvoicePanel extends javax.swing.JPanel {
@@ -18,6 +19,14 @@ public class JInvoicePanel extends javax.swing.JPanel {
     @Getter
     public InvoiceViewModel getDataContext() {
         return this.dataContext;
+    }
+    
+    public ValidationErrorCollector getValidationErrorCollector() {
+        return this.invoicedContactPanel.getValidationErrorCollector();
+    }
+    
+    public void forceValidation (){ 
+        this.invoicedContactPanel.forceValidation();
     }
 
     @SuppressWarnings("unchecked")

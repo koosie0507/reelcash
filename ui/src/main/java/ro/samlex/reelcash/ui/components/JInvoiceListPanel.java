@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
@@ -140,6 +139,15 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
+    public boolean validateData() {
+        invoicePanel.forceValidation();
+        if (invoicePanel.getValidationErrorCollector().hasErrors()) {
+            ApplicationMessages.showError(this, invoicePanel.getValidationErrorCollector().getErrorString());
+            return false;
+        }
+        return true;
+    }
+
     private void adjustComponents() {
         saveButton.setVisible(isInvoiceEditModeActive);
         printButton.setVisible(isInvoiceEditModeActive);
@@ -186,6 +194,9 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        if (!validateData()) {
+            return;
+        }
         try {
             final InvoiceViewModel context = invoicePanel.getDataContext();
             Path filePath = FileSystems.getDefault().getPath(
@@ -208,6 +219,9 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_invoicesListValueChanged
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
+        if (!validateData()) {
+            return;
+        }
         JDialog printDialog = new JDialog((Dialog) null, "Preview Invoice", Dialog.ModalityType.APPLICATION_MODAL);
         JReportPanel reportPanel = new JReportPanel();
         reportPanel.loadReport(invoicePanel.getDataContext().getModel());

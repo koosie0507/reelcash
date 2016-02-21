@@ -114,18 +114,18 @@
 				</staticText>
 			</elementGroup>
 			<elementGroup>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="24" width="190" height="12" uuid="59e84629-e7cd-4035-9a2f-0f33cae960ec"/>
 					<textFieldExpression><![CDATA[$F{emitter_fiscalId}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="85" width="190" height="12" uuid="6da6113e-f41e-432c-a49d-8b250d7fe791"/>
 					<textElement>
 						<font isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{emitter_bank}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="12" width="190" height="12" uuid="b608734b-4253-4408-a748-e075f28cebe3"/>
 					<textFieldExpression><![CDATA[$F{emitter_registration}]]></textFieldExpression>
 				</textField>
@@ -133,7 +133,7 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="0" y="12" width="49" height="12" uuid="426e83ca-00b1-43e6-a0e4-6aaff6fc28eb"/>
 					<text><![CDATA[Nr. ORC:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="60" width="190" height="12" uuid="43267928-a343-4b22-b9be-a482aad7794a"/>
 					<textFieldExpression><![CDATA["jud. " + $F{emitter_region} + ", " + $F{emitter_country}]]></textFieldExpression>
 				</textField>
@@ -141,14 +141,14 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="0" y="85" width="49" height="12" uuid="863b7792-f575-4908-9d77-1b45cc6aaf03"/>
 					<text><![CDATA[Banca:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="0" width="190" height="12" uuid="1a0c8477-3428-4fe6-99da-c084e3759f6e"/>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{emitter}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="48" width="190" height="12" uuid="490dc0ba-410e-4580-aa1f-8fc12e8ffe2a"/>
 					<textFieldExpression><![CDATA[$F{emitter_town} + ", " + $F{emitter_postalCode}]]></textFieldExpression>
 				</textField>
@@ -156,7 +156,7 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="0" y="73" width="49" height="12" uuid="9cc3cbca-9b83-433c-a61a-be4712d207e6"/>
 					<text><![CDATA[Cont:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="36" width="190" height="12" uuid="e905c318-bbde-4435-ba93-9eb2683bf0e6"/>
 					<textFieldExpression><![CDATA[$F{emitter_street}]]></textFieldExpression>
 				</textField>
@@ -164,7 +164,7 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="0" y="36" width="49" height="12" uuid="c20891d3-5867-497c-b960-7ce03b2fb229"/>
 					<text><![CDATA[Sediul:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="49" y="73" width="190" height="12" uuid="a76eced7-7fb5-43f3-8563-2b8c7e0404fc"/>
 					<textElement>
 						<font isBold="true"/>
@@ -181,18 +181,18 @@
 				</staticText>
 			</elementGroup>
 			<elementGroup>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="24" width="190" height="12" uuid="de3fd540-d25b-470f-b317-c835fb106714"/>
 					<textFieldExpression><![CDATA[$F{recipient_fiscalId}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="85" width="190" height="12" uuid="32c23935-58af-4fb0-a4ec-bcd0af3cf869"/>
 					<textElement>
 						<font isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{recipient_bank}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="12" width="190" height="12" uuid="364ec8fb-c2a6-4a7c-ab22-dc208b965ec6"/>
 					<textFieldExpression><![CDATA[$F{recipient_registration}]]></textFieldExpression>
 				</textField>
@@ -200,7 +200,7 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="316" y="12" width="49" height="12" uuid="89b299e4-2e9d-4de0-8e84-6fa4a57c3fd5"/>
 					<text><![CDATA[Nr. ORC:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="60" width="190" height="12" uuid="8ae6a699-419f-451c-b77e-80436d160cdf"/>
 					<textFieldExpression><![CDATA["jud. " + $F{recipient_region} + ", " + $F{recipient_country}]]></textFieldExpression>
 				</textField>
@@ -208,14 +208,14 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="316" y="85" width="49" height="12" uuid="45dc3678-125f-41b0-856d-8d1f83de9531"/>
 					<text><![CDATA[Banca:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="0" width="190" height="12" uuid="dfcd7295-4a37-4b71-981d-e2652051646a"/>
 					<textElement>
 						<font isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{recipient}]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="48" width="190" height="12" uuid="1c6c521f-5219-4cef-8d29-6e072b73a7c0"/>
 					<textFieldExpression><![CDATA[$F{recipient_town} + ", " + $F{recipient_postalCode}]]></textFieldExpression>
 				</textField>
@@ -223,7 +223,7 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="316" y="73" width="49" height="12" uuid="f1ead976-1973-4c14-a911-0ee3ef373106"/>
 					<text><![CDATA[Cont:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="36" width="190" height="12" uuid="fb21d5d3-057e-4795-96b8-74da2169fdb1"/>
 					<textFieldExpression><![CDATA[$F{recipient_street}]]></textFieldExpression>
 				</textField>
@@ -231,7 +231,7 @@
 					<reportElement style="ContactHeader" mode="Opaque" x="316" y="36" width="49" height="12" uuid="4b7377ca-63c8-4eb9-9ff5-5a43233872ff"/>
 					<text><![CDATA[Sediul:]]></text>
 				</staticText>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement style="ContactHeader" x="365" y="73" width="190" height="12" uuid="05989168-cb9f-406a-8a47-6ce9649de5d3"/>
 					<textElement>
 						<font isBold="true"/>
