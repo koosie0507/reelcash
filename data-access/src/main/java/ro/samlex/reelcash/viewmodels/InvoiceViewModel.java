@@ -47,8 +47,15 @@ public class InvoiceViewModel extends SelectorViewModel<InvoiceItem> {
         if (sink == null) {
             throw new IllegalArgumentException("null output sink");
         }
+        
+        if (this.model == null) {
+            throw new IllegalStateException("eeeh?!?");
+        }
 
         try (Writer w = sink.newWriter()) {
+            if (w == null) {
+                throw new IllegalArgumentException("null writer");
+            }
             w.write(new Gson().toJson(this.model));
         }
     }

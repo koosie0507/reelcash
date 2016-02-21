@@ -9,6 +9,8 @@ import static org.hamcrest.CoreMatchers.*;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
 import ro.samlex.reelcash.data.Party;
+import ro.samlex.reelcash.tests.io.IOExceptionOutputSink;
+import ro.samlex.reelcash.tests.io.NullWriterOutputSink;
 import ro.samlex.reelcash.tests.io.StringListOutputSink;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 import ro.samlex.reelcash.viewmodels.SelectorViewModel;
@@ -84,6 +86,34 @@ public class InvoiceViewModelTests {
         assertEquals(expected, outputSink.getWrittenValues().get(0));
     }
 
+    @Test(expected = IOException.class)
+    public void givenViewModel_savingToSinkThatCannotCreateWriter_throwsIOException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new IOExceptionOutputSink().throwOnNewWriter());
+    }
+
+    @Test(expected = IOException.class)
+    public void givenViewModel_savingToSinkThatCannotWriteContent_throwsIOException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new IOExceptionOutputSink().throwOnWrite());
+    }
+
+    @Test(expected = IOException.class)
+    public void givenViewModel_savingToSinkThatCannotCloseWriter_throwsIOException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new IOExceptionOutputSink().throwOnCloseWriter());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void givenViewModel_savingToSinkThatReturnsNullWriter_throwsIllegalArgumentException() throws IOException {
+        InvoiceViewModel sut = new InvoiceViewModel();
+
+        sut.save(new NullWriterOutputSink());
+    }
+
     @Test
     public void givenViewModel_addingItem_itemIsAddedToModel() {
         InvoiceItem expected = new InvoiceItem();
@@ -140,7 +170,7 @@ public class InvoiceViewModelTests {
         assertThat(sut.getModel().getInvoicedItems().size(), is(1));
         assertThat(sut.getModel().getInvoicedItems().get(0).getName(), is("expected"));
     }
-    
+
     @Test
     public void givenViewModel_settingTheModel_itemsAreAddedToViewModel() {
         InvoiceItem expected = new InvoiceItem();
@@ -149,14 +179,13 @@ public class InvoiceViewModelTests {
         Invoice model = new Invoice();
         model.getInvoicedItems().add(expected);
         InvoiceViewModel sut = new InvoiceViewModel();
-        
+
         sut.setModel(model);
-        
+
         assertThat(sut.getItems().size(), is(1));
         assertThat(sut.getItems(), everyItem(is(expected)));
     }
 
-    
     @Test
     public void givenViewModel_settingNullModel_itemsAreCleared() {
         InvoiceItem item = new InvoiceItem();
@@ -164,9 +193,21 @@ public class InvoiceViewModelTests {
         item.setUnitPrice(3.14159265);
         InvoiceViewModel sut = new InvoiceViewModel();
         sut.getModel().getInvoicedItems().add(item);
-        
+
         sut.setModel(null);
-        
+
         assertThat(sut.getItems().size(), is(0));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void givenViewModel_savingWhenModelIsNull_throwsIllegalStateException() {
+        InvoiceViewModel sut = new InvoiceViewModel();
+        sut.setModel(null);
+
+        try {
+            sut.save(new StringListOutputSink());
+        } catch (IOException ex) {
+            fail("i/o error on save: " + ex.getMessage());
+        }
     }
 }
