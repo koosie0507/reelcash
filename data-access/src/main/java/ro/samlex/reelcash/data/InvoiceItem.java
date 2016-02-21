@@ -33,22 +33,21 @@ public class InvoiceItem extends PropertyChangeObservable {
     }
 
     @Getter
-    public double getVAT() {
+    public double getVat() {
         return this.vat.doubleValue();
     }
 
     @Setter
-    public void setVat(double value) {
-        BigDecimal possibleVat = new BigDecimal(value);
-        if (possibleVat.signum() < 0) {
+    public void setVat(BigDecimal value) {
+        if (value.signum() < 0) {
             throw new IllegalArgumentException("VAT value can't be negative");
         }
-        if (possibleVat.compareTo(new BigDecimal(1)) > 0) {
+        if (value.compareTo(new BigDecimal(1)) > 0) {
             throw new IllegalArgumentException("VAT value can't be greater than one");
         }
         BigDecimal old = this.vat;
-        this.vat = possibleVat;
-        firePropertyChanged("vat", old, this.vat);
+        this.vat = value;
+        firePropertyChanged("vat", old, value);
     }
 
     @Getter
@@ -57,26 +56,25 @@ public class InvoiceItem extends PropertyChangeObservable {
     }
 
     @Setter
-    public void setQuantity(double qty) {
-        BigDecimal possibleQuantity = new BigDecimal(qty);
-        if (possibleQuantity.signum() <= 0) {
+    public void setQuantity(BigDecimal value) {
+        if (value.signum() <= 0) {
             throw new IllegalArgumentException("Quantity must be positive");
         }
         BigDecimal old = this.quantity;
-        this.quantity = possibleQuantity;
-        firePropertyChanged("quantity", old, this.quantity);
+        this.quantity = value;
+        firePropertyChanged("quantity", old, value);
     }
 
     @Getter
-    public double getUnitPrice() {
-        return unitPrice.doubleValue();
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
     }
 
     @Setter
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal value) {
         BigDecimal old = this.unitPrice;
-        this.unitPrice = new BigDecimal(unitPrice);
-        firePropertyChanged("unitPrice", old, this.unitPrice);
+        this.unitPrice = value;
+        firePropertyChanged("unitPrice", old, value);
     }
 
     @Override
