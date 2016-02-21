@@ -240,7 +240,7 @@
 				</textField>
 				<staticText>
 					<reportElement style="ContactHeader" mode="Opaque" x="316" y="0" width="49" height="12" uuid="1ea006e2-aaf1-4d64-9892-ef78649df202"/>
-					<text><![CDATA[Emitent:]]></text>
+					<text><![CDATA[Client:]]></text>
 				</staticText>
 				<staticText>
 					<reportElement style="ContactHeader" mode="Opaque" x="316" y="24" width="49" height="12" uuid="d5637d2b-0383-400f-84a2-3c85013db4d1"/>
