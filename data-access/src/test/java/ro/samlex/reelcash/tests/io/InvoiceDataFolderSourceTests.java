@@ -127,7 +127,8 @@ public class InvoiceDataFolderSourceTests {
             }
         }
 
-        Assert.assertArrayEquals(expected, text.toArray(new String[0]));
+        Assert.assertEquals(expected[0], text.get(0));
+        Assert.assertEquals(expected[1], text.get(1));
     }
 
     @Test
