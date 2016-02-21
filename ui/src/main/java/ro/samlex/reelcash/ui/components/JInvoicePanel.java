@@ -127,7 +127,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
         columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${unitPrice}"));
         columnBinding.setColumnName("Price");
-        columnBinding.setColumnClass(Double.class);
+        columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create(" "));
         columnBinding.setColumnName("");
         columnBinding.setEditable(false);

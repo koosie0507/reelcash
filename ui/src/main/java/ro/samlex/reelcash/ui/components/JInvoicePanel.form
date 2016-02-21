@@ -358,7 +358,7 @@
                   </Subbinding>
                   <Subbinding sourcePath="${unitPrice}">
                     <BindingParameter name="NAME" value="Price"/>
-                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Double.class"/>
+                    <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
                   </Subbinding>
                   <Subbinding sourcePath=" ">
                     <BindingParameter name="NAME" value=""/>
