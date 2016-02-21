@@ -30,7 +30,7 @@ public final class ItemListUpdater<T> implements ObservableListListener {
 
     @Override
     public void listElementPropertyChanged(ObservableList list, int index) {
-        items.set(index, (T) list.get(index));
+        if(index<items.size()) items.set(index, (T) list.get(index));
     }
 
 }

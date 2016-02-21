@@ -8,23 +8,6 @@ import ro.samlex.reelcash.PropertyChangeObservable;
 
 public class PropertyChangeObservableTests {
 
-    private static final class PropertyChangeObservableDummy extends PropertyChangeObservable {
-
-        private String someProperty;
-
-        public PropertyChangeObservableDummy() {
-        }
-
-        public String getSomeProperty() {
-            return someProperty;
-        }
-
-        public void setSomeProperty(String someProperty) {
-            String oldSomeProperty = this.someProperty;
-            this.someProperty = someProperty;
-            firePropertyChanged("someProperty", oldSomeProperty, someProperty);
-        }
-    }
 
 
     @Test
