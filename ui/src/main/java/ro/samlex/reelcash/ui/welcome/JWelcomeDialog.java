@@ -33,6 +33,7 @@ public class JWelcomeDialog extends javax.swing.JDialog {
         setMinimumSize(new java.awt.Dimension(720, 280));
         setName("welcomedialog"); // NOI18N
         setPreferredSize(new java.awt.Dimension(720, 320));
+        setResizable(false);
 
         contactPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(24, 8, 16, 8), "Your Company's Contact Information", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 24))); // NOI18N
         getContentPane().add(contactPanel, java.awt.BorderLayout.CENTER);
@@ -69,6 +70,12 @@ public class JWelcomeDialog extends javax.swing.JDialog {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         if (evt.getSource() != this.saveButton || contactPanel.getDataContext() == null) {
+            return;
+        }
+        contactPanel.forceValidation();
+        if(contactPanel.getValidationErrorCollector().hasErrors()) 
+        {
+            ApplicationMessages.showError(this, contactPanel.getValidationErrorCollector().getErrorString());
             return;
         }
         Path companyDataPath = FileSystems.getDefault().getPath(
