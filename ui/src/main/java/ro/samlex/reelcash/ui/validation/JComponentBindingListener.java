@@ -2,7 +2,6 @@ package ro.samlex.reelcash.ui.validation;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -10,32 +9,44 @@ import javax.swing.border.Border;
 import org.jdesktop.beansbinding.AbstractBindingListener;
 import org.jdesktop.beansbinding.Binding;
 
-public class InPlaceValidationNotifier extends AbstractBindingListener {
+public final class JComponentBindingListener extends AbstractBindingListener implements ValidationErrorCollector {
 
     private final HashMap<Binding, ValidatedComponentInfo> bindingErrors;
+    private final ValidationErrorCollectorBase collector;
 
-    public InPlaceValidationNotifier() {
+    public JComponentBindingListener() {
         this.bindingErrors = new HashMap<>();
+        this.collector = new ValidationErrorCollectorBase() {
+            @Override
+            public Iterable<String> getErrors() {
+                ArrayList<String> errors = new ArrayList<>();
+                for (ValidatedComponentInfo info : bindingErrors.values()) {
+                    errors.add(info.errorMessage);
+                }
+                return errors;
+            }
+
+            @Override
+            public boolean hasErrors() {
+                return bindingErrors.isEmpty();
+            }
+
+        };
     }
 
+    @Override
     public boolean hasErrors() {
-        return !this.bindingErrors.isEmpty();
+        return collector.hasErrors();
     }
 
-    public String getErrorString() {
-        StringBuilder errorMessageBuilder = new StringBuilder("There are some errors that need your attention");
-        errorMessageBuilder.append(System.lineSeparator());
-        errorMessageBuilder.append(System.lineSeparator());
-        for (ValidatedComponentInfo info : this.bindingErrors.values()) {
-            errorMessageBuilder.append(info.errorMessage);
-            errorMessageBuilder.append(";");
-            errorMessageBuilder.append(System.lineSeparator());
+    @Override
+    public Iterable<String> getErrors() {
+        return collector.getErrors();
+    }
 
-        }
-        errorMessageBuilder.append(System.lineSeparator());
-        errorMessageBuilder.append(System.lineSeparator());
-        errorMessageBuilder.append("Please correct the errors and try saving again.");
-        return errorMessageBuilder.toString();
+    @Override
+    public String getErrorString() {
+        return collector.getErrorString();
     }
 
     @Override

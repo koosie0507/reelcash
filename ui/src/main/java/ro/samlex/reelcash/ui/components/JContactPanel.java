@@ -4,16 +4,16 @@ import jdk.nashorn.internal.objects.annotations.Getter;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.Validator;
 import ro.samlex.reelcash.data.Party;
-import ro.samlex.reelcash.ui.validation.InPlaceValidationNotifier;
+import ro.samlex.reelcash.ui.validation.JComponentBindingListener;
 import ro.samlex.reelcash.ui.validation.RequiredStringValidator;
 import ro.samlex.reelcash.viewmodels.SimpleViewModel;
 
 public class JContactPanel extends javax.swing.JPanel {
     
-    private final InPlaceValidationNotifier validationNotifier;
+    private final JComponentBindingListener validationNotifier;
 
     public JContactPanel() {
-        validationNotifier = new InPlaceValidationNotifier();
+        validationNotifier = new JComponentBindingListener();
         initComponents();
         this.bindingGroup.addBindingListener(validationNotifier);
     }
@@ -23,7 +23,7 @@ public class JContactPanel extends javax.swing.JPanel {
         return this.dataContext;
     }
     
-    public InPlaceValidationNotifier getValidationErrorCollector() {
+    public JComponentBindingListener getValidationErrorCollector() {
         return this.validationNotifier;
     }
     

@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import ro.samlex.reelcash.data.InvoiceItem;
-import ro.samlex.reelcash.ui.validation.InPlaceValidationNotifier;
+import ro.samlex.reelcash.ui.validation.ValidationErrorCollector;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 
 public class JInvoicePanel extends javax.swing.JPanel {
@@ -21,7 +21,7 @@ public class JInvoicePanel extends javax.swing.JPanel {
         return this.dataContext;
     }
     
-    public InPlaceValidationNotifier getValidationErrorCollector() {
+    public ValidationErrorCollector getValidationErrorCollector() {
         return this.invoicedContactPanel.getValidationErrorCollector();
     }
     
