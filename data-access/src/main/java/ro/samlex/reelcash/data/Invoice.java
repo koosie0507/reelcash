@@ -19,7 +19,7 @@ public class Invoice extends PropertyChangeObservable {
 
     private static Date today() {
         final Calendar cal = Calendar.getInstance();
-        cal.clear(Calendar.HOUR_OF_DAY);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.clear(Calendar.AM_PM);
         cal.clear(Calendar.MINUTE);
         cal.clear(Calendar.SECOND);
@@ -61,10 +61,6 @@ public class Invoice extends PropertyChangeObservable {
         this.date = date;
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
     public Integer getNumber() {
         return number;
     }
@@ -77,8 +73,7 @@ public class Invoice extends PropertyChangeObservable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        return hash;
+        return this.uuid.hashCode();
     }
 
     @Override
@@ -93,5 +88,10 @@ public class Invoice extends PropertyChangeObservable {
             return false;
         }
         return Objects.equals(this.uuid, ((Invoice) obj).uuid);
+    }
+
+    @Override
+    public String toString() {
+        return uuid.toString();
     }
 }

@@ -194,7 +194,7 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
             }
             final InvoiceViewModel context = invoicePanel.getDataContext();
             Path filePath = FileSystems.getDefault().getPath(
-                    INVOICE_FOLDER_PATH.toString(), context.getModel().getUuid() + ".json"
+                    INVOICE_FOLDER_PATH.toString(), context.getModel().toString() + ".json"
             );
             context.save(new FileOutputSink(filePath));
         } catch (IOException ex) {

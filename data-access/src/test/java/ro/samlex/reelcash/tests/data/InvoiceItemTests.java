@@ -1,6 +1,5 @@
 package ro.samlex.reelcash.tests.data;
 
-import java.math.BigDecimal;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import ro.samlex.reelcash.data.InvoiceItem;

@@ -1,8 +1,10 @@
 package ro.samlex.reelcash.tests.data;
 
+import java.util.Calendar;
 import java.util.List;
-import org.junit.Assert;
+import java.util.UUID;
 import org.junit.Test;
+import static org.junit.Assert.*;
 import ro.samlex.reelcash.data.Invoice;
 import ro.samlex.reelcash.data.InvoiceItem;
 import ro.samlex.reelcash.data.Party;
@@ -10,43 +12,99 @@ import ro.samlex.reelcash.data.Party;
 public class InvoiceTests {
 
     @Test(expected = IllegalArgumentException.class)
-    public void given_new_invoice__setting_null_contact__throws_NullPointerException() {
+    public void givenNewInvoice_settingNullRecipient_throwsIllegalArgumentException() {
         Invoice sut = new Invoice();
         sut.setRecipient(null);
     }
 
     @Test
-    public void given_new_invoice__it_is_allowed_to_set_non_null_invoiced_party() {
+    public void givenNewInvoice_settingNonNullRecipient_storesRecipientValue() {
         final Party party = new Party();
         Invoice sut = new Invoice();
 
         sut.setRecipient(party);
 
-        Assert.assertSame(party, sut.getRecipient());
+        assertSame(party, sut.getRecipient());
     }
 
     @Test
-    public void given_new_invoice__it_has_an_empty_list_of_invoiced_items() {
+    public void givenNewInvoice_inInitialState_invoicedItemsIsEmpty() {
         final Invoice sut = new Invoice();
 
         List<InvoiceItem> invoicedItems = sut.getInvoicedItems();
 
-        Assert.assertNotNull(invoicedItems);
-        Assert.assertTrue(invoicedItems.isEmpty());
+        assertNotNull(invoicedItems);
+        assertTrue(invoicedItems.isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void given_new_invoice__setting_a_null_emitter__throws_NullPointerException() {
+    public void givenNewInvoice_settingNullEmitter_throwsIllegalArgumentException() {
         final Invoice sut = new Invoice();
 
         sut.setEmitter(null);
     }
 
     @Test
-    public void given_two_new_invoices__just_after_they_were_created__their_identifiers_are_different() {
+    public void givenNewInvoice_settingNonNullEmitter_storesEmitter() {
+        final Invoice sut = new Invoice();
+        final Party party = new Party();
+
+        sut.setEmitter(party);
+
+        assertSame(party, sut.getEmitter());
+    }
+
+    @Test
+    public void givenTwoNewInvoices_inInitialState_theyAreDifferent() {
         final Invoice sut1 = new Invoice();
         final Invoice sut2 = new Invoice();
+
+        assertNotEquals(sut1, sut2);
+    }
+
+    @Test
+    public void givenTwoNewInvoices_inInitialState_theirHashCodesAreDifferent() {
+        final Invoice sut1 = new Invoice();
+        final Invoice sut2 = new Invoice();
+
+        assertNotEquals(sut1.hashCode(), sut2.hashCode());
+    }
+
+    @Test
+    public void givenInvoice_inInitialState_isNotEqualToNull() {
+        final Invoice sut = new Invoice();
+        assertFalse(sut.equals(null));
+    }
+
+    @Test
+    public void givenInvoice_inInitialState_isNotEqualToInstanceOfOtherType() {
+        final Invoice sut = new Invoice();
+        assertFalse(sut.equals(new Object()));
+    }
+
+    @Test
+    public void givenInvoice_inInitialState_dateDoesNotHaveTimeComponent() {
+        final Invoice sut = new Invoice();
+        final Calendar actual = Calendar.getInstance();
+
+        actual.setTime(sut.getDate());
+
+        assertEquals(0, actual.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, actual.get(Calendar.MINUTE));
+        assertEquals(0, actual.get(Calendar.SECOND));
+        assertEquals(0, actual.get(Calendar.MILLISECOND));
+    }
+    
+    @Test
+    public void givenTwoInvoices_inInitialState_theirStringRepresentationsDiffer() {
+        Invoice sut1 = new Invoice();
+        Invoice sut2 = new Invoice();
         
-        Assert.assertNotEquals(sut1.getUuid(), sut2.getUuid());
+        assertNotEquals(sut1.toString(), sut2.toString());
+    }
+    
+    @Test
+    public void givenInvoice_inInitialState_stringRepresentationIsValidUUID() {
+        assertNotNull(UUID.fromString(new Invoice().toString()));
     }
 }
