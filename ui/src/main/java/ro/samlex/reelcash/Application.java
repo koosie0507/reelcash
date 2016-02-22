@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.io.FileInputSource;
+import ro.samlex.reelcash.ui.ApplicationMessages;
 import ro.samlex.reelcash.ui.MainWindow;
 import ro.samlex.reelcash.ui.welcome.JWelcomeDialog;
 
@@ -20,11 +21,15 @@ public class Application {
     private Party company;
 
     public static void showMainFrame() {
+        try {
         MainWindow window = new MainWindow();
         window.pack();
         window.setLocationByPlatform(true);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+        } catch (IOException e) {
+            ApplicationMessages.showError(null, "Apparently we couldn't find our app's icon :-(. " + e.getMessage());
+        }
     }
 
     private static void showWelcomeDialog() {

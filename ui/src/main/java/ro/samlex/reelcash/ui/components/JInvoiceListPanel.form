@@ -193,6 +193,7 @@
             </BindingProperty>
           </BindingProperties>
           <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="invoicesListMouseClicked"/>
             <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="invoicesListValueChanged"/>
           </Events>
           <AuxValues>

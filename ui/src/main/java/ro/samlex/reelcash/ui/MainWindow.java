@@ -1,8 +1,13 @@
 package ro.samlex.reelcash.ui;
 
-public class MainWindow extends javax.swing.JFrame {
+import java.awt.Image;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
-    public MainWindow() {
+public class MainWindow extends javax.swing.JFrame {
+    private final Image appIcon;
+    public MainWindow() throws IOException {
+        appIcon = ImageIO.read(getClass().getResource("/generic_money_box.png"));
         initComponents();
     }
 
@@ -13,6 +18,8 @@ public class MainWindow extends javax.swing.JFrame {
         invoiceListPanel = new ro.samlex.reelcash.ui.components.JInvoiceListPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Reelcash");
+        setIconImage(this.appIcon);
         getContentPane().setLayout(new java.awt.CardLayout());
 
         invoiceListPanel.setMinimumSize(new java.awt.Dimension(640, 480));

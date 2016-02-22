@@ -2,6 +2,7 @@ package ro.samlex.reelcash.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -147,6 +148,11 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${selectedItem}"), invoicesList, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
         bindingGroup.addBinding(binding);
 
+        invoicesList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                invoicesListMouseClicked(evt);
+            }
+        });
         invoicesList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 invoicesListValueChanged(evt);
@@ -189,6 +195,13 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
 
         });
     }
+    
+    private void editSelectedInvoice() {
+        invoicePanel.getDataContext().setModel(dataContext.getSelectedItem());
+        if (!editMode) {
+            showInvoiceDetails();
+        }
+    }
 
     private boolean validateData() {
         invoicePanel.forceValidation();
@@ -210,10 +223,7 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_newInvoiceButtonActionPerformed
 
     private void modifyInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyInvoiceButtonActionPerformed
-        invoicePanel.getDataContext().setModel(dataContext.getSelectedItem());
-        if (!editMode) {
-            showInvoiceDetails();
-        }
+        editSelectedInvoice();
     }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -255,6 +265,13 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
     private void hideInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hideInvoiceButtonActionPerformed
         showInvoiceList();
     }//GEN-LAST:event_hideInvoiceButtonActionPerformed
+
+    private void invoicesListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_invoicesListMouseClicked
+        if(MouseEvent.BUTTON1 != evt.getButton() || evt.getClickCount() != 2) {
+            return;
+        }
+        editSelectedInvoice();
+    }//GEN-LAST:event_invoicesListMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -2,15 +2,12 @@ package ro.samlex.reelcash.ui.components;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Iterator;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JTextField;
 import jdk.nashorn.internal.objects.annotations.Getter;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.Validator;
-import org.jdesktop.swingbinding.JTableBinding;
 import ro.samlex.reelcash.data.InvoiceItem;
 import ro.samlex.reelcash.ui.validation.CompoundValidationErrorCollector;
 import ro.samlex.reelcash.ui.validation.JComponentBindingListener;
-import ro.samlex.reelcash.ui.validation.RequiredStringValidator;
 import ro.samlex.reelcash.ui.validation.ValidationErrorCollector;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 
@@ -151,9 +148,6 @@ public class JInvoicePanel extends javax.swing.JPanel {
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${unitPrice}"));
         columnBinding.setColumnName("Price");
         columnBinding.setColumnClass(String.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create(" "));
-        columnBinding.setColumnName("");
-        columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         invoicedItemsTableScroller.setViewportView(invoiceDetailsTable);
@@ -161,10 +155,11 @@ public class JInvoicePanel extends javax.swing.JPanel {
             invoiceDetailsTable.getColumnModel().getColumn(0).setMinWidth(160);
             invoiceDetailsTable.getColumnModel().getColumn(0).setPreferredWidth(240);
             invoiceDetailsTable.getColumnModel().getColumn(0).setMaxWidth(400);
+            invoiceDetailsTable.getColumnModel().getColumn(0).setCellEditor(getOneClickCellEditor());
             invoiceDetailsTable.getColumnModel().getColumn(1).setMinWidth(50);
             invoiceDetailsTable.getColumnModel().getColumn(1).setPreferredWidth(65);
             invoiceDetailsTable.getColumnModel().getColumn(1).setMaxWidth(120);
-            invoiceDetailsTable.getColumnModel().getColumn(2).setResizable(false);
+            invoiceDetailsTable.getColumnModel().getColumn(1).setCellEditor(getOneClickCellEditor());
         }
 
         invoicedItemsPanel.add(invoicedItemsTableScroller, java.awt.BorderLayout.CENTER);
@@ -174,6 +169,11 @@ public class JInvoicePanel extends javax.swing.JPanel {
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
+    private DefaultCellEditor getOneClickCellEditor() {
+        DefaultCellEditor ed = new DefaultCellEditor(new JTextField());
+        ed.setClickCountToStart(1);
+        return ed;
+    }
     private void addItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemButtonActionPerformed
         getDataContext().getItems().add(new InvoiceItem());
     }//GEN-LAST:event_addItemButtonActionPerformed

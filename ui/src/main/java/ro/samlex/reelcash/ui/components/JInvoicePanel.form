@@ -331,17 +331,16 @@
                   <TableColumnModel selectionModel="0">
                     <Column maxWidth="400" minWidth="160" prefWidth="240" resizable="true">
                       <Title/>
-                      <Editor/>
+                      <Editor editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                        <Connection code="getOneClickCellEditor()" type="code"/>
+                      </Editor>
                       <Renderer/>
                     </Column>
                     <Column maxWidth="120" minWidth="50" prefWidth="65" resizable="true">
                       <Title/>
-                      <Editor/>
-                      <Renderer/>
-                    </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
-                      <Title/>
-                      <Editor/>
+                      <Editor editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                        <Connection code="getOneClickCellEditor()" type="code"/>
+                      </Editor>
                       <Renderer/>
                     </Column>
                   </TableColumnModel>
@@ -359,10 +358,6 @@
                   <Subbinding sourcePath="${unitPrice}">
                     <BindingParameter name="NAME" value="Price"/>
                     <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="String.class"/>
-                  </Subbinding>
-                  <Subbinding sourcePath=" ">
-                    <BindingParameter name="NAME" value=""/>
-                    <BindingParameter name="javax.swing.binding.ParameterKeys.EDITABLE" value="false"/>
                   </Subbinding>
                 </BindingProperty>
               </BindingProperties>
