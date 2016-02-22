@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import javax.swing.JDialog;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import ro.samlex.reelcash.Application;
 import static ro.samlex.reelcash.Reelcash.INVOICES_DATA_FOLDER_NAME;
@@ -15,16 +16,17 @@ import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.io.FileOutputSink;
 import ro.samlex.reelcash.io.InvoiceDataFolderSource;
 import ro.samlex.reelcash.ui.ApplicationMessages;
+import ro.samlex.reelcash.ui.renderers.list.InvoiceRenderer;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 
 public class JInvoiceListPanel extends javax.swing.JPanel {
 
     private static final Path INVOICE_FOLDER_PATH = FileSystems.getDefault().getPath(
             SysUtils.getDbFolderPath().toString(), INVOICES_DATA_FOLDER_NAME);
-    private boolean isInvoiceEditModeActive;
+    private boolean editMode;
 
     public JInvoiceListPanel() {
-        isInvoiceEditModeActive = false;
+        editMode = false;
         initComponents();
         showInvoiceList();
     }
@@ -37,18 +39,36 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         dataContext = new ro.samlex.reelcash.viewmodels.InvoiceListViewModel();
         invoicePanel = new ro.samlex.reelcash.ui.components.JInvoicePanel();
         actionsToolbar = new javax.swing.JToolBar();
+        hideInvoiceButton = new javax.swing.JButton();
         newInvoiceButton = new javax.swing.JButton();
         modifyInvoiceButton = new javax.swing.JButton();
         modifyInvoiceButton.setVisible(false);
         saveButton = new javax.swing.JButton();
         printButton = new javax.swing.JButton();
-        hideInvoiceButton = new javax.swing.JButton();
         invoicesScrollPane = new javax.swing.JScrollPane();
         invoicesList = new javax.swing.JList<>();
 
         setLayout(new java.awt.BorderLayout());
 
+        actionsToolbar.setFloatable(false);
         actionsToolbar.setRollover(true);
+        actionsToolbar.setFocusable(false);
+        actionsToolbar.setFont(new java.awt.Font("SansSerif", 0, 12)); // NOI18N
+
+        hideInvoiceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/back.png"))); // NOI18N
+        hideInvoiceButton.setMnemonic('c');
+        hideInvoiceButton.setFocusable(false);
+        hideInvoiceButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        hideInvoiceButton.setMaximumSize(new java.awt.Dimension(48, 48));
+        hideInvoiceButton.setMinimumSize(new java.awt.Dimension(32, 32));
+        hideInvoiceButton.setPreferredSize(new java.awt.Dimension(48, 48));
+        hideInvoiceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        hideInvoiceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hideInvoiceButtonActionPerformed(evt);
+            }
+        });
+        actionsToolbar.add(hideInvoiceButton);
 
         newInvoiceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/new.png"))); // NOI18N
         newInvoiceButton.setMnemonic('n');
@@ -56,6 +76,9 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         newInvoiceButton.setToolTipText("");
         newInvoiceButton.setFocusable(false);
         newInvoiceButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        newInvoiceButton.setMaximumSize(new java.awt.Dimension(48, 48));
+        newInvoiceButton.setMinimumSize(new java.awt.Dimension(32, 32));
+        newInvoiceButton.setPreferredSize(new java.awt.Dimension(48, 48));
         newInvoiceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         newInvoiceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -69,6 +92,9 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         modifyInvoiceButton.setText("Edit");
         modifyInvoiceButton.setFocusable(false);
         modifyInvoiceButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        modifyInvoiceButton.setMaximumSize(new java.awt.Dimension(48, 48));
+        modifyInvoiceButton.setMinimumSize(new java.awt.Dimension(32, 32));
+        modifyInvoiceButton.setPreferredSize(new java.awt.Dimension(48, 48));
         modifyInvoiceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         modifyInvoiceButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -83,6 +109,9 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         saveButton.setToolTipText("");
         saveButton.setFocusable(false);
         saveButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        saveButton.setMaximumSize(new java.awt.Dimension(48, 48));
+        saveButton.setMinimumSize(new java.awt.Dimension(32, 32));
+        saveButton.setPreferredSize(new java.awt.Dimension(48, 48));
         saveButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -97,6 +126,9 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         printButton.setToolTipText("");
         printButton.setFocusable(false);
         printButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        printButton.setMaximumSize(new java.awt.Dimension(48, 48));
+        printButton.setMinimumSize(new java.awt.Dimension(32, 32));
+        printButton.setPreferredSize(new java.awt.Dimension(48, 48));
         printButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         printButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,24 +137,13 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         });
         actionsToolbar.add(printButton);
 
-        hideInvoiceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/close.png"))); // NOI18N
-        hideInvoiceButton.setMnemonic('c');
-        hideInvoiceButton.setText("Close");
-        hideInvoiceButton.setFocusable(false);
-        hideInvoiceButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        hideInvoiceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        hideInvoiceButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hideInvoiceButtonActionPerformed(evt);
-            }
-        });
-        actionsToolbar.add(hideInvoiceButton);
-
         add(actionsToolbar, java.awt.BorderLayout.PAGE_START);
+
+        invoicesList.setCellRenderer(newListCellRenderer());
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${items}");
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, eLProperty, invoicesList);
-        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create("${number} / ${date}"));
+        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create(""));
         bindingGroup.addBinding(jListBinding);
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${selectedItem}"), invoicesList, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
         bindingGroup.addBinding(binding);
@@ -139,34 +160,28 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
-    public boolean validateData() {
-        invoicePanel.forceValidation();
-        if (invoicePanel.getValidationErrorCollector().hasErrors()) {
-            ApplicationMessages.showError(this, invoicePanel.getValidationErrorCollector().getErrorString());
-            return false;
-        }
-        return true;
+    private ListCellRenderer newListCellRenderer() {
+        return new InvoiceRenderer();
     }
-
-    private void adjustComponents() {
-        saveButton.setVisible(isInvoiceEditModeActive);
-        printButton.setVisible(isInvoiceEditModeActive);
-        hideInvoiceButton.setVisible(isInvoiceEditModeActive);
-        modifyInvoiceButton.setVisible(!isInvoiceEditModeActive && invoicesList.getSelectedIndex() >= 0);
-        invoicePanel.setVisible(isInvoiceEditModeActive);
-        invoicesScrollPane.setVisible(!isInvoiceEditModeActive);
-        remove(isInvoiceEditModeActive ? invoicesScrollPane : invoicePanel);
-        add(isInvoiceEditModeActive ? invoicePanel : invoicesScrollPane, BorderLayout.CENTER);
+    
+    private void setEditMode(boolean value) {
+        editMode = value;
+        saveButton.setVisible(editMode);
+        printButton.setVisible(editMode);
+        hideInvoiceButton.setVisible(editMode);
+        modifyInvoiceButton.setVisible(!editMode && invoicesList.getSelectedIndex() >= 0);
+        invoicePanel.setVisible(editMode);
+        invoicesScrollPane.setVisible(!editMode);
+        remove(editMode ? invoicesScrollPane : invoicePanel);
+        add(editMode ? invoicePanel : invoicesScrollPane, BorderLayout.CENTER);
     }
 
     private void showInvoiceDetails() {
-        isInvoiceEditModeActive = true;
-        adjustComponents();
+        setEditMode(true);
     }
 
     private void showInvoiceList() {
-        isInvoiceEditModeActive = false;
-        adjustComponents();
+        setEditMode(false);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -176,19 +191,28 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         });
     }
 
+    private boolean validateData() {
+        invoicePanel.forceValidation();
+        if (invoicePanel.getValidationErrorCollector().hasErrors()) {
+            ApplicationMessages.showError(this, invoicePanel.getValidationErrorCollector().getErrorString());
+            return false;
+        }
+        return true;
+    }
+
     private void newInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newInvoiceButtonActionPerformed
         Invoice newInvoice = new Invoice();
         newInvoice.setEmitter(Application.getInstance().getCompany());
         newInvoice.setRecipient(new Party());
         invoicePanel.getDataContext().setModel(newInvoice);
-        if (!isInvoiceEditModeActive) {
+        if (!editMode) {
             showInvoiceDetails();
         }
     }//GEN-LAST:event_newInvoiceButtonActionPerformed
 
     private void modifyInvoiceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyInvoiceButtonActionPerformed
         invoicePanel.getDataContext().setModel(dataContext.getSelectedItem());
-        if (!isInvoiceEditModeActive) {
+        if (!editMode) {
             showInvoiceDetails();
         }
     }//GEN-LAST:event_modifyInvoiceButtonActionPerformed
@@ -210,7 +234,7 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void invoicesListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_invoicesListValueChanged
-        if (isInvoiceEditModeActive) {
+        if (editMode) {
             return;
         }
         if (invoicesList.getSelectedIndex() >= 0) {
