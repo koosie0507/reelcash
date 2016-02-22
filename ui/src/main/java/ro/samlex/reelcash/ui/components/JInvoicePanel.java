@@ -2,30 +2,44 @@ package ro.samlex.reelcash.ui.components;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Iterator;
 import jdk.nashorn.internal.objects.annotations.Getter;
+import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.Validator;
+import org.jdesktop.swingbinding.JTableBinding;
 import ro.samlex.reelcash.data.InvoiceItem;
+import ro.samlex.reelcash.ui.validation.CompoundValidationErrorCollector;
+import ro.samlex.reelcash.ui.validation.JComponentBindingListener;
+import ro.samlex.reelcash.ui.validation.RequiredStringValidator;
 import ro.samlex.reelcash.ui.validation.ValidationErrorCollector;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 
 public class JInvoicePanel extends javax.swing.JPanel {
 
     private final PropertyChangeListener modelChangeListener;
+    private final JComponentBindingListener itemBindingListener;
+    private final CompoundValidationErrorCollector validationErrorCollector;
 
     public JInvoicePanel() {
         this.modelChangeListener = new ModelChangeListener();
+        this.itemBindingListener = new JComponentBindingListener();
         initComponents();
+        this.bindingGroup.addBindingListener(itemBindingListener);
+        this.validationErrorCollector = new CompoundValidationErrorCollector(
+                this.invoicedContactPanel.getValidationErrorCollector(),
+                this.itemBindingListener);
     }
 
     @Getter
     public InvoiceViewModel getDataContext() {
         return this.dataContext;
     }
-    
+
     public ValidationErrorCollector getValidationErrorCollector() {
-        return this.invoicedContactPanel.getValidationErrorCollector();
+        return this.validationErrorCollector;
     }
-    
-    public void forceValidation (){ 
+
+    public void forceValidation() {
         this.invoicedContactPanel.forceValidation();
     }
 
