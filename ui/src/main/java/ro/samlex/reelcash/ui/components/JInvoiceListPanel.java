@@ -143,7 +143,6 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${items}");
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, eLProperty, invoicesList);
-        jListBinding.setDetailBinding(org.jdesktop.beansbinding.ELProperty.create(""));
         bindingGroup.addBinding(jListBinding);
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${selectedItem}"), invoicesList, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
         bindingGroup.addBinding(binding);
@@ -237,9 +236,7 @@ public class JInvoiceListPanel extends javax.swing.JPanel {
         if (editMode) {
             return;
         }
-        if (invoicesList.getSelectedIndex() >= 0) {
-            modifyInvoiceButton.setVisible(true);
-        }
+        modifyInvoiceButton.setVisible(invoicesList.getSelectedIndex() >= 0);
     }//GEN-LAST:event_invoicesListValueChanged
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
