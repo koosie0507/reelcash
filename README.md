@@ -1,7 +1,7 @@
 # Reelcash
 
-[![Circle CI](https://circleci.com/gh/koosie0507/reelcash.svg?style=svg)](https://circleci.com/gh/koosie0507/reelcash)
-[![codecov.io](https://codecov.io/github/koosie0507/reelcash/coverage.svg?branch=master)](https://codecov.io/github/koosie0507/reelcash?branch=master)
+[![Circle CI](https://circleci.com/gh/samlex-ro/reelcash.svg?style=svg)](https://circleci.com/gh/samlex-ro/reelcash)
+[![codecov.io](https://codecov.io/github/samlex-ro/reelcash/coverage.svg?branch=master)](https://codecov.io/github/samlex-ro/reelcash?branch=master)
 
 ## What it is
 It's a simple invoicing application destined for personal use.
