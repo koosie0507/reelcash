@@ -176,6 +176,7 @@ public class JContactPanel extends javax.swing.JPanel {
         codeText.setPreferredSize(new java.awt.Dimension(240, 23));
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dataContext, org.jdesktop.beansbinding.ELProperty.create("${model.address.postalCode}"), codeText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding.setValidator(new ro.samlex.reelcash.data.validators.PostalCodeValidator("* postal code is incorrect"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();

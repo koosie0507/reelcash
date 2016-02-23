@@ -205,6 +205,9 @@
       <BindingProperties>
         <BindingProperty name="text" source="dataContext" sourcePath="${model.address.postalCode}" target="codeText" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+          <Property name="validator" type="org.jdesktop.beansbinding.Validator" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+            <Connection code="new ro.samlex.reelcash.data.validators.PostalCodeValidator(&quot;* postal code is incorrect&quot;)" type="code"/>
+          </Property>
         </BindingProperty>
       </BindingProperties>
       <Constraints>
