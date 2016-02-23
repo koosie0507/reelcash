@@ -17,7 +17,7 @@ import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.io.FileOutputSink;
 import ro.samlex.reelcash.io.InvoiceDataFolderSource;
 import ro.samlex.reelcash.ui.ApplicationMessages;
-import ro.samlex.reelcash.ui.renderers.list.InvoiceRenderer;
+import ro.samlex.reelcash.ui.components.renderers.list.InvoiceRenderer;
 import ro.samlex.reelcash.viewmodels.InvoiceViewModel;
 
 public class JInvoiceListPanel extends javax.swing.JPanel {

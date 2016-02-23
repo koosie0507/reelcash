@@ -1,4 +1,4 @@
-package ro.samlex.reelcash.ui.renderers.list;
+package ro.samlex.reelcash.ui.components.renderers.list;
 
 import java.awt.Color;
 import java.awt.Component;
