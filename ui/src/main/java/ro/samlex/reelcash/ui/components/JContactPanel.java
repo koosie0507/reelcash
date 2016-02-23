@@ -5,7 +5,7 @@ import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.Validator;
 import ro.samlex.reelcash.data.Party;
 import ro.samlex.reelcash.ui.validation.JComponentBindingListener;
-import ro.samlex.reelcash.ui.validation.RequiredStringValidator;
+import ro.samlex.reelcash.data.validators.RequiredStringValidator;
 import ro.samlex.reelcash.viewmodels.SimpleViewModel;
 
 public class JContactPanel extends javax.swing.JPanel {
